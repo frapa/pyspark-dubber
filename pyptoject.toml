@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spark-cl"
+dynamic = ["version"]
+requires-python = ">= 3.10"
+
+[project]
+dependencies = [
+    "ibis-framework[duckdb]",
+    "pandas",
+    "pyarrow",
+    "pyarrow-hotfix"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pyspark == 3.*",
+    "setuptools",  # pandas still depends on it post 3.12 because it sucks
+]

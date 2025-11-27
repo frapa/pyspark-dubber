@@ -1,4 +1,4 @@
-from pyspark_cl.sql.types.types import (
+from pyspark_dubber.sql.types.types import (
     DataType,
     AtomicType,
     StructType,

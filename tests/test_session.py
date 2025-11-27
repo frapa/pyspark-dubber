@@ -1,7 +1,7 @@
 import pytest
 from pyspark.sql.session import SparkSession
-from pyspark_cl.sql.session import SparkSession as CLSparkSession
-from pyspark_cl.sql.types import StructType, StringType, StructField
+from pyspark_dubber.sql.session import SparkSession as DubberSparkSession
+from pyspark_dubber.sql.types import StructType, StringType, StructField
 from tests.conftest import assert_df_equal, parametrize
 
 
@@ -15,18 +15,18 @@ from tests.conftest import assert_df_equal, parametrize
     ids=["empty", "bare_list", "nulls"],
 )
 def test_session_createDataFrame_infer_error(
-    data, spark: SparkSession, spark_cl: CLSparkSession
+    data, spark: SparkSession, spark_dubber: DubberSparkSession
 ) -> None:
-    with pytest.raises(Exception) as err:
+    with pytest.raises(Exception) as pyspark_err:
         spark.createDataFrame(data)
 
-    with pytest.raises(Exception) as err_cl:
-        spark_cl.createDataFrame(data)
+    with pytest.raises(Exception) as dubber_err:
+        spark_dubber.createDataFrame(data)
 
     assert (
-        type(err_cl.value).__name__ == type(err.value).__name__
-    ), f"'{err_cl.value}' != '{err.value}'"
-    assert str(err_cl.value) == str(err.value)
+        type(dubber_err.value).__name__ == type(pyspark_err.value).__name__
+    ), f"'{dubber_err.value}' != '{pyspark_err.value}'"
+    assert str(dubber_err.value) == str(pyspark_err.value)
 
 
 @parametrize(
@@ -36,18 +36,18 @@ def test_session_createDataFrame_infer_error(
     )
 )
 def test_session_createDataFrame_validate_schema_error(
-    data, schema, spark: SparkSession, spark_cl: CLSparkSession
+    data, schema, spark: SparkSession, spark_dubber: DubberSparkSession
 ) -> None:
-    with pytest.raises(Exception) as err:
+    with pytest.raises(Exception) as pyspark_err:
         spark.createDataFrame(data, schema=schema.to_pyspark())
 
-    with pytest.raises(Exception) as err_cl:
-        spark_cl.createDataFrame(data, schema=schema)
+    with pytest.raises(Exception) as dubber_err:
+        spark_dubber.createDataFrame(data, schema=schema)
 
     assert (
-        type(err_cl.value).__name__ == type(err.value).__name__
-    ), f"{err_cl.value} != {err.value}"
-    assert str(err_cl.value) == str(err.value)
+        type(dubber_err.value).__name__ == type(pyspark_err.value).__name__
+    ), f"{dubber_err.value} != {pyspark_err.value}"
+    assert str(dubber_err.value) == str(pyspark_err.value)
 
 
 @parametrize(
@@ -57,9 +57,9 @@ def test_session_createDataFrame_validate_schema_error(
     ),
 )
 def test_session_createDataFrame(
-    data, schema, spark: SparkSession, spark_cl: CLSparkSession
+    data, schema, spark: SparkSession, spark_dubber: DubberSparkSession
 ) -> None:
     assert_df_equal(
-        spark_cl.createDataFrame(data, schema),
+        spark_dubber.createDataFrame(data, schema),
         spark.createDataFrame(data, schema),
     )

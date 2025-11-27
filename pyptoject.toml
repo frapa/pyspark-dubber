@@ -3,7 +3,7 @@ requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"
 
 [project]
-name = "spark-cl"
+name = "spark-dubber"
 dynamic = ["version"]
 requires-python = ">= 3.10"
 

@@ -49,7 +49,7 @@ def test_pyspark_examples(
     script_path: Path,
     pyspark_examples_dir,
 ) -> None:
-    """This test executes each script both with pyspark and pyspark-cl
+    """This test executes each script both with pyspark and pyspark-dubber
     and verifies that the output is identical.
     """
     script = script_path.read_text()
@@ -64,13 +64,20 @@ def test_pyspark_examples(
         except Exception as err:
             pyspark_error = err
 
-    cl_code = compile(script.replace("pyspark", "pyspark_cl"), script_path, "exec")
-    cl_error = None
-    with capture_output() as cl_output:
+    dubber_code = compile(
+        script.replace("pyspark", "pyspark_dubber"), script_path, "exec"
+    )
+    dubber_err = None
+    with capture_output() as dubber_output:
         try:
-            exec(cl_code)
+            exec(dubber_code)
         except Exception as err:
-            cl_error = err
+            dubber_err = err
 
-    assert pyspark_output.getvalue() == cl_output.getvalue()
-    assert str(pyspark_error) == str(cl_error)
+    try:
+        assert str(dubber_err) == str(pyspark_error)
+    except AssertionError as assert_err:
+        # Provide more context for debugging
+        raise assert_err from dubber_err
+
+    assert dubber_output.getvalue() == pyspark_output.getvalue()

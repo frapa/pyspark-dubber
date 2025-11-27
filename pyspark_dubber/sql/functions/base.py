@@ -1,4 +1,4 @@
-from pyspark_cl.sql import Column
+from pyspark_dubber.sql import Column
 
 ColumnOrName = Column | str
 

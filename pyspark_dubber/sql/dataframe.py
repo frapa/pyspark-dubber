@@ -3,7 +3,7 @@ import dataclasses
 import ibis
 import pandas
 
-from pyspark_cl.sql.row import Row
+from pyspark_dubber.sql.row import Row
 
 
 @dataclasses.dataclass

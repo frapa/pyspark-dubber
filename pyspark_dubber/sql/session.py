@@ -4,10 +4,10 @@ import ibis
 import pandas
 import numpy
 
-from pyspark_cl.errors import PySparkTypeError, PySparkValueError
-from pyspark_cl.sql.row import Row
-from pyspark_cl.sql.dataframe import DataFrame
-from pyspark_cl.sql.types import (
+from pyspark_dubber.errors import PySparkTypeError, PySparkValueError
+from pyspark_dubber.sql.row import Row
+from pyspark_dubber.sql.dataframe import DataFrame
+from pyspark_dubber.sql.types import (
     StructType,
     AtomicType,
     StructField,

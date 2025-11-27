@@ -1,4 +1,4 @@
-from pyspark_cl.errors.base import (
+from pyspark_dubber.errors.base import (
     PySparkException,
     AnalysisException,
     SessionNotSameException,

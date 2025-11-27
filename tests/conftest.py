@@ -5,9 +5,12 @@ from pathlib import Path
 
 import pytest
 from pyspark.sql import SparkSession, DataFrame
-from pyspark_cl.sql import SparkSession as CLSparkSession, DataFrame as CLDataFrame
+from pyspark_dubber.sql import (
+    SparkSession as DubberSparkSession,
+    DataFrame as DubberDataFrame,
+)
 
-# Ensure pyspark_cl is importable
+# Ensure pyspark_dubber is importable
 ROOT_PATH = Path(__file__).parent.parent
 sys.path.append(str(ROOT_PATH))
 
@@ -18,8 +21,8 @@ def spark() -> SparkSession:
 
 
 @pytest.fixture
-def spark_cl() -> CLSparkSession:
-    return CLSparkSession.builder.getOrCreate()
+def spark_dubber() -> DubberSparkSession:
+    return DubberSparkSession.builder.getOrCreate()
 
 
 def parametrize(**kwargs):
@@ -37,5 +40,5 @@ def parametrize(**kwargs):
     return _decorator
 
 
-def assert_df_equal(cl_df: CLDataFrame, spark_df: DataFrame) -> None:
-    assert cl_df.collect() == spark_df.collect()
+def assert_df_equal(dubber_df: DubberDataFrame, spark_df: DataFrame) -> None:
+    assert dubber_df.collect() == spark_df.collect()

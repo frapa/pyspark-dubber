@@ -12,7 +12,7 @@ from pyspark_dubber.sql.types import (
     AtomicType,
     StructField,
     StringType,
-    IntegerType,
+    IntegerType, DataType,
 )
 
 
@@ -27,8 +27,20 @@ class _Builder:
         return SparkSession()
 
 
+class SparkConfig:
+    # TODO: default spark configuration
+    _conf = {}
+
+    def get(self, key: str) -> Any:
+        return self._conf.get(key)
+
+    def set(self, key: str, value: Any) -> None:
+        self._conf[key] = value
+
+
 class SparkSession:
     builder = _Builder()
+    conf = SparkConfig()
 
     def createDataFrame(
         self,
@@ -44,13 +56,19 @@ class SparkSession:
         data_for_schema = data
         if isinstance(data, pandas.DataFrame):
             data_for_schema = data.to_dict(orient="records")
+            if schema is None:
+                data = data.convert_dtypes()  # Otherwise pandas says "object" for anything
+                schema = StructType([
+                    StructField(c, DataType.from_pandas(str(t)), True)
+                    for c, t in zip(data.columns, data.dtypes)
+                ])
 
         if schema is None:
             schema = self._infer_schema(data_for_schema)
         elif verifySchema:
             self._verify_schema(data_for_schema, schema)
 
-        return DataFrame(ibis.memtable(data, columns=[f.name for f in schema.fields]))
+        return DataFrame(ibis.memtable(data, columns=[f.name for f in schema.fields]), schema)
 
     def _infer_schema(self, data: Iterable[Row | dict[str, Any] | Any]) -> StructType:
         data = list(data)
@@ -112,16 +130,15 @@ class SparkSession:
             if isinstance(schema, AtomicType):
                 raise NotImplementedError("AtomicType support is not implemented yet.")
 
-            for field in schema.fields:
-                if field not in row:
+            keys = list(row.asDict().keys())
+            for i, field in enumerate(schema.fields):
+                if i > len(row):
                     raise PySparkValueError(
                         f"[MISSING_FIELD] Missing field: {field.name}."
                     )
 
-                value = row[field.name]
-                if isinstance(value, str) and field.dataType != StringType():
+                value = row.get(field.name, row[keys[i]])
+                if isinstance(value, str) and not isinstance(field.dataType, StringType):
                     raise PySparkTypeError(f"Type mismatch: {field.dataType} != {StringType()}.")
-                else:
-                    raise NotimplementedError(f"Type not implemented yet: {type(value).__name__}")
 
             # TODO: extra fields?

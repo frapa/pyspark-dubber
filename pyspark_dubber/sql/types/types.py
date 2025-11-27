@@ -2,10 +2,27 @@ import abc
 import dataclasses
 from typing import Any
 
+import pandas
+
 
 class DataType(abc.ABC):
     @abc.abstractmethod
     def to_pyspark(self): ...
+
+    @abc.abstractmethod
+    def __str__(self) -> str: ...
+
+    @abc.abstractmethod
+    def simpleString(self) -> str: ...
+
+    @staticmethod
+    def from_pandas(dtype: str) -> "DataType":
+        if dtype == "string":
+            return StringType()
+        if dtype == "Int64":
+            return LongType()
+
+        raise NotImplementedError(f"Pandas conversion not implemented for type: {dtype}")
 
 
 class AtomicType(DataType, abc.ABC):
@@ -35,6 +52,12 @@ class StructType(DataType):
             for f in self.fields
         ])
 
+    def __str__(self) -> str:
+        return "struct"
+
+    def simpleString(self) -> str:
+        return "struct"
+
 
 @dataclasses.dataclass
 class StringType(AtomicType):
@@ -45,6 +68,12 @@ class StringType(AtomicType):
             raise ImportError("pyspark must be installed separately to use .to_spark()") from err
 
         return st.StringType()
+
+    def __str__(self) -> str:
+        return "string"
+
+    def simpleString(self) -> str:
+        return "string"
 
 
 @dataclasses.dataclass
@@ -57,6 +86,12 @@ class IntegerType(AtomicType):
 
         return st.IntegerType()
 
+    def __str__(self) -> str:
+        return "integer"
+
+    def simpleString(self) -> str:
+        return "int"
+
 
 @dataclasses.dataclass
 class LongType(AtomicType):
@@ -67,3 +102,9 @@ class LongType(AtomicType):
             raise ImportError("pyspark must be installed separately to use .to_spark()") from err
 
         return st.LongType()
+
+    def __str__(self) -> str:
+        return "long"
+
+    def simpleString(self) -> str:
+        return "bigint"

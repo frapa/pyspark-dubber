@@ -1,4 +1,4 @@
-from pyspark_dubber.sql import Column
+from pyspark_dubber.sql.column import Column
 from pyspark_dubber.sql.functions.base import ColumnOrName
 
 

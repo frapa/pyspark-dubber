@@ -16,5 +16,8 @@ class DataFrame:
     def show(self) -> None:
         pass
 
+    def printSchema(self) -> None:
+        pass
+
     def toPandas(self) -> pandas.DataFrame:
         return self._ibis_df.to_pandas()

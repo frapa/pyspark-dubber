@@ -38,17 +38,17 @@ class SparkSession:
         samplingRatio: float | None = None,
         verifySchema: bool = True,
     ) -> DataFrame:
-        if isinstance(data, pandas.DataFrame):
-            raise NotImplementedError(
-                "Pandas DataFrame support is not implemented yet."
-            )
-        elif isinstance(data, numpy.ndarray):
+        if isinstance(data, numpy.ndarray):
             raise NotImplementedError("Numpy ndarray support is not implemented yet.")
 
+        data_for_schema = data
+        if isinstance(data, pandas.DataFrame):
+            data_for_schema = data.to_dict(orient="records")
+
         if schema is None:
-            schema = self._infer_schema(data)
+            schema = self._infer_schema(data_for_schema)
         elif verifySchema:
-            self._verify_schema(data, schema)
+            self._verify_schema(data_for_schema, schema)
 
         return DataFrame(ibis.memtable(data, columns=[f.name for f in schema.fields]))
 

@@ -9,6 +9,7 @@ from typing import Any, Generator
 
 import pytest
 
+SCRIPTS = sorted(Path(__file__).parent.glob("scripts/*.py"))
 EXAMPLE_SCRIPTS = sorted(Path(__file__).parent.glob("pyspark-examples/*.py"))
 
 
@@ -43,10 +44,14 @@ def capture_output() -> Generator[StringIO, Any, None]:
 
 @pytest.mark.parametrize(
     "script_path",
-    EXAMPLE_SCRIPTS[2:3],
-    ids=[s.name for s in EXAMPLE_SCRIPTS[2:3]],
+    [
+        *SCRIPTS,
+        # examples from the internet, mostly bad quality
+        *EXAMPLE_SCRIPTS[1:3],
+    ],
+    ids=[s.name for s in [*SCRIPTS, *EXAMPLE_SCRIPTS[1:3]]],
 )
-def test_pyspark_examples(
+def test_scripts(
     script_path: Path,
     pyspark_examples_dir,
 ) -> None:
@@ -78,15 +83,17 @@ def test_pyspark_examples(
             dubber_err = err
 
     dubber_stdout = dubber_output.getvalue()
-    pyspark_stdout = dubber_output.getvalue()
+    pyspark_stdout = pyspark_output.getvalue()
 
     # For certain tests we might need an override for very niche incompatibilities
     if script_path.name == "pandas-pyspark-dataframe.py":
-        # pyspark uses an intermediate class for pandas conversion,
+        # pyspark uses an intermediate class for pandas conversion
         # that we don't want to implement (the example is just poorly written)
-        dubber_stdout = dubber_stdout.replace("PandasConversionMixin", "DataFrame")
+        pyspark_stdout = pyspark_stdout.replace("PandasConversionMixin", "DataFrame")
 
     assert str(dubber_err) == str(
         pyspark_error
     ), f"See original error above for more details. Stdout:\n{dubber_output.getvalue()}"
     assert dubber_stdout == pyspark_stdout
+
+    print(dubber_stdout)

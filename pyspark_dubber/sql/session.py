@@ -1,18 +1,22 @@
+from itertools import count
 from typing import Iterable, Any
 
 import ibis
-import pandas
 import numpy
+import pandas
 
 from pyspark_dubber.errors import PySparkTypeError, PySparkValueError
-from pyspark_dubber.sql.row import Row
 from pyspark_dubber.sql.dataframe import DataFrame
+from pyspark_dubber.sql.input_output import SparkInput
+from pyspark_dubber.sql.row import Row
 from pyspark_dubber.sql.types import (
     StructType,
     AtomicType,
     StructField,
     StringType,
-    IntegerType, DataType,
+    IntegerType,
+    DataType,
+    LongType,
 )
 
 
@@ -41,6 +45,7 @@ class SparkConfig:
 class SparkSession:
     builder = _Builder()
     conf = SparkConfig()
+    read = SparkInput()
 
     def createDataFrame(
         self,
@@ -55,20 +60,22 @@ class SparkSession:
 
         data_for_schema = data
         if isinstance(data, pandas.DataFrame):
+            # Keep schema column names if they differ from pandas df name
+            if schema is not None:
+                data.columns = schema.names
             data_for_schema = data.to_dict(orient="records")
-            if schema is None:
-                data = data.convert_dtypes()  # Otherwise pandas says "object" for anything
-                schema = StructType([
-                    StructField(c, DataType.from_pandas(str(t)), True)
-                    for c, t in zip(data.columns, data.dtypes)
-                ])
 
+        # Ibis implements all this but we re-implement a first pass to raise
+        # the same errors as pyspark for error-level compatibility
         if schema is None:
-            schema = self._infer_schema(data_for_schema)
+            final_schema = self._infer_schema(data_for_schema)
         elif verifySchema:
             self._verify_schema(data_for_schema, schema)
+            final_schema = schema
 
-        return DataFrame(ibis.memtable(data, columns=[f.name for f in schema.fields]), schema)
+        ibis_struct = final_schema.to_ibis()
+        ibis_schema = ibis.Schema.from_tuples(ibis_struct.fields.items())
+        return DataFrame(ibis.memtable(data, schema=ibis_schema))
 
     def _infer_schema(self, data: Iterable[Row | dict[str, Any] | Any]) -> StructType:
         data = list(data)
@@ -79,7 +86,14 @@ class SparkSession:
 
         fields = None
         for row in data[:100]:
-            if not isinstance(row, (Row, dict, list, tuple)):
+            if isinstance(row, Row):
+                dict_row = row.asDict()
+            elif isinstance(row, dict):
+                dict_row = row
+            elif isinstance(row, (list, tuple)):
+                # Name columns as _1, _2, etc.
+                dict_row = dict(zip((f"_{i}" for i in count(1)), row))
+            else:
                 raise PySparkTypeError(
                     f"[CANNOT_INFER_SCHEMA_FOR_TYPE] Can not infer schema for type: `{type(row).__name__}`."
                 )
@@ -87,12 +101,12 @@ class SparkSession:
             if not fields:
                 fields = [None] * len(row)
 
-            for i, value in enumerate(row):
+            for i, (col, value) in enumerate(row.items()):
                 if fields[i] is None:
                     if isinstance(value, str):
-                        fields[i] = StructField(f"_{i+1}", StringType(), True)
+                        fields[i] = StructField(col, StringType(), True)
                     elif isinstance(value, int):
-                        fields[i] = StructField(f"_{i+1}", IntegerType(), True)
+                        fields[i] = StructField(col, LongType(), True)
                     else:
                         raise NotImplementedError(
                             f"Type not implemented yet: {type(value).__name__}"
@@ -138,7 +152,14 @@ class SparkSession:
                     )
 
                 value = row.get(field.name, row[keys[i]])
-                if isinstance(value, str) and not isinstance(field.dataType, StringType):
-                    raise PySparkTypeError(f"Type mismatch: {field.dataType} != {StringType()}.")
+                if isinstance(value, str) and not isinstance(
+                    field.dataType, StringType
+                ):
+                    raise PySparkTypeError(
+                        f"Type mismatch: {field.dataType} != {StringType()}."
+                    )
 
             # TODO: extra fields?
+
+    def stop(self) -> None:
+        pass

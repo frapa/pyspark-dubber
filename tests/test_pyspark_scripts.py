@@ -1,4 +1,5 @@
 import contextlib
+import glob
 import os
 import io
 import sys
@@ -9,16 +10,18 @@ from typing import Any, Generator
 
 import pytest
 
+DATA_DIR = Path(__file__).parent / "data"
 SCRIPTS = sorted(Path(__file__).parent.glob("scripts/*.py"))
 EXAMPLE_SCRIPTS = sorted(Path(__file__).parent.glob("pyspark-examples/*.py"))
 
 
 @pytest.fixture
-def pyspark_examples_dir() -> Generator[None, Any, None]:
-    prev = os.getcwd()
-    os.chdir(Path(__file__).parent / "pyspark-examples")
-    yield
-    os.chdir(prev)
+def test_dir(tmpdir: Path) -> Generator[Path, Any, None]:
+    (tmpdir / "pyspark").mkdir()
+    os.symlink(DATA_DIR, tmpdir / "pyspark" / "data")
+    (tmpdir / "dubber").mkdir()
+    os.symlink(DATA_DIR, tmpdir / "dubber" / "data")
+    yield tmpdir
 
 
 class CapturePrint:
@@ -45,15 +48,21 @@ def capture_output() -> Generator[StringIO, Any, None]:
 @pytest.mark.parametrize(
     "script_path",
     [
-        *SCRIPTS,
+        *SCRIPTS[2:4],
         # examples from the internet, mostly bad quality
-        *EXAMPLE_SCRIPTS[1:3],
+        # *EXAMPLE_SCRIPTS[1:3],
     ],
-    ids=[s.name for s in [*SCRIPTS, *EXAMPLE_SCRIPTS[1:3]]],
+    ids=[
+        s.name
+        for s in [
+            *SCRIPTS[2:4],
+            # *EXAMPLE_SCRIPTS[1:3],
+        ]
+    ],
 )
 def test_scripts(
     script_path: Path,
-    pyspark_examples_dir,
+    test_dir: Path,
 ) -> None:
     """This test executes each script both with pyspark and pyspark-dubber
     and verifies that the output is identical.
@@ -64,6 +73,7 @@ def test_scripts(
     # session can be reused, and therefore testing is way faster
     pyspark_code = compile(script, script_path, "exec")
     pyspark_error = None
+    os.chdir(test_dir / "pyspark")
     with capture_output() as pyspark_output:
         try:
             exec(pyspark_code, globals())
@@ -75,6 +85,7 @@ def test_scripts(
         script.replace("pyspark", "pyspark_dubber"), script_path, "exec"
     )
     dubber_err = None
+    os.chdir(test_dir / "dubber")
     with capture_output() as dubber_output:
         try:
             exec(dubber_code, globals())

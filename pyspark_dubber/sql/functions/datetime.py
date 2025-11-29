@@ -1,10 +1,10 @@
-from pyspark_dubber.sql.column import Column
+from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions.base import ColumnOrName
 
 
-def to_timestamp(col: ColumnOrName, format: str | None = None) -> Column:
-    return Column()
+def to_timestamp(col: ColumnOrName, format: str | None = None) -> Expr:
+    return Expr()
 
 
-def current_timestamp() -> Column:
-    return Column()
+def current_timestamp() -> Expr:
+    return Expr()

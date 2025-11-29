@@ -10,7 +10,7 @@ spark = SparkSession.builder.appName("DrugDevelopmentStageCount").getOrCreate()
 # Read multiple parquet files
 # Replace with your real paths
 # -------------------------------------
-input_paths = ["../data/drugs.parquet"]
+input_paths = ["data/drugs.parquet"]
 
 df = spark.read.parquet(*input_paths)
 

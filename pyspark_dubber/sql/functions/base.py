@@ -1,7 +1,19 @@
-from pyspark_dubber.sql.column import Column, RefColumn
+import ibis
 
-ColumnOrName = Column | str
+from pyspark_dubber.sql.expr import Expr, lit
+
+ColumnOrName = Expr | str
 
 
-def col(col: str) -> Column:
-    return RefColumn(col)
+def _col_fn(col: str) -> Expr:
+    return Expr(ibis.deferred[col])
+
+
+col = _col_fn
+lit = lit
+
+
+def count(col: ColumnOrName) -> Expr:
+    if col == "*":
+        return Expr(ibis.deferred.count())
+    return Expr(_col_fn(col).to_ibis().count())

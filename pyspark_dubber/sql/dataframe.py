@@ -1,11 +1,12 @@
 import dataclasses
+from typing import Sequence, Literal
 
 import ibis
-import ibis.common.selectors
 import pandas
 
-from pyspark_dubber.sql.column import RefColumn
+from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions.base import ColumnOrName
+from pyspark_dubber.sql.output import SparkOutput
 from pyspark_dubber.sql.row import Row
 from pyspark_dubber.sql.types import StructType, DataType
 from pyspark_dubber.sql.types.types import ArrayType
@@ -15,10 +16,16 @@ from pyspark_dubber.sql.types.types import ArrayType
 class DataFrame:
     _ibis_df: ibis.Table
 
-    def collect(self) -> list[Row]:
-        return [Row(**d) for d in self._ibis_df.to_pandas().to_dict(orient="records")]
+    @property
+    def write(self) -> SparkOutput:
+        return SparkOutput(self._ibis_df)
 
-    # TODO: more tests
+    def printSchema(self) -> None:
+        schema = DataType.from_ibis(self._ibis_df.schema())
+        print("root")
+        _print_struct_or_array(schema)
+        print()
+
     def show(
         self, n: int = 20, truncate: bool | int = True, vertical: bool = False
     ) -> None:
@@ -46,13 +53,6 @@ class DataFrame:
         print(divider)
         print()
 
-    # TODO: more tests
-    def printSchema(self) -> None:
-        schema = DataType.from_ibis(self._ibis_df.schema())
-        print("root")
-        _print_struct_or_array(schema)
-        print()
-
     def __repr__(self) -> str:
         schema = DataType.from_ibis(self._ibis_df.schema())
         fields = ", ".join(
@@ -60,15 +60,55 @@ class DataFrame:
         )
         return f"DataFrame[{fields}]"
 
-    def toPandas(self) -> pandas.DataFrame:
-        return self._ibis_df.to_pandas()
-
     def select(self, *cols: ColumnOrName) -> "DataFrame":
         # Use dict for ordering and for and automatic duplicate removal
         cols = {
-            e: None for c in cols for e in (self._ibis_df.columns if c == "*" else [c])
+            e if isinstance(e, str) else str(id(e)): _col_expr_to_ibis(e)
+            for c in cols
+            for e in (self._ibis_df.columns if isinstance(c, str) and c == "*" else [c])
         }
-        return DataFrame(self._ibis_df.select(*cols.keys()))
+        return DataFrame(self._ibis_df.select(*cols.values()))
+
+    def withColumn(self, colName: str, col: Expr) -> "DataFrame":
+        return DataFrame(self._ibis_df.mutate(**{colName: col.to_ibis()}))
+
+    def withColumnRenamed(self, existing: str, new: str) -> "DataFrame":
+        return DataFrame(self._ibis_df.rename({new: existing}))
+
+    def filter(self, condition: Expr | str) -> "DataFrame":
+        # TODO: this is important but ibis does not seem to have a way to do this
+        if isinstance(condition, str):
+            raise NotImplementedError(
+                "SQL expressions are not yet supported in filter yet."
+            )
+        return DataFrame(self._ibis_df.filter(_col_expr_to_ibis(condition)))
+
+    def limit(self, num: int) -> "DataFrame":
+        return DataFrame(self._ibis_df.limit(num))
+
+    def orderBy(self, *cols: ColumnOrName) -> "DataFrame":
+        return DataFrame(self._ibis_df.order_by(*[_col_expr_to_ibis(c) for c in cols]))
+
+    def unionByName(
+        self, other: "DataFrame", allowMissingColumns: bool = False
+    ) -> "DataFrame":
+        if allowMissingColumns:
+            my_cols = set(self._ibis_df.columns)
+            other_cols = set(other._ibis_df.columns)
+
+            my_missing_cols = other_cols.difference(my_cols)
+            me_filled = self._ibis_df.mutate(
+                **{c: ibis.null(other._ibis_df.schema()[c]) for c in my_missing_cols}
+            )
+
+            other_missing_cols = my_cols.difference(other_cols)
+            other_filled = other._ibis_df.mutate(
+                **{c: ibis.null(self._ibis_df.schema()[c]) for c in other_missing_cols}
+            )
+
+            return DataFrame(me_filled).unionByName(DataFrame(other_filled))
+
+        return DataFrame(self._ibis_df.union(other._ibis_df))
 
     def groupBy(self, *cols: ColumnOrName) -> "GroupedData":
         # To avoid circular imports
@@ -77,17 +117,73 @@ class DataFrame:
         # TODO: column expressions
         return GroupedData(self._ibis_df.group_by(*cols))
 
-    def groupby(self, *cols: ColumnOrName) -> "GroupedData":
-        return self.groupBy(*[_col_expr_to_ibis(c) for c in cols])
+    groupby = groupBy
 
-    def orderBy(self, *cols: ColumnOrName) -> "DataFrame":
-        return DataFrame(self._ibis_df.order_by(*[_col_expr_to_ibis(c) for c in cols]))
+    def join(
+        self,
+        other: "DataFrame",
+        on: str | Sequence[str] | ColumnOrName | None = None,
+        how: Literal[
+            "inner",
+            "cross",
+            "outer",
+            "full",
+            "fullouter",
+            "full_outer",
+            "left",
+            "leftouter",
+            "left_outer",
+            "right",
+            "rightouter",
+            "right_outer",
+            "semi",
+            "leftsemi",
+            "left_semi",
+            "anti",
+            "leftanti",
+            "left_anti",
+        ] = "inner",
+    ) -> "DataFrame":
+        if isinstance(on, (str, Expr)):
+            on = [on]
+        result = self._ibis_df.join(
+            other._ibis_df, predicates=[_col_expr_to_ibis(e) for e in on], how=how
+        )
+        return DataFrame(result)
+
+    def collect(self) -> list[Row]:
+        return [Row(**d) for d in self._ibis_df.to_pandas().to_dict(orient="records")]
+
+    def cache(self) -> "DataFrame":
+        return DataFrame(self._ibis_df.cache())
 
     def count(self) -> int:
         return self._ibis_df.count().to_pandas()
 
+    def fillna(
+        self,
+        value: int | float | str | bool | dict[str, int | float | str | bool],
+        subset: str | Sequence[str] = None,
+    ) -> "DataFrame":
+        # TODO: test if value is of one type and subset lists a column that doesn't have that type,
+        #   for example value="123" and the subset column is an integer. Spark ignores the column.
+        if subset is not None:
+            if isinstance(value, dict):
+                value = {k: v for k, v in value.items() if k in subset}
+            else:
+                value = {k: value for k in subset}
+        return DataFrame(self._ibis_df.fill_null(value))
 
-def _print_struct_or_array(typ: StructType | ArrayType, indent:str= "") -> None:
+    def __getitem__(self, name: str) -> Expr:
+        if name not in self._ibis_df.columns:
+            raise ValueError(f"Column {name} does not exist")
+        return Expr(self._ibis_df[name])
+
+    def toPandas(self) -> pandas.DataFrame:
+        return self._ibis_df.to_pandas()
+
+
+def _print_struct_or_array(typ: StructType | ArrayType, indent: str = "") -> None:
     if isinstance(typ, ArrayType):
         print(
             f"{indent} |-- element: {typ.elementType.typeName()} "
@@ -104,13 +200,8 @@ def _print_struct_or_array(typ: StructType | ArrayType, indent:str= "") -> None:
                 _print_struct_or_array(f.dataType, indent=f"{indent} |   ")
 
 
-
-def _col_expr_to_ibis(col: ColumnOrName) -> ibis.common.selectors.Selector | str:
+def _col_expr_to_ibis(col: ColumnOrName) -> ibis.Value | ibis.Deferred | str:
     if isinstance(col, str):
         return col
-    if isinstance(col, RefColumn):
-        return col.ref
 
-    raise NotImplementedError(
-        f"pyspark API to ibis expression conversion not yet implemented for: {col}"
-    )
+    return col.to_ibis()

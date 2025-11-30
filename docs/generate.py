@@ -5,11 +5,14 @@ from textwrap import indent
 
 import numpy
 
-from pyspark.sql import DataFrame, DataFrameReader, DataFrameWriter
+from pyspark.sql import SparkSession, DataFrame, DataFrameReader, DataFrameWriter
 from pyspark.sql import functions
 from pyspark.sql.group import GroupedData
 
-from pyspark_dubber.sql import DataFrame as DubberDataFrame
+from pyspark_dubber.sql import (
+    DataFrame as DubberDataFrame,
+    SparkSession as DubberSparkSession,
+)
 from pyspark_dubber.sql import functions as dubber_functions
 from pyspark_dubber.sql.grouped_data import GroupedData as DubberGroupedData
 from pyspark_dubber.sql.input import SparkInput
@@ -28,41 +31,57 @@ def main() -> None:
     api_reference()
 
 
+API_AREAS = [
+    (
+        "SparkSession",
+        SparkSession,
+        DubberSparkSession,
+        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.{api}.html",
+    ),
+    (
+        "SparkSession.builder",
+        SparkSession.Builder,
+        DubberSparkSession.Builder,
+        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.{api}.html",
+    ),
+    (
+        "Input Formats",
+        DataFrameReader,
+        SparkInput,
+        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.{api}.html",
+    ),
+    (
+        "Output Formats",
+        DataFrameWriter,
+        SparkOutput,
+        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.{api}.html",
+    ),
+    (
+        "DataFrame",
+        DataFrame,
+        DubberDataFrame,
+        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.{api}.html",
+    ),
+    (
+        "GroupBy",
+        GroupedData,
+        DubberGroupedData,
+        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.{api}.html",
+    ),
+    (
+        "Functions",
+        functions,
+        dubber_functions,
+        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.{api}.html",
+    ),
+]
+
+
 def api_coverage() -> None:
     counts = numpy.zeros(2, dtype=int)
     with capture_output() as compat_stdout:
-        counts += compare_objects(
-            "Input Formats",
-            DataFrameReader,
-            SparkInput,
-            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.{api}.html",
-        )
-        counts += compare_objects(
-            "Output Formats",
-            DataFrameWriter,
-            SparkOutput,
-            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.{api}.html",
-        )
-        counts += compare_objects(
-            "DataFrame",
-            DataFrame,
-            DubberDataFrame,
-            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.{api}.html",
-        )
-        counts += compare_objects(
-            "GroupBy",
-            GroupedData,
-            DubberGroupedData,
-            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.{api}.html",
-        )
-        counts += compare_objects(
-            "Functions",
-            functions,
-            dubber_functions,
-            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.{api}.html",
-        )
-
-    print(counts)
+        for name, spark_obj, dubber_obj, like_template in API_AREAS:
+            counts += compare_objects(name, spark_obj, dubber_obj, like_template)
 
     spark_count, dubber_count = counts
     total_coverage = dubber_count / spark_count * 100
@@ -96,7 +115,7 @@ def compare_objects(name, spark_obj, dubber_obj, link_template: str) -> tuple[in
             getattr(dubber_obj, api, None), "__incompatibility_docs__", ""
         ).split("\n\n")[0]
         if note:
-            url = f"/pyspark-dubber/API Reference/{obj_name}.{api}"
+            url = f"/pyspark-dubber/API Reference/{obj_name}/{obj_name}.{api}"
         else:
             url = link_template.format(api=api)
         print(f"| [`{obj_name}.{api}`]({url}) | {mark} | {note} |")
@@ -106,35 +125,14 @@ def compare_objects(name, spark_obj, dubber_obj, link_template: str) -> tuple[in
 
 
 def api_reference() -> None:
-    for obj, link_template in (
-        (
-            DubberDataFrame,
-            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.{api}.html",
-        ),
-        (
-            DubberGroupedData,
-            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.{api}.html",
-        ),
-        (
-            SparkInput,
-            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.{api}.html",
-        ),
-        (
-            SparkOutput,
-            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.{api}.html",
-        ),
-        (
-            dubber_functions,
-            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.{api}.html",
-        ),
-    ):
+    for _, _, obj, link_template in API_AREAS:
         for api in _iter_apis(obj):
             api_func = getattr(obj, api)
             note = getattr(api_func, "__incompatibility_docs__", "")
             if note:
                 obj_name = obj.__name__
                 doc_path = Path(
-                    ROOT / "docs" / "API Reference" / f"{obj_name}.{api}.md"
+                    ROOT / "docs" / "API Reference" / obj_name / f"{obj_name}.{api}.md"
                 )
                 doc_path.parent.mkdir(parents=True, exist_ok=True)
 

@@ -91,6 +91,7 @@ class DataFrame:
         return f"DataFrame[{fields}]"
 
     def select(self, *cols: ColumnOrName) -> "DataFrame":
+        # TODO: does this work when selecting expressions that define new columns?
         # Use dict for ordering and for and automatic duplicate removal
         cols = {
             e if isinstance(e, str) else str(id(e)): _col_expr_to_ibis(e)
@@ -105,6 +106,7 @@ class DataFrame:
     def withColumnRenamed(self, existing: str, new: str) -> "DataFrame":
         return DataFrame(self._ibis_df.rename({new: existing}))
 
+    @incompatibility("Using a string as a SQL expressions is not supported yet.")
     def filter(self, condition: Expr | str) -> "DataFrame":
         # TODO: this is important but ibis does not seem to have a way to do this
         if isinstance(condition, str):
@@ -140,6 +142,8 @@ class DataFrame:
 
         return DataFrame(self._ibis_df.union(other._ibis_df))
 
+    @incompatibility("Currently only column names are supported for grouping, "
+                     "column expressions are not supported.")
     def groupBy(self, *cols: ColumnOrName) -> "GroupedData":
         # To avoid circular imports
         from pyspark_dubber.sql.grouped_data import GroupedData

@@ -18,16 +18,6 @@ from pyspark_dubber.sql.types import (
 )
 
 
-class _Builder:
-    def master(self, master: str) -> "_Builder":
-        return self
-
-    def appName(self, app_name: str) -> "_Builder":
-        return self
-
-    def getOrCreate(self) -> "SparkSession":
-        return SparkSession()
-
 
 class SparkConfig:
     # TODO: default spark configuration
@@ -41,9 +31,20 @@ class SparkConfig:
 
 
 class SparkSession:
-    builder = _Builder()
     conf = SparkConfig()
     read = SparkInput()
+
+    class Builder:
+        def master(self, master: str) -> "_Builder":
+            return self
+
+        def appName(self, app_name: str) -> "_Builder":
+            return self
+
+        def getOrCreate(self) -> "SparkSession":
+            return SparkSession()
+
+    builder = Builder()
 
     def createDataFrame(
         self,

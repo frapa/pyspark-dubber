@@ -2,7 +2,43 @@
 
 This page shows which APIs are currently re-implemented by `pyspark-dubber`. This list is not exhaustive, showing mostly public functions and DataFrame APIs, however some additional APIs and magic methods are also implemented. 
 
-The overall approximate API coverage (with the caveats above) is 5.6 %.
+The overall approximate API coverage (with the caveats above) is 6.4 %.
+
+## SparkSession (16 %)
+
+| API | Implemented | Notes |
+| --- | :---------: | ----- |
+| [`SparkSession.Builder`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.Builder.html) | :material-check: |  |
+| [`SparkSession.active`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.active.html) |   |  |
+| [`SparkSession.addArtifact`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.addArtifact.html) |   |  |
+| [`SparkSession.addArtifacts`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.addArtifacts.html) |   |  |
+| [`SparkSession.addTag`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.addTag.html) |   |  |
+| [`SparkSession.clearTags`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.clearTags.html) |   |  |
+| [`SparkSession.copyFromLocalToFs`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.copyFromLocalToFs.html) |   |  |
+| [`SparkSession.createDataFrame`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.createDataFrame.html) | :material-check: |  |
+| [`SparkSession.getActiveSession`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.getActiveSession.html) |   |  |
+| [`SparkSession.getTags`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.getTags.html) |   |  |
+| [`SparkSession.interruptAll`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.interruptAll.html) |   |  |
+| [`SparkSession.interruptOperation`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.interruptOperation.html) |   |  |
+| [`SparkSession.interruptTag`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.interruptTag.html) |   |  |
+| [`SparkSession.newSession`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.newSession.html) |   |  |
+| [`SparkSession.range`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.range.html) |   |  |
+| [`SparkSession.removeTag`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.removeTag.html) |   |  |
+| [`SparkSession.sql`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.sql.html) |   |  |
+| [`SparkSession.stop`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.stop.html) | :material-check: |  |
+| [`SparkSession.table`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.table.html) |   |  |
+
+## SparkSession.builder (43 %)
+
+| API | Implemented | Notes |
+| --- | :---------: | ----- |
+| [`Builder.appName`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.appName.html) | :material-check: |  |
+| [`Builder.config`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.config.html) |   |  |
+| [`Builder.create`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.create.html) |   |  |
+| [`Builder.enableHiveSupport`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.enableHiveSupport.html) |   |  |
+| [`Builder.getOrCreate`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.getOrCreate.html) | :material-check: |  |
+| [`Builder.master`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.master.html) | :material-check: |  |
+| [`Builder.remote`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.remote.html) |   |  |
 
 ## Input Formats (17 %)
 
@@ -74,13 +110,13 @@ The overall approximate API coverage (with the caveats above) is 5.6 %.
 | [`DataFrame.exceptAll`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.exceptAll.html) |   |  |
 | [`DataFrame.explain`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html) |   |  |
 | [`DataFrame.fillna`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.fillna.html) | :material-check: |  |
-| [`DataFrame.filter`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.filter.html) | :material-check: |  |
+| [`DataFrame.filter`](/pyspark-dubber/API Reference/DataFrame/DataFrame.filter) | :material-check: | Using a string as a SQL expressions is not supported yet. |
 | [`DataFrame.first`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.first.html) |   |  |
 | [`DataFrame.foreach`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.foreach.html) |   |  |
 | [`DataFrame.foreachPartition`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.foreachPartition.html) |   |  |
 | [`DataFrame.freqItems`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.freqItems.html) |   |  |
-| [`DataFrame.groupBy`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html) | :material-check: |  |
-| [`DataFrame.groupby`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupby.html) | :material-check: |  |
+| [`DataFrame.groupBy`](/pyspark-dubber/API Reference/DataFrame/DataFrame.groupBy) | :material-check: | Currently only column names are supported for grouping, column expressions are not supported. |
+| [`DataFrame.groupby`](/pyspark-dubber/API Reference/DataFrame/DataFrame.groupby) | :material-check: | Currently only column names are supported for grouping, column expressions are not supported. |
 | [`DataFrame.head`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.head.html) |   |  |
 | [`DataFrame.hint`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.hint.html) |   |  |
 | [`DataFrame.inputFiles`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.inputFiles.html) |   |  |
@@ -112,7 +148,7 @@ The overall approximate API coverage (with the caveats above) is 5.6 %.
 | [`DataFrame.select`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html) | :material-check: |  |
 | [`DataFrame.selectExpr`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.selectExpr.html) |   |  |
 | [`DataFrame.semanticHash`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.semanticHash.html) |   |  |
-| [`DataFrame.show`](/pyspark-dubber/API Reference/DataFrame.show) | :material-check: | The `truncate` and `vertical` parameters are not honored. Additionally, the output is not printed justified exactly as pyspark as of the current version. |
+| [`DataFrame.show`](/pyspark-dubber/API Reference/DataFrame/DataFrame.show) | :material-check: | The `truncate` and `vertical` parameters are not honored. Additionally, the output is not printed justified exactly as pyspark as of the current version. |
 | [`DataFrame.sort`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sort.html) |   |  |
 | [`DataFrame.sortWithinPartitions`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sortWithinPartitions.html) |   |  |
 | [`DataFrame.subtract`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.subtract.html) |   |  |

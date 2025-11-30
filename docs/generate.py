@@ -153,7 +153,8 @@ def api_reference() -> None:
                     f"[PySpark API Reference]({url})"
                     "\n\n"
                     '!!! warning "Incompatibility Note"\n\n'
-                    f"{indent(note, prefix='    ')}"
+                    f"{indent(note, prefix='    ')}\n\n"
+                    f"{api_func.__doc__ or ''}"
                 )
 
 

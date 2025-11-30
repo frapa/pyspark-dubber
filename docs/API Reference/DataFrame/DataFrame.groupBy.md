@@ -11,3 +11,4 @@ DataFrame.groupBy(
 !!! warning "Incompatibility Note"
 
     Currently only column names are supported for grouping, column expressions are not supported.
+

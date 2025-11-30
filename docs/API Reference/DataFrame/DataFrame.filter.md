@@ -11,3 +11,4 @@ DataFrame.filter(
 !!! warning "Incompatibility Note"
 
     Using a string as a SQL expressions is not supported yet.
+

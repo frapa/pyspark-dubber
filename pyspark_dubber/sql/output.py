@@ -22,6 +22,6 @@ class SparkOutput:
 
     # TODO: other parameters
     def csv(self, path: str) -> None:
-        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        path = Path(path) / "part-00000.csv"
+        path.parent.mkdir(parents=True, exist_ok=True)
         self._ibis_df.to_csv(path)
-

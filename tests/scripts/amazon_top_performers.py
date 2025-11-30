@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
@@ -6,16 +8,16 @@ spark = SparkSession.builder.appName("TopBottomPerformersAnalysis").getOrCreate(
 
 # --- Data Loading ---
 # NOTE: Replace these paths with the actual paths to your .jsonl.gz files
-reviews_path = "data/amazon_reviews.jsonl.gz"
-meta_path = "data/amazon_reviews_meta.jsonl.gz"
+reviews_path = Path("data/amazon_reviews.jsonl.gz").absolute()
+meta_path = Path("data/amazon_reviews_meta.jsonl.gz").absolute()
 
 print("Loading data...")
 
 # Read reviews data
-reviews_df = spark.read.json(reviews_path)
+reviews_df = spark.read.json(str(reviews_path))
 
 # Read metadata (product features)
-meta_df = spark.read.json(meta_path).select(
+meta_df = spark.read.json(str(meta_path)).select(
     F.col("parent_asin").alias("meta_parent_asin"), "main_category", "store"
 )
 
@@ -84,11 +86,11 @@ final_df = (
     .fillna("N/A", subset=["parent_asin", "identifier"])
 )
 
-output_path = "output/performance_summary_csv"
+output_path = Path("output").absolute()
 print(f"\nWriting combined performance results to CSV at: {output_path}")
 
 # Write as CSV, overwriting if needed, with a header
-final_df.write.mode("overwrite").option("header", "true").csv(output_path)
+final_df.write.mode("overwrite").option("header", "true").csv(str(output_path))
 
 # Stop Spark Session
 spark.stop()

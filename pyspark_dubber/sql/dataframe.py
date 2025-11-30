@@ -4,6 +4,7 @@ from typing import Sequence, Literal
 import ibis
 import pandas
 
+from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions.base import ColumnOrName
 from pyspark_dubber.sql.output import SparkOutput
@@ -26,6 +27,10 @@ class DataFrame:
         _print_struct_or_array(schema)
         print()
 
+    @incompatibility(
+        "The `truncate` and `vertical` parameters are unused."
+        "Additionally, the output is not justified exactly as pyspark."
+    )
     def show(
         self, n: int = 20, truncate: bool | int = True, vertical: bool = False
     ) -> None:
@@ -34,7 +39,7 @@ class DataFrame:
         header = [f.name for f in schema.fields]
         rows = []
         lengths = [len(h) for h in header]
-        for row in self._ibis_df.to_pandas().to_dict(orient="records"):
+        for row in self._ibis_df.limit(n).to_pandas().to_dict(orient="records"):
             cells = [str(v) for v in row.values()]
             rows.append(cells)
             lengths = [max(lengths[i], len(c)) for i, c in enumerate(cells)]

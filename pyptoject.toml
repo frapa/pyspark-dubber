@@ -3,7 +3,7 @@ requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"
 
 [project]
-name = "spark-dubber"
+name = "pyspark-dubber"
 dynamic = ["version"]
 requires-python = ">= 3.10"
 
@@ -16,8 +16,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = [
+dev = [
     "pytest",
     "pyspark == 3.*",
     "setuptools",  # pandas still depends on it post 3.12 because it sucks
+    "mkdocs-material",
 ]

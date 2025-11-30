@@ -87,7 +87,7 @@ final_df = (
 )
 
 output_path = Path("output").absolute()
-print(f"\nWriting combined performance results to CSV at: {output_path}")
+print(f"\nWriting combined performance results to CSV")
 
 # Write as CSV, overwriting if needed, with a header
 final_df.write.mode("overwrite").option("header", "true").csv(str(output_path))

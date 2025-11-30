@@ -33,27 +33,25 @@ class DataFrame:
         "as of the current version.\n\n"
         "#### Example pyspark output\n"
         "```text\n"
-        '+-----+-----+\n'
-        '|phase|count|\n'
-        '+-----+-----+\n'
-        '|0.5  |3288 |\n'
-        '|1.0  |34129|\n'
-        '|2.0  |52868|\n'
-        '|3.0  |27110|\n'
-        '|4.0  |9294 |\n'
-        '+-----+-----+\n'
+        '+----------+---+\n'
+        '|First Name|Age|\n'
+        '+----------+---+\n'
+        '|     Scott| 50|\n'
+        '|      Jeff| 45|\n'
+        '|    Thomas| 54|\n'
+        '|       Ann| 34|\n'
+        '+----------+---+\n'
         "```\n"
         "#### Example pyspark-dubber output\n"
         "```text\n"
-        '+-----+-----+\n'
-        '|phase|count|\n'
-        '+-----+-----+\n'
-        '|  0.5| 3288|\n'
-        '|  1.0|34129|\n'
-        '|  2.0|52868|\n'
-        '|  3.0|27110|\n'
-        '|  4.0| 9294|\n'
-        '+-----+-----+\n' 
+        '+----------+---+\n'
+        '|First Name|Age|\n'
+        '+----------+---+\n'
+        '|Scott     |50 |\n'
+        '|Jeff      |45 |\n'
+        '|Thomas    |54 |\n'
+        '|Ann       |34 |\n'
+        '+----------+---+\n'
         "```\n"
     )
     def show(
@@ -72,12 +70,12 @@ class DataFrame:
         divider = "+" + "+".join("-" * l for l in lengths) + "+"
 
         print(divider)
-        header_str = "|".join(f"{h:>{l}}" for h, l in zip(header, lengths))
+        header_str = "|".join(f"{h:<{l}}" for h, l in zip(header, lengths))
         print(f"|{header_str}|")
 
         print(divider)
         for cells in rows:
-            cell_str = "|".join(f"{c:>{l}}" for c, l in zip(cells, lengths))
+            cell_str = "|".join(f"{c:<{l}}" for c, l in zip(cells, lengths))
             print(f"|{cell_str}|")
 
         print(divider)

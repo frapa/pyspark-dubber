@@ -100,12 +100,14 @@ class SparkSession:
             if not fields:
                 fields = [None] * len(row)
 
-            for i, (col, value) in enumerate(row.items()):
+            for i, (col, value) in enumerate(dict_row.items()):
                 if fields[i] is None:
                     if isinstance(value, str):
                         fields[i] = StructField(col, StringType(), True)
                     elif isinstance(value, int):
                         fields[i] = StructField(col, LongType(), True)
+                    elif value is None:
+                        continue
                     else:
                         raise NotImplementedError(
                             f"Type not implemented yet: {type(value).__name__}"

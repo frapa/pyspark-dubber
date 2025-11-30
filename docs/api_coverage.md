@@ -2,7 +2,7 @@
 
 This page shows which APIs are currently re-implemented by `pyspark-dubber`. This list is not exhaustive, showing mostly public functions and DataFrame APIs, however some additional APIs and magic methods are also implemented. 
 
-The overall approximate API coverage (with the caveats above) is 5.8 %.
+The overall approximate API coverage (with the caveats above) is 5.6 %.
 
 ## Input Formats (17 %)
 
@@ -42,7 +42,7 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`DataFrameWriter.sortBy`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.sortBy.html) |   |  |
 | [`DataFrameWriter.text`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.text.html) |   |  |
 
-## DataFrame (17 %)
+## DataFrame (18 %)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
@@ -54,7 +54,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`DataFrame.coalesce`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html) |   |  |
 | [`DataFrame.colRegex`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.colRegex.html) |   |  |
 | [`DataFrame.collect`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.collect.html) | :material-check: |  |
-| [`DataFrame.columns`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.columns.html) |   |  |
 | [`DataFrame.corr`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.corr.html) |   |  |
 | [`DataFrame.count`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html) | :material-check: |  |
 | [`DataFrame.cov`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.cov.html) |   |  |
@@ -72,7 +71,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`DataFrame.dropDuplicatesWithinWatermark`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.dropDuplicatesWithinWatermark.html) |   |  |
 | [`DataFrame.drop_duplicates`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.drop_duplicates.html) |   |  |
 | [`DataFrame.dropna`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.dropna.html) |   |  |
-| [`DataFrame.dtypes`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.dtypes.html) |   |  |
 | [`DataFrame.exceptAll`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.exceptAll.html) |   |  |
 | [`DataFrame.explain`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html) |   |  |
 | [`DataFrame.fillna`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.fillna.html) | :material-check: |  |
@@ -90,14 +88,12 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`DataFrame.intersectAll`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.intersectAll.html) |   |  |
 | [`DataFrame.isEmpty`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.isEmpty.html) |   |  |
 | [`DataFrame.isLocal`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.isLocal.html) |   |  |
-| [`DataFrame.isStreaming`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.isStreaming.html) |   |  |
 | [`DataFrame.join`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.join.html) | :material-check: |  |
 | [`DataFrame.limit`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.limit.html) | :material-check: |  |
 | [`DataFrame.localCheckpoint`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.localCheckpoint.html) |   |  |
 | [`DataFrame.mapInArrow`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.mapInArrow.html) |   |  |
 | [`DataFrame.mapInPandas`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.mapInPandas.html) |   |  |
 | [`DataFrame.melt`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.melt.html) |   |  |
-| [`DataFrame.na`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.na.html) |   |  |
 | [`DataFrame.observe`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.observe.html) |   |  |
 | [`DataFrame.offset`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.offset.html) |   |  |
 | [`DataFrame.orderBy`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.orderBy.html) | :material-check: |  |
@@ -105,7 +101,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`DataFrame.persist`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.persist.html) |   |  |
 | [`DataFrame.printSchema`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.printSchema.html) | :material-check: |  |
 | [`DataFrame.randomSplit`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.randomSplit.html) |   |  |
-| [`DataFrame.rdd`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.rdd.html) |   |  |
 | [`DataFrame.registerTempTable`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.registerTempTable.html) |   |  |
 | [`DataFrame.repartition`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html) |   |  |
 | [`DataFrame.repartitionByRange`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartitionByRange.html) |   |  |
@@ -114,17 +109,12 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`DataFrame.sameSemantics`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sameSemantics.html) |   |  |
 | [`DataFrame.sample`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sample.html) |   |  |
 | [`DataFrame.sampleBy`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleBy.html) |   |  |
-| [`DataFrame.schema`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.schema.html) |   |  |
 | [`DataFrame.select`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html) | :material-check: |  |
 | [`DataFrame.selectExpr`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.selectExpr.html) |   |  |
 | [`DataFrame.semanticHash`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.semanticHash.html) |   |  |
-| [`DataFrame.show`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html) | :material-check: | The `truncate` and `vertical` parameters are unused.Additionally, the output is not justified exactly as pyspark. |
+| [`DataFrame.show`](/pyspark-dubber/API Reference/DataFrame.show) | :material-check: | The `truncate` and `vertical` parameters are not honored. Additionally, the output is not printed justified exactly as pyspark as of the current version. |
 | [`DataFrame.sort`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sort.html) |   |  |
 | [`DataFrame.sortWithinPartitions`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sortWithinPartitions.html) |   |  |
-| [`DataFrame.sparkSession`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sparkSession.html) |   |  |
-| [`DataFrame.sql_ctx`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sql_ctx.html) |   |  |
-| [`DataFrame.stat`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.stat.html) |   |  |
-| [`DataFrame.storageLevel`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.storageLevel.html) |   |  |
 | [`DataFrame.subtract`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.subtract.html) |   |  |
 | [`DataFrame.summary`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.summary.html) |   |  |
 | [`DataFrame.tail`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.tail.html) |   |  |
@@ -149,8 +139,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`DataFrame.withColumnsRenamed`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumnsRenamed.html) |   |  |
 | [`DataFrame.withMetadata`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withMetadata.html) |   |  |
 | [`DataFrame.withWatermark`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withWatermark.html) |   |  |
-| [`DataFrame.write`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.write.html) | :material-check: |  |
-| [`DataFrame.writeStream`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.writeStream.html) |   |  |
 | [`DataFrame.writeTo`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.writeTo.html) |   |  |
 
 ## GroupBy (17 %)
@@ -174,30 +162,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
-| [`pyspark.sql.functions.Any`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.Any.html) |   |  |
-| [`pyspark.sql.functions.ArrayType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ArrayType.html) |   |  |
-| [`pyspark.sql.functions.Callable`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.Callable.html) |   |  |
-| [`pyspark.sql.functions.Column`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.Column.html) |   |  |
-| [`pyspark.sql.functions.DataFrame`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.DataFrame.html) |   |  |
-| [`pyspark.sql.functions.DataType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.DataType.html) |   |  |
-| [`pyspark.sql.functions.Dict`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.Dict.html) |   |  |
-| [`pyspark.sql.functions.Iterable`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.Iterable.html) |   |  |
-| [`pyspark.sql.functions.JVMView`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.JVMView.html) |   |  |
-| [`pyspark.sql.functions.List`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.List.html) |   |  |
-| [`pyspark.sql.functions.Optional`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.Optional.html) |   |  |
-| [`pyspark.sql.functions.PandasUDFType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.PandasUDFType.html) |   |  |
-| [`pyspark.sql.functions.PySparkTypeError`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.PySparkTypeError.html) |   |  |
-| [`pyspark.sql.functions.PySparkValueError`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.PySparkValueError.html) |   |  |
-| [`pyspark.sql.functions.SparkContext`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.SparkContext.html) |   |  |
-| [`pyspark.sql.functions.StringType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.StringType.html) |   |  |
-| [`pyspark.sql.functions.StructType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.StructType.html) |   |  |
-| [`pyspark.sql.functions.TYPE_CHECKING`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.TYPE_CHECKING.html) |   |  |
-| [`pyspark.sql.functions.Tuple`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.Tuple.html) |   |  |
-| [`pyspark.sql.functions.Type`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.Type.html) |   |  |
-| [`pyspark.sql.functions.Union`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.Union.html) |   |  |
-| [`pyspark.sql.functions.UserDefinedFunction`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.UserDefinedFunction.html) |   |  |
-| [`pyspark.sql.functions.UserDefinedTableFunction`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.UserDefinedTableFunction.html) |   |  |
-| [`pyspark.sql.functions.ValuesView`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ValuesView.html) |   |  |
 | [`pyspark.sql.functions.abs`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.abs.html) |   |  |
 | [`pyspark.sql.functions.acos`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.acos.html) |   |  |
 | [`pyspark.sql.functions.acosh`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.acosh.html) |   |  |
@@ -265,7 +229,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`pyspark.sql.functions.call_function`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.call_function.html) |   |  |
 | [`pyspark.sql.functions.call_udf`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.call_udf.html) |   |  |
 | [`pyspark.sql.functions.cardinality`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.cardinality.html) |   |  |
-| [`pyspark.sql.functions.cast`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.cast.html) |   |  |
 | [`pyspark.sql.functions.cbrt`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.cbrt.html) |   |  |
 | [`pyspark.sql.functions.ceil`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ceil.html) |   |  |
 | [`pyspark.sql.functions.ceiling`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ceiling.html) |   |  |
@@ -320,7 +283,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`pyspark.sql.functions.dayofweek`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.dayofweek.html) |   |  |
 | [`pyspark.sql.functions.dayofyear`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.dayofyear.html) |   |  |
 | [`pyspark.sql.functions.days`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.days.html) |   |  |
-| [`pyspark.sql.functions.decimal`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.decimal.html) |   |  |
 | [`pyspark.sql.functions.decode`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.decode.html) |   |  |
 | [`pyspark.sql.functions.degrees`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.degrees.html) |   |  |
 | [`pyspark.sql.functions.dense_rank`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.dense_rank.html) |   |  |
@@ -355,15 +317,12 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`pyspark.sql.functions.from_json`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.from_json.html) |   |  |
 | [`pyspark.sql.functions.from_unixtime`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.from_unixtime.html) |   |  |
 | [`pyspark.sql.functions.from_utc_timestamp`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.from_utc_timestamp.html) |   |  |
-| [`pyspark.sql.functions.functools`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.functools.html) |   |  |
 | [`pyspark.sql.functions.get`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.get.html) |   |  |
-| [`pyspark.sql.functions.get_active_spark_context`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.get_active_spark_context.html) |   |  |
 | [`pyspark.sql.functions.get_json_object`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.get_json_object.html) |   |  |
 | [`pyspark.sql.functions.getbit`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.getbit.html) |   |  |
 | [`pyspark.sql.functions.greatest`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.greatest.html) |   |  |
 | [`pyspark.sql.functions.grouping`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.grouping.html) |   |  |
 | [`pyspark.sql.functions.grouping_id`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.grouping_id.html) |   |  |
-| [`pyspark.sql.functions.has_numpy`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.has_numpy.html) |   |  |
 | [`pyspark.sql.functions.hash`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.hash.html) |   |  |
 | [`pyspark.sql.functions.hex`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.hex.html) |   |  |
 | [`pyspark.sql.functions.histogram_numeric`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.histogram_numeric.html) |   |  |
@@ -382,7 +341,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`pyspark.sql.functions.input_file_block_length`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.input_file_block_length.html) |   |  |
 | [`pyspark.sql.functions.input_file_block_start`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.input_file_block_start.html) |   |  |
 | [`pyspark.sql.functions.input_file_name`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.input_file_name.html) |   |  |
-| [`pyspark.sql.functions.inspect`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.inspect.html) |   |  |
 | [`pyspark.sql.functions.instr`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.instr.html) |   |  |
 | [`pyspark.sql.functions.isnan`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.isnan.html) |   |  |
 | [`pyspark.sql.functions.isnotnull`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.isnotnull.html) |   |  |
@@ -450,7 +408,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`pyspark.sql.functions.negative`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.negative.html) |   |  |
 | [`pyspark.sql.functions.next_day`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.next_day.html) |   |  |
 | [`pyspark.sql.functions.now`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.now.html) |   |  |
-| [`pyspark.sql.functions.np`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.np.html) |   |  |
 | [`pyspark.sql.functions.nth_value`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.nth_value.html) |   |  |
 | [`pyspark.sql.functions.ntile`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ntile.html) |   |  |
 | [`pyspark.sql.functions.nullif`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.nullif.html) |   |  |
@@ -458,8 +415,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`pyspark.sql.functions.nvl2`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.nvl2.html) |   |  |
 | [`pyspark.sql.functions.octet_length`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.octet_length.html) |   |  |
 | [`pyspark.sql.functions.overlay`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.overlay.html) |   |  |
-| [`pyspark.sql.functions.overload`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.overload.html) |   |  |
-| [`pyspark.sql.functions.pandas_udf`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.pandas_udf.html) |   |  |
 | [`pyspark.sql.functions.parse_url`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.parse_url.html) |   |  |
 | [`pyspark.sql.functions.percent_rank`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.percent_rank.html) |   |  |
 | [`pyspark.sql.functions.percentile`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.percentile.html) |   |  |
@@ -554,7 +509,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`pyspark.sql.functions.sum`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum.html) |   |  |
 | [`pyspark.sql.functions.sumDistinct`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sumDistinct.html) |   |  |
 | [`pyspark.sql.functions.sum_distinct`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum_distinct.html) |   |  |
-| [`pyspark.sql.functions.sys`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sys.html) |   |  |
 | [`pyspark.sql.functions.tan`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.tan.html) |   |  |
 | [`pyspark.sql.functions.tanh`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.tanh.html) |   |  |
 | [`pyspark.sql.functions.timestamp_micros`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.timestamp_micros.html) |   |  |
@@ -568,7 +522,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`pyspark.sql.functions.to_date`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_date.html) |   |  |
 | [`pyspark.sql.functions.to_json`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_json.html) |   |  |
 | [`pyspark.sql.functions.to_number`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_number.html) |   |  |
-| [`pyspark.sql.functions.to_str`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_str.html) |   |  |
 | [`pyspark.sql.functions.to_timestamp`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html) | :material-check: |  |
 | [`pyspark.sql.functions.to_timestamp_ltz`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp_ltz.html) |   |  |
 | [`pyspark.sql.functions.to_timestamp_ntz`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp_ntz.html) |   |  |
@@ -587,7 +540,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`pyspark.sql.functions.try_divide`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.try_divide.html) |   |  |
 | [`pyspark.sql.functions.try_element_at`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.try_element_at.html) |   |  |
 | [`pyspark.sql.functions.try_multiply`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.try_multiply.html) |   |  |
-| [`pyspark.sql.functions.try_remote_functions`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.try_remote_functions.html) |   |  |
 | [`pyspark.sql.functions.try_subtract`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.try_subtract.html) |   |  |
 | [`pyspark.sql.functions.try_sum`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.try_sum.html) |   |  |
 | [`pyspark.sql.functions.try_to_binary`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.try_to_binary.html) |   |  |
@@ -613,7 +565,6 @@ The overall approximate API coverage (with the caveats above) is 5.8 %.
 | [`pyspark.sql.functions.var_samp`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.var_samp.html) |   |  |
 | [`pyspark.sql.functions.variance`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.variance.html) |   |  |
 | [`pyspark.sql.functions.version`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.version.html) |   |  |
-| [`pyspark.sql.functions.warnings`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.warnings.html) |   |  |
 | [`pyspark.sql.functions.weekday`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.weekday.html) |   |  |
 | [`pyspark.sql.functions.weekofyear`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.weekofyear.html) |   |  |
 | [`pyspark.sql.functions.when`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.when.html) |   |  |

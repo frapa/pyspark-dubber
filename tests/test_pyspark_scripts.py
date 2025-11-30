@@ -89,7 +89,7 @@ def test_scripts(
     assert str(dubber_err) == str(
         pyspark_error
     ), f"See original error above for more details. Stdout:\n{dubber_output.getvalue()}"
-    # assert dubber_stdout == pyspark_stdout
+    assert dubber_stdout == pyspark_stdout
 
     # So you can check the output for reference
     print(dubber_stdout)

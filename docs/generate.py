@@ -1,5 +1,7 @@
+import inspect
 import shutil
 from pathlib import Path
+from textwrap import indent
 
 import numpy
 
@@ -23,6 +25,7 @@ from typing import Iterable
 def main() -> None:
     shutil.copy(ROOT / "README.md", ROOT / "docs" / "index.md")
     api_coverage()
+    api_reference()
 
 
 def api_coverage() -> None:
@@ -59,6 +62,8 @@ def api_coverage() -> None:
             "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.{api}.html",
         )
 
+    print(counts)
+
     spark_count, dubber_count = counts
     total_coverage = dubber_count / spark_count * 100
 
@@ -87,18 +92,83 @@ def compare_objects(name, spark_obj, dubber_obj, link_template: str) -> tuple[in
     obj_name = spark_obj.__name__
     for api in spark_apis:
         mark = ":material-check:" if api in dubber_apis else " "
-        url = link_template.format(api=api)
-        note = getattr(getattr(dubber_obj, api, None), "__incompatibility_docs__", "")
+        note = getattr(
+            getattr(dubber_obj, api, None), "__incompatibility_docs__", ""
+        ).split("\n\n")[0]
+        if note:
+            url = f"/pyspark-dubber/API Reference/{obj_name}.{api}"
+        else:
+            url = link_template.format(api=api)
         print(f"| [`{obj_name}.{api}`]({url}) | {mark} | {note} |")
 
     print()
     return len(spark_apis), len(dubber_apis)
 
 
+def api_reference() -> None:
+    for obj, link_template in (
+        (
+            DubberDataFrame,
+            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.{api}.html",
+        ),
+        (
+            DubberGroupedData,
+            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.{api}.html",
+        ),
+        (
+            SparkInput,
+            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.{api}.html",
+        ),
+        (
+            SparkOutput,
+            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.{api}.html",
+        ),
+        (
+            dubber_functions,
+            "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.{api}.html",
+        ),
+    ):
+        for api in _iter_apis(obj):
+            api_func = getattr(obj, api)
+            note = getattr(api_func, "__incompatibility_docs__", "")
+            if note:
+                obj_name = obj.__name__
+                doc_path = Path(
+                    ROOT / "docs" / "API Reference" / f"{obj_name}.{api}.md"
+                )
+                doc_path.parent.mkdir(parents=True, exist_ok=True)
+
+                url = link_template.format(api=api)
+                sig = inspect.signature(api_func)
+                args = "\n".join(
+                    f"\t{s}," for arg, s in sig.parameters.items() if arg != "self"
+                )
+
+                doc_path.write_text(
+                    f"# {obj_name}.{api}"
+                    "\n\n"
+                    "```python\n"
+                    f"{obj_name}.{api}(\n"
+                    f"{args}\n"
+                    ")\n"
+                    "```\n\n"
+                    f"[PySpark API Reference]({url})"
+                    "\n\n"
+                    '!!! warning "Incompatibility Note"\n\n'
+                    f"{indent(note, prefix='    ')}"
+                )
+
+
 def _iter_apis(obj) -> Iterable[str]:
     for api in dir(obj):
-        if api.startswith("_"):
+        api_func = getattr(obj, api)
+
+        if api.startswith("_") or not callable(api_func):
             continue
+
+        if obj is functions and getattr(obj, api).__module__ != "pyspark.sql.functions":
+            continue
+
         yield api
 
 

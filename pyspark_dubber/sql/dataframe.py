@@ -28,8 +28,33 @@ class DataFrame:
         print()
 
     @incompatibility(
-        "The `truncate` and `vertical` parameters are unused."
-        "Additionally, the output is not justified exactly as pyspark."
+        "The `truncate` and `vertical` parameters are not honored. "
+        "Additionally, the output is not printed justified exactly as pyspark "
+        "as of the current version.\n\n"
+        "#### Example pyspark output\n"
+        "```text\n"
+        '+-----+-----+\n'
+        '|phase|count|\n'
+        '+-----+-----+\n'
+        '|0.5  |3288 |\n'
+        '|1.0  |34129|\n'
+        '|2.0  |52868|\n'
+        '|3.0  |27110|\n'
+        '|4.0  |9294 |\n'
+        '+-----+-----+\n'
+        "```\n"
+        "#### Example pyspark-dubber output\n"
+        "```text\n"
+        '+-----+-----+\n'
+        '|phase|count|\n'
+        '+-----+-----+\n'
+        '|  0.5| 3288|\n'
+        '|  1.0|34129|\n'
+        '|  2.0|52868|\n'
+        '|  3.0|27110|\n'
+        '|  4.0| 9294|\n'
+        '+-----+-----+\n' 
+        "```\n"
     )
     def show(
         self, n: int = 20, truncate: bool | int = True, vertical: bool = False

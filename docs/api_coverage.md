@@ -1,6 +1,8 @@
 # API Coverage
 
-This page shows which APIs are currently re-implemented by `pyspark-dubber`. This list is not exhaustive, showing mostly public functions and DataFrame APIs, however some additional APIs and magic methods are also implemented. 
+This page shows which APIs are currently re-implemented by `pyspark-dubber`. This list is not exhaustive, showing mostly public functions and DataFrame APIs, however some additional APIs and magic methods are also implemented.
+
+In addition to that, certain pyspark APIs are partially implemented, for example not all parameters or parameter types are supported. In spite of that, they are listed as implemented in the tables below, with notes in case of partial implenmentation.
 
 The overall approximate API coverage (with the caveats above) is 6.5 %.
 
@@ -47,7 +49,7 @@ The overall approximate API coverage (with the caveats above) is 6.5 %.
 | [`DataFrameReader.csv`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.csv.html) |   |  |
 | [`DataFrameReader.format`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.format.html) |   |  |
 | [`DataFrameReader.jdbc`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.jdbc.html) |   |  |
-| [`DataFrameReader.json`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.json.html) | :material-check: |  |
+| [`DataFrameReader.json`](/pyspark-dubber/API Reference/DataFrameReader/DataFrameReader.json) | :material-check: | Most parameters are accepted but completely ignored. |
 | [`DataFrameReader.load`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.load.html) |   |  |
 | [`DataFrameReader.option`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.option.html) |   |  |
 | [`DataFrameReader.options`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.options.html) |   |  |

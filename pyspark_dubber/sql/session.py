@@ -7,7 +7,7 @@ import pandas
 
 from pyspark_dubber.errors import PySparkTypeError, PySparkValueError
 from pyspark_dubber.sql.dataframe import DataFrame
-from pyspark_dubber.sql.input import SparkInput
+from pyspark_dubber.sql.input import DataFrameReader
 from pyspark_dubber.sql.row import Row
 from pyspark_dubber.sql.types import (
     StructType,
@@ -31,7 +31,7 @@ class SparkConfig:
 
 class SparkSession:
     conf = SparkConfig()
-    read = SparkInput()
+    read = DataFrameReader()
 
     class Builder:
         def master(self, master: str) -> "_Builder":

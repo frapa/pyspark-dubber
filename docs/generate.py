@@ -15,7 +15,7 @@ from pyspark_dubber.sql import (
 )
 from pyspark_dubber.sql import functions as dubber_functions
 from pyspark_dubber.sql.grouped_data import GroupedData as DubberGroupedData
-from pyspark_dubber.sql.input import SparkInput
+from pyspark_dubber.sql.input import DataFrameReader as DubberDataFrameReader
 from pyspark_dubber.sql.output import SparkOutput
 
 from tests.test_pyspark_scripts import capture_output
@@ -47,7 +47,7 @@ API_AREAS = [
     (
         "Input Formats",
         DataFrameReader,
-        SparkInput,
+        DubberDataFrameReader,
         "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.{api}.html",
     ),
     (
@@ -91,7 +91,11 @@ def api_coverage() -> None:
         "# API Coverage\n\n"
         "This page shows which APIs are currently re-implemented by `pyspark-dubber`. "
         "This list is not exhaustive, showing mostly public functions and DataFrame APIs, "
-        "however some additional APIs and magic methods are also implemented. "
+        "however some additional APIs and magic methods are also implemented."
+        "\n\n"
+        "In addition to that, certain pyspark APIs are partially implemented, for example "
+        "not all parameters or parameter types are supported. In spite of that, they are listed "
+        "as implemented in the tables below, with notes in case of partial implenmentation."
         "\n\n"
         f"The overall approximate API coverage (with the caveats above) is {total_coverage:.1f} %."
         "\n\n"

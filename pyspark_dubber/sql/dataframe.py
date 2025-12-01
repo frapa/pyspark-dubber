@@ -2,7 +2,9 @@ import dataclasses
 from typing import Sequence, Literal
 
 import ibis
+import ibis.expr.operations
 import pandas
+from ibis.expr.types import FloatingScalar
 
 from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr
@@ -33,25 +35,25 @@ class DataFrame:
         "as of the current version.\n\n"
         "#### Example pyspark output\n"
         "```text\n"
-        '+----------+---+\n'
-        '|First Name|Age|\n'
-        '+----------+---+\n'
-        '|     Scott| 50|\n'
-        '|      Jeff| 45|\n'
-        '|    Thomas| 54|\n'
-        '|       Ann| 34|\n'
-        '+----------+---+\n'
+        "+----------+---+\n"
+        "|First Name|Age|\n"
+        "+----------+---+\n"
+        "|     Scott| 50|\n"
+        "|      Jeff| 45|\n"
+        "|    Thomas| 54|\n"
+        "|       Ann| 34|\n"
+        "+----------+---+\n"
         "```\n"
         "#### Example pyspark-dubber output\n"
         "```text\n"
-        '+----------+---+\n'
-        '|First Name|Age|\n'
-        '+----------+---+\n'
-        '|Scott     |50 |\n'
-        '|Jeff      |45 |\n'
-        '|Thomas    |54 |\n'
-        '|Ann       |34 |\n'
-        '+----------+---+\n'
+        "+----------+---+\n"
+        "|First Name|Age|\n"
+        "+----------+---+\n"
+        "|Scott     |50 |\n"
+        "|Jeff      |45 |\n"
+        "|Thomas    |54 |\n"
+        "|Ann       |34 |\n"
+        "+----------+---+\n"
         "```\n"
     )
     def show(
@@ -116,8 +118,36 @@ class DataFrame:
     def limit(self, num: int) -> "DataFrame":
         return DataFrame(self._ibis_df.limit(num))
 
-    def orderBy(self, *cols: ColumnOrName) -> "DataFrame":
-        return DataFrame(self._ibis_df.order_by(*[_col_expr_to_ibis(c) for c in cols]))
+    @incompatibility(
+        "Sorting by column ordinals (which are 1-based, not 0-based) is not supported yet. "
+        "Additionally, this function still needs better testing around edge cases, "
+        "when sorting with complex column expressions which include sorting."
+    )
+    def orderBy(
+        self, *cols: ColumnOrName, ascending: bool | list[bool] = True
+    ) -> "DataFrame":
+
+        if isinstance(ascending, bool):
+            ascending = [ascending] * len(cols)
+
+        sorted_ibis_exprs = []
+        for c, asc in zip(cols, ascending):
+            ibis_expr = _col_expr_to_ibis(c)
+            # TODO: test edge case when the column is an expression with a specific sort order
+            #   (for example col("my_col").desc()) but the ascending parameter is also set for
+            #   the column. Which one takes precedence in pyspark?
+            # Here, we ignore the flag if the column is already sorted
+            # TODO: this only works if the sorting is the last operation on the column
+            if isinstance(
+                ibis_expr.resolve(self._ibis_df).op(), ibis.expr.operations.SortKey
+            ):
+                sorted_ibis_exprs.append(ibis_expr)
+            else:
+                sorted_ibis_exprs.append(ibis_expr.asc() if asc else ibis_expr.desc())
+
+        return DataFrame(self._ibis_df.order_by(*sorted_ibis_exprs))
+
+    sort = orderBy
 
     def unionByName(
         self, other: "DataFrame", allowMissingColumns: bool = False
@@ -140,8 +170,10 @@ class DataFrame:
 
         return DataFrame(self._ibis_df.union(other._ibis_df))
 
-    @incompatibility("Currently only column names are supported for grouping, "
-                     "column expressions are not supported.")
+    @incompatibility(
+        "Currently only column names are supported for grouping, "
+        "column expressions are not supported."
+    )
     def groupBy(self, *cols: ColumnOrName) -> "GroupedData":
         # To avoid circular imports
         from pyspark_dubber.sql.grouped_data import GroupedData
@@ -234,6 +266,6 @@ def _print_struct_or_array(typ: StructType | ArrayType, indent: str = "") -> Non
 
 def _col_expr_to_ibis(col: ColumnOrName) -> ibis.Value | ibis.Deferred | str:
     if isinstance(col, str):
-        return col
+        return ibis.deferred[col]
 
     return col.to_ibis()

@@ -18,7 +18,6 @@ from pyspark_dubber.sql.types import (
 )
 
 
-
 class SparkConfig:
     # TODO: default spark configuration
     _conf = {}

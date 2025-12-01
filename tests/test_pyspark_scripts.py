@@ -7,6 +7,7 @@ from io import StringIO
 from pathlib import Path
 from typing import Any, Generator
 
+import ibis
 import pytest
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -98,20 +99,34 @@ def test_scripts(
     pyspark_files = sorted(
         p.relative_to(pyspark_dir)
         for p in pyspark_dir.glob("**/*")
-        if not p.is_dir() and p.parts[1] != "data"
+        if not p.is_dir() and p.parts[1] != "data" and p.suffix not in {".crc", ""}
     )
+    pyspark_dirs = {p.parent for p in pyspark_files}
     dubber_files = sorted(
         p.relative_to(dubber_dir)
         for p in dubber_dir.glob("**/*")
         if not p.is_dir() and p.parts[1] != "data"
     )
-    assert dubber_files == pyspark_files
+    dubber_dirs = {p.parent for p in dubber_files}
+    # Spark writes files in a very different way,
+    # with each partition as a separate file and checksum
+    # and _SUCCESS files. We don't aim to reproduce
+    # this right now, so we only check folder names.
+    assert dubber_dirs == pyspark_dirs
 
-    for rel_path in pyspark_files:
-        pyspark_path = pyspark_dir / rel_path
-        dubber_path = dubber_dir / rel_path
-        print(
-            rel_path,
-            f"pyspark: {pyspark_path.stat().st_size} bytes",
-            f"dubber: {dubber_path.stat().st_size} bytes",
-        )
+    for rel_path in pyspark_dirs:
+        pyspark_files = [pyspark_dir / f for f in pyspark_files if f.parent == rel_path]
+        dubber_files = [dubber_dir for f in dubber_files if f.parent == rel_path]
+
+        ext = {f.suffix for f in pyspark_files}
+        assert len(ext), ext
+        if ext == {".csv"}:
+            load_func = (
+                lambda ps: ibis.read_csv(ps).to_pandas().to_dict(orient="records")
+            )
+        else:
+            raise NotImplementedError(f"Unsupported file type: {ext}")
+
+        pyspark_data = load_func(pyspark_files)
+        dubber_data = load_func(dubber_files)
+        assert dubber_data == pyspark_data

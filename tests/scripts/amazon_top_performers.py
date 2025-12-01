@@ -39,7 +39,9 @@ product_agg = (
 )  # Filter out products with too few reviews
 
 print("\n--- Top 5 Products by Average Rating ---")
-top_products = product_agg.orderBy(F.col("average_rating").desc()).limit(5)
+top_products = product_agg.orderBy(F.col("average_rating").desc(), "parent_asin").limit(
+    5
+)
 top_products.show(truncate=False)
 
 print("\n--- Bottom 5 Products by Average Rating ---")
@@ -84,6 +86,7 @@ final_df = (
         allowMissingColumns=True,
     )
     .fillna("N/A", subset=["parent_asin", "identifier"])
+    .orderBy("parent_asin", "average_rating")
 )
 
 output_path = Path("output").absolute()

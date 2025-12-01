@@ -2,7 +2,7 @@
 
 This page shows which APIs are currently re-implemented by `pyspark-dubber`. This list is not exhaustive, showing mostly public functions and DataFrame APIs, however some additional APIs and magic methods are also implemented. 
 
-The overall approximate API coverage (with the caveats above) is 6.4 %.
+The overall approximate API coverage (with the caveats above) is 6.5 %.
 
 ## SparkSession (16 %)
 
@@ -78,7 +78,7 @@ The overall approximate API coverage (with the caveats above) is 6.4 %.
 | [`DataFrameWriter.sortBy`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.sortBy.html) |   |  |
 | [`DataFrameWriter.text`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.text.html) |   |  |
 
-## DataFrame (18 %)
+## DataFrame (19 %)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
@@ -132,7 +132,7 @@ The overall approximate API coverage (with the caveats above) is 6.4 %.
 | [`DataFrame.melt`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.melt.html) |   |  |
 | [`DataFrame.observe`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.observe.html) |   |  |
 | [`DataFrame.offset`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.offset.html) |   |  |
-| [`DataFrame.orderBy`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.orderBy.html) | :material-check: |  |
+| [`DataFrame.orderBy`](/pyspark-dubber/API Reference/DataFrame/DataFrame.orderBy) | :material-check: | Sorting by column ordinals (which are 1-based, not 0-based) is not supported yet. Additionally, this function still needs better testing around edge cases, when sorting with complex column expressions which include sorting. |
 | [`DataFrame.pandas_api`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.pandas_api.html) |   |  |
 | [`DataFrame.persist`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.persist.html) |   |  |
 | [`DataFrame.printSchema`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.printSchema.html) | :material-check: |  |
@@ -149,7 +149,7 @@ The overall approximate API coverage (with the caveats above) is 6.4 %.
 | [`DataFrame.selectExpr`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.selectExpr.html) |   |  |
 | [`DataFrame.semanticHash`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.semanticHash.html) |   |  |
 | [`DataFrame.show`](/pyspark-dubber/API Reference/DataFrame/DataFrame.show) | :material-check: | The `truncate` and `vertical` parameters are not honored. Additionally, the output is not printed justified exactly as pyspark as of the current version. |
-| [`DataFrame.sort`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sort.html) |   |  |
+| [`DataFrame.sort`](/pyspark-dubber/API Reference/DataFrame/DataFrame.sort) | :material-check: | Sorting by column ordinals (which are 1-based, not 0-based) is not supported yet. Additionally, this function still needs better testing around edge cases, when sorting with complex column expressions which include sorting. |
 | [`DataFrame.sortWithinPartitions`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sortWithinPartitions.html) |   |  |
 | [`DataFrame.subtract`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.subtract.html) |   |  |
 | [`DataFrame.summary`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.summary.html) |   |  |

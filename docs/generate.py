@@ -97,7 +97,7 @@ def api_coverage() -> None:
         "not all parameters or parameter types are supported. In spite of that, they are listed "
         "as implemented in the tables below, with notes in case of partial implementation."
         "\n\n"
-        f"The overall approximate API coverage (with the caveats above) is {total_coverage:.1f} %. "
+        f"The overall approximate API coverage (with the caveats above) is {total_coverage:.1f}%. "
         f"We prioritize implementing commonly used functions, as pyspark has many esoteric APIs."
         "\n\n"
         f"{compat_page_body}"
@@ -109,7 +109,7 @@ def compare_objects(name, spark_obj, dubber_obj, link_template: str) -> tuple[in
     dubber_apis = set(_iter_apis(dubber_obj))
 
     coverage = len(dubber_apis) / len(spark_apis) * 100
-    print(f"## {name} ({coverage:.0f} %)\n")
+    print(f"## {name} ({len(dubber_apis)}/{len(spark_apis)} = {coverage:.0f}%)\n")
     print(f"| API | Implemented | Notes |")
     print(f"| --- | :---------: | ----- |")
 

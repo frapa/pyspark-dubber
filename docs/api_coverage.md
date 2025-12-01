@@ -4,9 +4,9 @@ This page shows which APIs are currently re-implemented by `pyspark-dubber`. Thi
 
 In addition to that, certain pyspark APIs are partially implemented, for example not all parameters or parameter types are supported. In spite of that, they are listed as implemented in the tables below, with notes in case of partial implementation.
 
-The overall approximate API coverage (with the caveats above) is 9.3 %. We prioritize implementing commonly used functions, as pyspark has many esoteric APIs.
+The overall approximate API coverage (with the caveats above) is 9.3%. We prioritize implementing commonly used functions, as pyspark has many esoteric APIs.
 
-## SparkSession (16 %)
+## SparkSession (3/19 = 16%)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
@@ -30,7 +30,7 @@ The overall approximate API coverage (with the caveats above) is 9.3 %. We prior
 | [`SparkSession.stop`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.stop.html) | :material-check: |  |
 | [`SparkSession.table`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.table.html) |   |  |
 
-## SparkSession.builder (43 %)
+## SparkSession.builder (3/7 = 43%)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
@@ -42,7 +42,7 @@ The overall approximate API coverage (with the caveats above) is 9.3 %. We prior
 | [`Builder.master`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.master.html) | :material-check: |  |
 | [`Builder.remote`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.remote.html) |   |  |
 
-## Input Formats (17 %)
+## Input Formats (2/12 = 17%)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
@@ -59,7 +59,7 @@ The overall approximate API coverage (with the caveats above) is 9.3 %. We prior
 | [`DataFrameReader.table`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.table.html) |   |  |
 | [`DataFrameReader.text`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.text.html) |   |  |
 
-## Output Formats (19 %)
+## Output Formats (3/16 = 19%)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
@@ -80,7 +80,7 @@ The overall approximate API coverage (with the caveats above) is 9.3 %. We prior
 | [`DataFrameWriter.sortBy`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.sortBy.html) |   |  |
 | [`DataFrameWriter.text`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.text.html) |   |  |
 
-## DataFrame (36 %)
+## DataFrame (34/94 = 36%)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
@@ -179,7 +179,7 @@ The overall approximate API coverage (with the caveats above) is 9.3 %. We prior
 | [`DataFrame.withWatermark`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withWatermark.html) |   |  |
 | [`DataFrame.writeTo`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.writeTo.html) |   |  |
 
-## GroupBy (17 %)
+## GroupBy (2/12 = 17%)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
@@ -196,7 +196,7 @@ The overall approximate API coverage (with the caveats above) is 9.3 %. We prior
 | [`GroupedData.pivot`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.pivot.html) |   |  |
 | [`GroupedData.sum`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.sum.html) |   |  |
 
-## Functions (2 %)
+## Functions (7/422 = 2%)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |

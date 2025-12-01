@@ -20,6 +20,18 @@ class DataFrame:
     _ibis_df: ibis.Table
 
     @property
+    def columns(self) -> list[str]:
+        return list(self._ibis_df.columns)
+
+    @property
+    def dtypes(self) -> list[tuple[str, str]]:
+        # TODO: does this work for nested types?
+        return [
+            (f.name, f.dataType.simpleString())
+            for f in DataType.from_ibis(self._ibis_df.schema()).fields
+        ]
+
+    @property
     def write(self) -> SparkOutput:
         return SparkOutput(self._ibis_df)
 
@@ -101,10 +113,21 @@ class DataFrame:
         return DataFrame(self._ibis_df.select(*cols.values()))
 
     def withColumn(self, colName: str, col: Expr) -> "DataFrame":
-        return DataFrame(self._ibis_df.mutate(**{colName: col.to_ibis()}))
+        return self.withColumns({colName: col})
+
+    def withColumns(self, colsMap: dict[str, Expr]) -> "DataFrame":
+        return DataFrame(self._ibis_df.mutate(**{n: e.to_ibis() for n, e in colsMap.items()}))
 
     def withColumnRenamed(self, existing: str, new: str) -> "DataFrame":
-        return DataFrame(self._ibis_df.rename({new: existing}))
+        return self.withColumnsRenamed({existing: new})
+
+    def withColumnsRenamed(self, colsMap: dict[str, str]) -> "DataFrame":
+         # Ibis does renaming with the map in the reverse direction (new -> old)
+         # than spark does (old -> new)
+         return DataFrame(self._ibis_df.rename({
+             new: existing
+             for existing, new in colsMap.items()
+         }))
 
     @incompatibility("Using a string as a SQL expressions is not supported yet.")
     def filter(self, condition: Expr | str) -> "DataFrame":
@@ -115,8 +138,13 @@ class DataFrame:
             )
         return DataFrame(self._ibis_df.filter(_col_expr_to_ibis(condition)))
 
+    where = filter
+
     def limit(self, num: int) -> "DataFrame":
         return DataFrame(self._ibis_df.limit(num))
+
+    def offset(self, num: int) -> "DataFrame":
+        return DataFrame(self._ibis_df.limit(0, offset=num))
 
     @incompatibility(
         "Sorting by column ordinals (which are 1-based, not 0-based) is not supported yet. "
@@ -210,19 +238,87 @@ class DataFrame:
     ) -> "DataFrame":
         if isinstance(on, (str, Expr)):
             on = [on]
+        elif on is None:
+            # Spark does a cross-join when on=None (and it's not documented)
+            return self.crossJoin(other)
+
         result = self._ibis_df.join(
             other._ibis_df, predicates=[_col_expr_to_ibis(e) for e in on], how=how
         )
         return DataFrame(result)
 
+    @incompatibility(
+        "pyspark allows duplicate column names, and by default does not prefix/suffix "
+        "the columns of the other dataframe at all. Our backend (ibis) currently does not "
+        "support duplicate column names, so this function suffixes all columns on other with '_right'."
+    )
+    def crossJoin(self, other: "DataFrame") -> "DataFrame":
+        return DataFrame(self._ibis_df.cross_join(other._ibis_df))
+
     def collect(self) -> list[Row]:
         return [Row(**d) for d in self._ibis_df.to_pandas().to_dict(orient="records")]
+
+    def first(self) -> Row | None:
+        rows = self.limit(1).collect()
+        return rows[0] if rows else None
+
+    def take(self, num: int) -> list[Row]:
+        return self.limit(num).collect()
+
+    def head(self, n: int = 1) -> list[Row] | Row:
+        if n == 1:
+            return self.first()
+        return self.take(n)
+
+
+    def tail(self, num: int) -> list[Row]:
+        return self.offset(self.count() - num).collect()
 
     def cache(self) -> "DataFrame":
         return DataFrame(self._ibis_df.cache())
 
     def count(self) -> int:
         return self._ibis_df.count().to_pandas()
+
+    def agg(self, *exprs: Expr | dict[str, Expr]) -> "DataFrame":
+        if not exprs:
+            raise ValueError("agg() requires at least one argument")
+        elif isinstance(exprs[0], dict):
+            if len(exprs) > 1:
+                raise ValueError("agg() does not support multiple dict arguments")
+            exprs = [e.alias(n) for n, e in exprs[0].items()]
+
+        return DataFrame(self._ibis_df.agg([_col_expr_to_ibis(e) for e in exprs]))
+
+    def alias(self, alias: str) -> "DataFrame":
+        return DataFrame(self._ibis_df.alias(alias))
+
+    @incompatibility(
+        "Our backend (ibis) does not support duplicate column names like pyspark, "
+        "therefore this function does not support dropping columns with the same name. "
+        "You cannot anyway currently create such dataframes using `pyspark-dubber`."
+    )
+    def drop(self, *cols: ColumnOrName) -> "DataFrame":
+        cols = [
+            (
+                c
+                if isinstance(c, str)
+                else _resolve_ibis_expr(_col_expr_to_ibis(c), self._ibis_df).get_name()
+            )
+            for c in cols
+        ]
+        return DataFrame(self._ibis_df.drop(*cols))
+
+    def dropDuplicates(self, subset: Sequence[str] | None = None) -> "DataFrame":
+        return DataFrame(self._ibis_df.distinct(on=subset))
+
+    drop_duplicates = dropDuplicates
+
+    def distinct(self) -> "DataFrame":
+        return self.dropDuplicates()
+
+    def isEmpty(self) -> bool:
+        return self.count() == 0
 
     def fillna(
         self,
@@ -242,6 +338,9 @@ class DataFrame:
         if name not in self._ibis_df.columns:
             raise ValueError(f"Column {name} does not exist")
         return Expr(self._ibis_df[name])
+
+    def __getattr__(self, name: str) -> Expr:
+        return self[name]
 
     def toPandas(self) -> pandas.DataFrame:
         return self._ibis_df.to_pandas()
@@ -269,3 +368,11 @@ def _col_expr_to_ibis(col: ColumnOrName) -> ibis.Value | ibis.Deferred | str:
         return ibis.deferred[col]
 
     return col.to_ibis()
+
+
+def _resolve_ibis_expr(
+    expr: ibis.Value | ibis.Deferred, table: ibis.Table
+) -> ibis.Value:
+    if isinstance(expr, ibis.Deferred):
+        return expr.resolve(table)
+    return expr

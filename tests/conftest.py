@@ -1,7 +1,11 @@
+import contextlib
 import functools
+import io
 import sys
 from collections.abc import Callable
+from io import StringIO
 from pathlib import Path
+from typing import Generator, Any
 
 import pytest
 from pyspark.sql import SparkSession, DataFrame
@@ -42,3 +46,11 @@ def parametrize(**kwargs):
 
 def assert_df_equal(dubber_df: DubberDataFrame, spark_df: DataFrame) -> None:
     assert dubber_df.collect() == spark_df.collect()
+
+
+@contextlib.contextmanager
+def capture_output() -> Generator[StringIO, Any, None]:
+    prev_stdout = sys.stdout
+    sys.stdout = io.StringIO()
+    yield sys.stdout
+    sys.stdout = prev_stdout

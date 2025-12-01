@@ -49,7 +49,7 @@ class SparkSession:
         self,
         # TODO: RDD support
         data: Iterable[Row | dict[str, Any] | Any] | pandas.DataFrame | numpy.ndarray,
-        schema: StructType | AtomicType | str | None = None,
+        schema: StructType | AtomicType | str | list[str] | None = None,
         samplingRatio: float | None = None,
         verifySchema: bool = True,
     ) -> DataFrame:
@@ -65,8 +65,8 @@ class SparkSession:
 
         # Ibis implements all this but we re-implement a first pass to raise
         # the same errors as pyspark for error-level compatibility
-        if schema is None:
-            final_schema = self._infer_schema(data_for_schema)
+        if schema is None or isinstance(schema, list):
+            final_schema = self._infer_schema(data_for_schema, schema)
         elif verifySchema:
             self._verify_schema(data_for_schema, schema)
             final_schema = schema
@@ -75,7 +75,14 @@ class SparkSession:
         ibis_schema = ibis.Schema.from_tuples(ibis_struct.fields.items())
         return DataFrame(ibis.memtable(data, schema=ibis_schema))
 
-    def _infer_schema(self, data: Iterable[Row | dict[str, Any] | Any]) -> StructType:
+    def _infer_schema(
+        self,
+        data: Iterable[Row | dict[str, Any] | Any],
+        preferred_column_names: list[str] | None = None,
+    ) -> StructType:
+        if preferred_column_names is None:
+            preferred_column_names = (f"_{i}" for i, n in count(1))
+
         data = list(data)
         if not data:
             raise PySparkValueError(
@@ -90,7 +97,7 @@ class SparkSession:
                 dict_row = row
             elif isinstance(row, (list, tuple)):
                 # Name columns as _1, _2, etc.
-                dict_row = dict(zip((f"_{i}" for i in count(1)), row))
+                dict_row = dict(zip(preferred_column_names, row))
             else:
                 raise PySparkTypeError(
                     f"[CANNOT_INFER_SCHEMA_FOR_TYPE] Can not infer schema for type: `{type(row).__name__}`."

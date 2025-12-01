@@ -18,7 +18,7 @@ from pyspark_dubber.sql.grouped_data import GroupedData as DubberGroupedData
 from pyspark_dubber.sql.input import DataFrameReader as DubberDataFrameReader
 from pyspark_dubber.sql.output import SparkOutput
 
-from tests.test_pyspark_scripts import capture_output
+from tests.conftest import capture_output
 
 ROOT = Path(__file__).parent.parent
 
@@ -95,7 +95,7 @@ def api_coverage() -> None:
         "\n\n"
         "In addition to that, certain pyspark APIs are partially implemented, for example "
         "not all parameters or parameter types are supported. In spite of that, they are listed "
-        "as implemented in the tables below, with notes in case of partial implenmentation."
+        "as implemented in the tables below, with notes in case of partial implementation."
         "\n\n"
         f"The overall approximate API coverage (with the caveats above) is {total_coverage:.1f} %."
         "\n\n"

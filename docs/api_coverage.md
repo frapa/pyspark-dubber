@@ -2,9 +2,9 @@
 
 This page shows which APIs are currently re-implemented by `pyspark-dubber`. This list is not exhaustive, showing mostly public functions and DataFrame APIs, however some additional APIs and magic methods are also implemented.
 
-In addition to that, certain pyspark APIs are partially implemented, for example not all parameters or parameter types are supported. In spite of that, they are listed as implemented in the tables below, with notes in case of partial implenmentation.
+In addition to that, certain pyspark APIs are partially implemented, for example not all parameters or parameter types are supported. In spite of that, they are listed as implemented in the tables below, with notes in case of partial implementation.
 
-The overall approximate API coverage (with the caveats above) is 6.5 %.
+The overall approximate API coverage (with the caveats above) is 9.3 %.
 
 ## SparkSession (16 %)
 
@@ -80,12 +80,12 @@ The overall approximate API coverage (with the caveats above) is 6.5 %.
 | [`DataFrameWriter.sortBy`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.sortBy.html) |   |  |
 | [`DataFrameWriter.text`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.text.html) |   |  |
 
-## DataFrame (19 %)
+## DataFrame (36 %)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
-| [`DataFrame.agg`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.agg.html) |   |  |
-| [`DataFrame.alias`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.alias.html) |   |  |
+| [`DataFrame.agg`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.agg.html) | :material-check: |  |
+| [`DataFrame.alias`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.alias.html) | :material-check: |  |
 | [`DataFrame.approxQuantile`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.approxQuantile.html) |   |  |
 | [`DataFrame.cache`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.cache.html) | :material-check: |  |
 | [`DataFrame.checkpoint`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.checkpoint.html) |   |  |
@@ -99,32 +99,32 @@ The overall approximate API coverage (with the caveats above) is 6.5 %.
 | [`DataFrame.createOrReplaceGlobalTempView`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.createOrReplaceGlobalTempView.html) |   |  |
 | [`DataFrame.createOrReplaceTempView`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.createOrReplaceTempView.html) |   |  |
 | [`DataFrame.createTempView`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.createTempView.html) |   |  |
-| [`DataFrame.crossJoin`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.crossJoin.html) |   |  |
+| [`DataFrame.crossJoin`](/pyspark-dubber/API Reference/DataFrame/DataFrame.crossJoin) | :material-check: | pyspark allows duplicate column names, and by default does not prefix/suffix the columns of the other dataframe at all. Our backend (ibis) currently does not support duplicate column names, so this function suffixes all columns on other with '_right'. |
 | [`DataFrame.crosstab`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.crosstab.html) |   |  |
 | [`DataFrame.cube`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.cube.html) |   |  |
 | [`DataFrame.describe`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.describe.html) |   |  |
-| [`DataFrame.distinct`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.distinct.html) |   |  |
-| [`DataFrame.drop`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.drop.html) |   |  |
-| [`DataFrame.dropDuplicates`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.dropDuplicates.html) |   |  |
+| [`DataFrame.distinct`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.distinct.html) | :material-check: |  |
+| [`DataFrame.drop`](/pyspark-dubber/API Reference/DataFrame/DataFrame.drop) | :material-check: | Our backend (ibis) does not support duplicate column names like pyspark, therefore this function does not support dropping columns with the same name. You cannot anyway currently create such dataframes using `pyspark-dubber`. |
+| [`DataFrame.dropDuplicates`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.dropDuplicates.html) | :material-check: |  |
 | [`DataFrame.dropDuplicatesWithinWatermark`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.dropDuplicatesWithinWatermark.html) |   |  |
-| [`DataFrame.drop_duplicates`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.drop_duplicates.html) |   |  |
+| [`DataFrame.drop_duplicates`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.drop_duplicates.html) | :material-check: |  |
 | [`DataFrame.dropna`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.dropna.html) |   |  |
 | [`DataFrame.exceptAll`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.exceptAll.html) |   |  |
 | [`DataFrame.explain`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html) |   |  |
 | [`DataFrame.fillna`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.fillna.html) | :material-check: |  |
 | [`DataFrame.filter`](/pyspark-dubber/API Reference/DataFrame/DataFrame.filter) | :material-check: | Using a string as a SQL expressions is not supported yet. |
-| [`DataFrame.first`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.first.html) |   |  |
+| [`DataFrame.first`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.first.html) | :material-check: |  |
 | [`DataFrame.foreach`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.foreach.html) |   |  |
 | [`DataFrame.foreachPartition`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.foreachPartition.html) |   |  |
 | [`DataFrame.freqItems`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.freqItems.html) |   |  |
 | [`DataFrame.groupBy`](/pyspark-dubber/API Reference/DataFrame/DataFrame.groupBy) | :material-check: | Currently only column names are supported for grouping, column expressions are not supported. |
 | [`DataFrame.groupby`](/pyspark-dubber/API Reference/DataFrame/DataFrame.groupby) | :material-check: | Currently only column names are supported for grouping, column expressions are not supported. |
-| [`DataFrame.head`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.head.html) |   |  |
+| [`DataFrame.head`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.head.html) | :material-check: |  |
 | [`DataFrame.hint`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.hint.html) |   |  |
 | [`DataFrame.inputFiles`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.inputFiles.html) |   |  |
 | [`DataFrame.intersect`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.intersect.html) |   |  |
 | [`DataFrame.intersectAll`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.intersectAll.html) |   |  |
-| [`DataFrame.isEmpty`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.isEmpty.html) |   |  |
+| [`DataFrame.isEmpty`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.isEmpty.html) | :material-check: |  |
 | [`DataFrame.isLocal`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.isLocal.html) |   |  |
 | [`DataFrame.join`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.join.html) | :material-check: |  |
 | [`DataFrame.limit`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.limit.html) | :material-check: |  |
@@ -133,7 +133,7 @@ The overall approximate API coverage (with the caveats above) is 6.5 %.
 | [`DataFrame.mapInPandas`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.mapInPandas.html) |   |  |
 | [`DataFrame.melt`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.melt.html) |   |  |
 | [`DataFrame.observe`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.observe.html) |   |  |
-| [`DataFrame.offset`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.offset.html) |   |  |
+| [`DataFrame.offset`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.offset.html) | :material-check: |  |
 | [`DataFrame.orderBy`](/pyspark-dubber/API Reference/DataFrame/DataFrame.orderBy) | :material-check: | Sorting by column ordinals (which are 1-based, not 0-based) is not supported yet. Additionally, this function still needs better testing around edge cases, when sorting with complex column expressions which include sorting. |
 | [`DataFrame.pandas_api`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.pandas_api.html) |   |  |
 | [`DataFrame.persist`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.persist.html) |   |  |
@@ -155,8 +155,8 @@ The overall approximate API coverage (with the caveats above) is 6.5 %.
 | [`DataFrame.sortWithinPartitions`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sortWithinPartitions.html) |   |  |
 | [`DataFrame.subtract`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.subtract.html) |   |  |
 | [`DataFrame.summary`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.summary.html) |   |  |
-| [`DataFrame.tail`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.tail.html) |   |  |
-| [`DataFrame.take`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.take.html) |   |  |
+| [`DataFrame.tail`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.tail.html) | :material-check: |  |
+| [`DataFrame.take`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.take.html) | :material-check: |  |
 | [`DataFrame.to`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.to.html) |   |  |
 | [`DataFrame.toDF`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toDF.html) |   |  |
 | [`DataFrame.toJSON`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toJSON.html) |   |  |
@@ -170,11 +170,11 @@ The overall approximate API coverage (with the caveats above) is 6.5 %.
 | [`DataFrame.unionByName`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.unionByName.html) | :material-check: |  |
 | [`DataFrame.unpersist`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.unpersist.html) |   |  |
 | [`DataFrame.unpivot`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.unpivot.html) |   |  |
-| [`DataFrame.where`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.where.html) |   |  |
+| [`DataFrame.where`](/pyspark-dubber/API Reference/DataFrame/DataFrame.where) | :material-check: | Using a string as a SQL expressions is not supported yet. |
 | [`DataFrame.withColumn`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumn.html) | :material-check: |  |
 | [`DataFrame.withColumnRenamed`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumnRenamed.html) | :material-check: |  |
-| [`DataFrame.withColumns`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumns.html) |   |  |
-| [`DataFrame.withColumnsRenamed`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumnsRenamed.html) |   |  |
+| [`DataFrame.withColumns`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumns.html) | :material-check: |  |
+| [`DataFrame.withColumnsRenamed`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumnsRenamed.html) | :material-check: |  |
 | [`DataFrame.withMetadata`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withMetadata.html) |   |  |
 | [`DataFrame.withWatermark`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withWatermark.html) |   |  |
 | [`DataFrame.writeTo`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.writeTo.html) |   |  |

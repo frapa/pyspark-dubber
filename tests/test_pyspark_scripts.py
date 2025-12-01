@@ -1,14 +1,12 @@
-import contextlib
 import os
-import io
-import sys
 import traceback
-from io import StringIO
 from pathlib import Path
 from typing import Any, Generator
 
 import ibis
 import pytest
+
+from tests.conftest import capture_output
 
 DATA_DIR = Path(__file__).parent / "data"
 
@@ -28,14 +26,6 @@ def test_dir(tmpdir: Path) -> Generator[Path, Any, None]:
     (tmpdir / "dubber").mkdir()
     os.symlink(DATA_DIR, tmpdir / "dubber" / "data")
     yield Path(tmpdir)
-
-
-@contextlib.contextmanager
-def capture_output() -> Generator[StringIO, Any, None]:
-    prev_stdout = sys.stdout
-    sys.stdout = io.StringIO()
-    yield sys.stdout
-    sys.stdout = prev_stdout
 
 
 @pytest.mark.parametrize(
@@ -89,7 +79,7 @@ def test_scripts(
 
     assert str(dubber_err) == str(
         pyspark_error
-    ), f"See original error above for more details. Stdout:\n{dubber_output.getvalue()}"
+    ), f"See original error above for more details. Stdout:\n{dubber_stdout}"
     assert dubber_stdout == pyspark_stdout
 
     # So you can check the output for reference

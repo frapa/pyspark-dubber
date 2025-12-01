@@ -11,14 +11,13 @@ theme:
   palette:
     primary: green
     features:
+      # Serves all assets locally
+      - privacy
       - navigation.indexes
       - navigation.tracking
       - navigation.tabs
       - navigation.sections
       - navigation.path
-      - navigation.instant
-      - navigation.instant.prefetch
-      - navigation.instant.progress
       - content.code.copy
 markdown_extensions:
   - tables
@@ -35,3 +34,5 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.details
   - pymdownx.superfences
+extra_css:
+  - extra.css

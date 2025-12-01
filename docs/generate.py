@@ -97,7 +97,8 @@ def api_coverage() -> None:
         "not all parameters or parameter types are supported. In spite of that, they are listed "
         "as implemented in the tables below, with notes in case of partial implementation."
         "\n\n"
-        f"The overall approximate API coverage (with the caveats above) is {total_coverage:.1f} %."
+        f"The overall approximate API coverage (with the caveats above) is {total_coverage:.1f} %. "
+        f"We prioritize implementing commonly used functions, as pyspark has many esoteric APIs."
         "\n\n"
         f"{compat_page_body}"
     )

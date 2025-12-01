@@ -4,7 +4,7 @@ This page shows which APIs are currently re-implemented by `pyspark-dubber`. Thi
 
 In addition to that, certain pyspark APIs are partially implemented, for example not all parameters or parameter types are supported. In spite of that, they are listed as implemented in the tables below, with notes in case of partial implementation.
 
-The overall approximate API coverage (with the caveats above) is 9.3 %.
+The overall approximate API coverage (with the caveats above) is 9.3 %. We prioritize implementing commonly used functions, as pyspark has many esoteric APIs.
 
 ## SparkSession (16 %)
 

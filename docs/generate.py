@@ -5,7 +5,13 @@ from textwrap import indent
 
 import numpy
 
-from pyspark.sql import SparkSession, DataFrame, DataFrameReader, DataFrameWriter
+from pyspark.sql import (
+    SparkSession,
+    DataFrame,
+    DataFrameReader,
+    DataFrameWriter,
+    Column,
+)
 from pyspark.sql import functions
 from pyspark.sql.group import GroupedData
 
@@ -17,6 +23,7 @@ from pyspark_dubber.sql import functions as dubber_functions
 from pyspark_dubber.sql.grouped_data import GroupedData as DubberGroupedData
 from pyspark_dubber.sql.input import DataFrameReader as DubberDataFrameReader
 from pyspark_dubber.sql.output import SparkOutput
+from pyspark_dubber.sql.expr import Expr
 
 from tests.conftest import capture_output
 
@@ -67,6 +74,12 @@ API_AREAS = [
         GroupedData,
         DubberGroupedData,
         "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.{api}.html",
+    ),
+    (
+        "Column",
+        Column,
+        Expr,
+        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.{api}.html",
     ),
     (
         "Functions",

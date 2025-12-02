@@ -116,18 +116,19 @@ class DataFrame:
         return self.withColumns({colName: col})
 
     def withColumns(self, colsMap: dict[str, Expr]) -> "DataFrame":
-        return DataFrame(self._ibis_df.mutate(**{n: e.to_ibis() for n, e in colsMap.items()}))
+        return DataFrame(
+            self._ibis_df.mutate(**{n: e.to_ibis() for n, e in colsMap.items()})
+        )
 
     def withColumnRenamed(self, existing: str, new: str) -> "DataFrame":
         return self.withColumnsRenamed({existing: new})
 
     def withColumnsRenamed(self, colsMap: dict[str, str]) -> "DataFrame":
-         # Ibis does renaming with the map in the reverse direction (new -> old)
-         # than spark does (old -> new)
-         return DataFrame(self._ibis_df.rename({
-             new: existing
-             for existing, new in colsMap.items()
-         }))
+        # Ibis does renaming with the map in the reverse direction (new -> old)
+        # than spark does (old -> new)
+        return DataFrame(
+            self._ibis_df.rename({new: existing for existing, new in colsMap.items()})
+        )
 
     @incompatibility("Using a string as a SQL expressions is not supported yet.")
     def filter(self, condition: Expr | str) -> "DataFrame":
@@ -269,7 +270,6 @@ class DataFrame:
         if n == 1:
             return self.first()
         return self.take(n)
-
 
     def tail(self, num: int) -> list[Row]:
         return self.offset(self.count() - num).collect()

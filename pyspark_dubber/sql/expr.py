@@ -43,3 +43,43 @@ class Expr:
 
     def __ge__(self, other: "Expr") -> "Expr":
         return Expr(self._ibis_expr >= lit(other).to_ibis())
+
+    def __neg__(self) -> "Expr":
+        return Expr(-self._ibis_expr)
+
+    def __add__(self, other: "Expr | int | float") -> "Expr":
+        if isinstance(other, (int, float)):
+            other = lit(other)
+        return Expr(self._ibis_expr + other.to_ibis())
+
+    def __sub__(self, other: "Expr | int | float") -> "Expr":
+        if isinstance(other, (int, float)):
+            other = lit(other)
+        return Expr(self._ibis_expr - other.to_ibis())
+
+    def __mul__(self, other: "Expr | int | float") -> "Expr":
+        if isinstance(other, (int, float)):
+            other = lit(other)
+        return Expr(self._ibis_expr * other.to_ibis())
+
+    def __truediv__(self, other: "Expr | int | float") -> "Expr":
+        if isinstance(other, (int, float)):
+            other = lit(other)
+        return Expr(self._ibis_expr / other.to_ibis())
+
+    def __radd__(self, other: "Expr | int | float") -> "Expr":
+        return other + self
+
+    def __rsub__(self, other: "Expr | int | float") -> "Expr":
+        if isinstance(other, (int, float)):
+            other = lit(other)
+        return other - self
+
+    def __rmul__(self, other: "Expr | int | float") -> "Expr":
+        return other * self
+
+    def __rtruediv__(self, other: "Expr | int | float") -> "Expr":
+        if isinstance(other, (int, float)):
+            other = lit(other)
+        return other / self
+

@@ -63,11 +63,14 @@ def atan2(col1: ColumnOrName | int | float, col2: ColumnOrName | int | float) ->
 def tanh(col: ColumnOrName) -> Expr:
     return (exp(col) - exp(-col)) / (exp(col) + exp(-col))
 
+
 def sec(col: ColumnOrName) -> Expr:
     return 1 / cos(col)
 
+
 def csc(col: ColumnOrName) -> Expr:
     return 1 / sin(col)
+
 
 def cot(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().cot())
@@ -123,10 +126,13 @@ def negate(col: ColumnOrName) -> Expr:
 
 negative = negate
 
+
 def sign(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().sign())
 
+
 signum = sign
+
 
 def round(col: ColumnOrName, scale: int | None = None) -> Expr:
     return Expr(col_fn(col).to_ibis().round(scale))

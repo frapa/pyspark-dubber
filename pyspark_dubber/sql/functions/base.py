@@ -45,5 +45,6 @@ desc = desc_nulls_first
 def isnull(col: ColumnOrName) -> Expr:
     return Expr(_col_fn(col).to_ibis().isnull())
 
+
 def isnotnull(col: ColumnOrName) -> Expr:
     return Expr(_col_fn(col).to_ibis().notnull())

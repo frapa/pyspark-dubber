@@ -4,7 +4,7 @@ This page shows which APIs are currently re-implemented by `pyspark-dubber`. Thi
 
 In addition to that, certain pyspark APIs are partially implemented, for example not all parameters or parameter types are supported. In spite of that, they are listed as implemented in the tables below, with notes in case of partial implementation.
 
-The overall approximate API coverage (with the caveats above) is 16.4%. We prioritize implementing commonly used functions, as pyspark has many esoteric APIs.
+The overall approximate API coverage (with the caveats above) is 19.7%. We prioritize implementing commonly used functions, as pyspark has many esoteric APIs.
 
 ## SparkSession (3/19 = 16%)
 
@@ -196,40 +196,40 @@ The overall approximate API coverage (with the caveats above) is 16.4%. We prior
 | [`GroupedData.pivot`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.pivot.html) |   |  |
 | [`GroupedData.sum`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.sum.html) |   |  |
 
-## Column (4/32 = 12%)
+## Column (24/32 = 75%)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
 | [`Column.alias`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.alias.html) | :material-check: |  |
 | [`Column.asc`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.asc.html) | :material-check: |  |
-| [`Column.asc_nulls_first`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.asc_nulls_first.html) |   |  |
-| [`Column.asc_nulls_last`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.asc_nulls_last.html) |   |  |
-| [`Column.astype`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.astype.html) |   |  |
-| [`Column.between`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.between.html) |   |  |
-| [`Column.bitwiseAND`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.bitwiseAND.html) |   |  |
-| [`Column.bitwiseOR`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.bitwiseOR.html) |   |  |
-| [`Column.bitwiseXOR`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.bitwiseXOR.html) |   |  |
-| [`Column.cast`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.cast.html) |   |  |
-| [`Column.contains`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.contains.html) |   |  |
+| [`Column.asc_nulls_first`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.asc_nulls_first.html) | :material-check: |  |
+| [`Column.asc_nulls_last`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.asc_nulls_last.html) | :material-check: |  |
+| [`Column.astype`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.astype.html) | :material-check: |  |
+| [`Column.between`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.between.html) | :material-check: |  |
+| [`Column.bitwiseAND`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.bitwiseAND.html) | :material-check: |  |
+| [`Column.bitwiseOR`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.bitwiseOR.html) | :material-check: |  |
+| [`Column.bitwiseXOR`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.bitwiseXOR.html) | :material-check: |  |
+| [`Column.cast`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.cast.html) | :material-check: |  |
+| [`Column.contains`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.contains.html) | :material-check: |  |
 | [`Column.desc`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.desc.html) | :material-check: |  |
-| [`Column.desc_nulls_first`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.desc_nulls_first.html) |   |  |
-| [`Column.desc_nulls_last`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.desc_nulls_last.html) |   |  |
+| [`Column.desc_nulls_first`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.desc_nulls_first.html) | :material-check: |  |
+| [`Column.desc_nulls_last`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.desc_nulls_last.html) | :material-check: |  |
 | [`Column.dropFields`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.dropFields.html) |   |  |
-| [`Column.endswith`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.endswith.html) |   |  |
+| [`Column.endswith`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.endswith.html) | :material-check: |  |
 | [`Column.eqNullSafe`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.eqNullSafe.html) |   |  |
 | [`Column.getField`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.getField.html) |   |  |
 | [`Column.getItem`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.getItem.html) |   |  |
-| [`Column.ilike`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.ilike.html) |   |  |
-| [`Column.isNotNull`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.isNotNull.html) |   |  |
-| [`Column.isNull`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.isNull.html) |   |  |
+| [`Column.ilike`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.ilike.html) | :material-check: |  |
+| [`Column.isNotNull`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.isNotNull.html) | :material-check: |  |
+| [`Column.isNull`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.isNull.html) | :material-check: |  |
 | [`Column.isin`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.isin.html) |   |  |
-| [`Column.like`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.like.html) |   |  |
-| [`Column.name`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.name.html) |   |  |
+| [`Column.like`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.like.html) | :material-check: |  |
+| [`Column.name`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.name.html) | :material-check: |  |
 | [`Column.otherwise`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.otherwise.html) |   |  |
 | [`Column.over`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.over.html) |   |  |
-| [`Column.rlike`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.rlike.html) |   |  |
-| [`Column.startswith`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.startswith.html) |   |  |
-| [`Column.substr`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.substr.html) |   |  |
+| [`Column.rlike`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.rlike.html) | :material-check: |  |
+| [`Column.startswith`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.startswith.html) | :material-check: |  |
+| [`Column.substr`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.substr.html) | :material-check: |  |
 | [`Column.when`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.when.html) |   |  |
 | [`Column.withField`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.withField.html) |   |  |
 

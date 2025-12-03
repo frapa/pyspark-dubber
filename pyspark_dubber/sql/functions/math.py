@@ -32,6 +32,10 @@ def sinh(col: ColumnOrName) -> Expr:
     return (exp(col) - exp(-col)) / 2
 
 
+def asinh(col: ColumnOrName) -> Expr:
+    return ln(col + sqrt(col**2 + 1))
+
+
 def cos(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().cos())
 
@@ -42,6 +46,10 @@ def acos(col: ColumnOrName) -> Expr:
 
 def cosh(col: ColumnOrName) -> Expr:
     return (exp(col) + exp(-col)) / 2
+
+
+def acosh(col: ColumnOrName) -> Expr:
+    return ln(col + sqrt(col**2 - 1))
 
 
 def tan(col: ColumnOrName) -> Expr:
@@ -62,6 +70,10 @@ def atan2(col1: ColumnOrName | int | float, col2: ColumnOrName | int | float) ->
 
 def tanh(col: ColumnOrName) -> Expr:
     return (exp(col) - exp(-col)) / (exp(col) + exp(-col))
+
+
+def atanh(col: ColumnOrName) -> Expr:
+    return 0.5 * ln((1 + col) / (1 - col))
 
 
 def sec(col: ColumnOrName) -> Expr:
@@ -140,3 +152,7 @@ def round(col: ColumnOrName, scale: int | None = None) -> Expr:
 
 def isnan(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().isnan())
+
+
+def pow(col1: ColumnOrName | int | float, col2: ColumnOrName | int | float) -> Expr:
+    return col_fn(col1) ** col_fn(col2)

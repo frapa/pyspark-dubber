@@ -11,6 +11,7 @@ from pyspark_dubber.sql.functions.base import (
     desc,
     isnull,
     isnotnull,
+    when,
 )
 from pyspark_dubber.sql.functions.datetime import to_timestamp, current_timestamp
 from pyspark_dubber.sql.functions.math import (
@@ -48,6 +49,9 @@ from pyspark_dubber.sql.functions.math import (
     signum,
     round,
     isnan,
+    atanh,
+    acosh,
+    asinh,
 )
 from pyspark_dubber.sql.functions.string import ascii
 from pyspark_dubber.sql.functions.misc import version
@@ -68,13 +72,16 @@ __all__ = [
     "sin",
     "asin",
     "sinh",
+    "asinh",
     "cos",
     "acos",
     "cosh",
+    "acosh",
     "tan",
     "atan",
     "atan2",
     "tanh",
+    "atanh",
     "sec",
     "csc",
     "cot",
@@ -103,4 +110,5 @@ __all__ = [
     "desc",
     "ascii",
     "version",
+    "when",
 ]

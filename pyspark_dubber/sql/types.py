@@ -55,7 +55,7 @@ class DataType(abc.ABC):
         )
 
     @staticmethod
-    def from_DDL(ddl: str) -> "DataType":
+    def fromDDL(ddl: str) -> "DataType":
         ddl = ddl.replace(":", "")
 
         # TODO: support more types

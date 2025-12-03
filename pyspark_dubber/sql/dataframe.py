@@ -4,7 +4,6 @@ from typing import Sequence, Literal
 import ibis
 import ibis.expr.operations
 import pandas
-from ibis.expr.types import FloatingScalar
 
 from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr
@@ -12,7 +11,7 @@ from pyspark_dubber.sql.functions.base import ColumnOrName
 from pyspark_dubber.sql.output import SparkOutput
 from pyspark_dubber.sql.row import Row
 from pyspark_dubber.sql.types import StructType, DataType
-from pyspark_dubber.sql.types.types import ArrayType
+from pyspark_dubber.sql.types import ArrayType
 
 
 @dataclasses.dataclass

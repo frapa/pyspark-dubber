@@ -4,7 +4,7 @@ This page shows which APIs are currently re-implemented by `pyspark-dubber`. Thi
 
 In addition to that, certain pyspark APIs are partially implemented, for example not all parameters or parameter types are supported. In spite of that, they are listed as implemented in the tables below, with notes in case of partial implementation.
 
-The overall approximate API coverage (with the caveats above) is 20.5%. We prioritize implementing commonly used functions, as pyspark has many esoteric APIs.
+The overall approximate API coverage (with the caveats above) is 21.9%. We prioritize implementing commonly used functions, as pyspark has many esoteric APIs.
 
 ## SparkSession (3/19 = 16%)
 
@@ -659,4 +659,38 @@ The overall approximate API coverage (with the caveats above) is 20.5%. We prior
 | [`pyspark.sql.functions.year`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.year.html) |   |  |
 | [`pyspark.sql.functions.years`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.years.html) |   |  |
 | [`pyspark.sql.functions.zip_with`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.zip_with.html) |   |  |
+
+## DataTypes (15/29 = 52%)
+
+| API | Implemented | Notes |
+| --- | :---------: | ----- |
+| [`pyspark.sql.types.AnsiIntervalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.AnsiIntervalType.html) |   |  |
+| [`pyspark.sql.types.ArrayType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.ArrayType.html) | :material-check: |  |
+| [`pyspark.sql.types.AtomicType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.AtomicType.html) | :material-check: |  |
+| [`pyspark.sql.types.BinaryType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.BinaryType.html) |   |  |
+| [`pyspark.sql.types.BooleanType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.BooleanType.html) | :material-check: |  |
+| [`pyspark.sql.types.ByteType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.ByteType.html) | :material-check: |  |
+| [`pyspark.sql.types.CharType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.CharType.html) |   |  |
+| [`pyspark.sql.types.DataType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DataType.html) | :material-check: |  |
+| [`pyspark.sql.types.DateType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DateType.html) | :material-check: |  |
+| [`pyspark.sql.types.DayTimeIntervalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DayTimeIntervalType.html) |   |  |
+| [`pyspark.sql.types.DecimalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DecimalType.html) |   |  |
+| [`pyspark.sql.types.DoubleType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DoubleType.html) | :material-check: |  |
+| [`pyspark.sql.types.FloatType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.FloatType.html) | :material-check: |  |
+| [`pyspark.sql.types.FractionalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.FractionalType.html) |   |  |
+| [`pyspark.sql.types.IntegerType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.IntegerType.html) | :material-check: |  |
+| [`pyspark.sql.types.IntegralType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.IntegralType.html) |   |  |
+| [`pyspark.sql.types.LongType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.LongType.html) | :material-check: |  |
+| [`pyspark.sql.types.MapType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.MapType.html) | :material-check: |  |
+| [`pyspark.sql.types.NullType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.NullType.html) |   |  |
+| [`pyspark.sql.types.NumericType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.NumericType.html) |   |  |
+| [`pyspark.sql.types.ShortType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.ShortType.html) | :material-check: |  |
+| [`pyspark.sql.types.StringType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.StringType.html) | :material-check: |  |
+| [`pyspark.sql.types.StructField`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.StructField.html) |   |  |
+| [`pyspark.sql.types.StructType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.StructType.html) | :material-check: |  |
+| [`pyspark.sql.types.TimestampNTZType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.TimestampNTZType.html) |   |  |
+| [`pyspark.sql.types.TimestampType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.TimestampType.html) | :material-check: |  |
+| [`pyspark.sql.types.UserDefinedType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.UserDefinedType.html) |   |  |
+| [`pyspark.sql.types.VarcharType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.VarcharType.html) |   |  |
+| [`pyspark.sql.types.YearMonthIntervalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.YearMonthIntervalType.html) |   |  |
 

@@ -52,7 +52,7 @@ class Expr:
 
     def cast(self, data_type: DataType | str) -> "Expr":
         if isinstance(data_type, str):
-            data_type = DataType.from_DDL(data_type)
+            data_type = DataType.fromDDL(data_type)
         return Expr(self._ibis_expr.cast(data_type.to_ibis()))
 
     astype = cast

@@ -3,7 +3,7 @@
 ```python
 DataFrameReader.json(
 	path: str | pathlib.Path | list[str | pathlib.Path],
-	schema: str | pyspark_dubber.sql.types.types.StructType | None = None,
+	schema: str | pyspark_dubber.sql.types.StructType | None = None,
 	*args,
 	**kwargs,
 )

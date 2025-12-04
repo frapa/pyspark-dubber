@@ -7,7 +7,7 @@ import pandas
 
 from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr
-from pyspark_dubber.sql.functions.base import ColumnOrName
+from pyspark_dubber.sql.functions.normal import ColumnOrName
 from pyspark_dubber.sql.output import SparkOutput
 from pyspark_dubber.sql.row import Row
 from pyspark_dubber.sql.types import StructType, DataType

@@ -4,7 +4,7 @@ This page shows which APIs are currently re-implemented by `pyspark-dubber`. Thi
 
 In addition to that, certain pyspark APIs are partially implemented, for example not all parameters or parameter types are supported. In spite of that, they are listed as implemented in the tables below, with notes in case of partial implementation.
 
-The overall approximate API coverage (with the caveats above) is 21.9%. We prioritize implementing commonly used functions, as pyspark has many esoteric APIs.
+The overall approximate API coverage (with the caveats above) is 25.7%. We prioritize implementing commonly used functions, as pyspark has many esoteric APIs.
 
 ## SparkSession (3/19 = 16%)
 
@@ -233,7 +233,7 @@ The overall approximate API coverage (with the caveats above) is 21.9%. We prior
 | [`Column.when`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.when.html) |   |  |
 | [`Column.withField`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.withField.html) |   |  |
 
-## Functions (54/422 = 13%)
+## Functions (70/422 = 17%)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
@@ -293,20 +293,20 @@ The overall approximate API coverage (with the caveats above) is 21.9%. We prior
 | [`pyspark.sql.functions.bitmap_construct_agg`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bitmap_construct_agg.html) |   |  |
 | [`pyspark.sql.functions.bitmap_count`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bitmap_count.html) |   |  |
 | [`pyspark.sql.functions.bitmap_or_agg`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bitmap_or_agg.html) |   |  |
-| [`pyspark.sql.functions.bitwiseNOT`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bitwiseNOT.html) |   |  |
-| [`pyspark.sql.functions.bitwise_not`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bitwise_not.html) |   |  |
+| [`pyspark.sql.functions.bitwiseNOT`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bitwiseNOT.html) | :material-check: |  |
+| [`pyspark.sql.functions.bitwise_not`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bitwise_not.html) | :material-check: |  |
 | [`pyspark.sql.functions.bool_and`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bool_and.html) |   |  |
 | [`pyspark.sql.functions.bool_or`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bool_or.html) |   |  |
-| [`pyspark.sql.functions.broadcast`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.broadcast.html) |   |  |
+| [`pyspark.sql.functions.broadcast`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.broadcast.html) | :material-check: |  |
 | [`pyspark.sql.functions.bround`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bround.html) |   |  |
 | [`pyspark.sql.functions.btrim`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.btrim.html) |   |  |
 | [`pyspark.sql.functions.bucket`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bucket.html) |   |  |
 | [`pyspark.sql.functions.call_function`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.call_function.html) |   |  |
 | [`pyspark.sql.functions.call_udf`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.call_udf.html) |   |  |
 | [`pyspark.sql.functions.cardinality`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.cardinality.html) |   |  |
-| [`pyspark.sql.functions.cbrt`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.cbrt.html) |   |  |
+| [`pyspark.sql.functions.cbrt`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.cbrt.html) | :material-check: |  |
 | [`pyspark.sql.functions.ceil`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ceil.html) | :material-check: |  |
-| [`pyspark.sql.functions.ceiling`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ceiling.html) |   |  |
+| [`pyspark.sql.functions.ceiling`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ceiling.html) | :material-check: |  |
 | [`pyspark.sql.functions.char`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.char.html) |   |  |
 | [`pyspark.sql.functions.char_length`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.char_length.html) |   |  |
 | [`pyspark.sql.functions.character_length`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.character_length.html) |   |  |
@@ -369,7 +369,7 @@ The overall approximate API coverage (with the caveats above) is 21.9%. We prior
 | [`pyspark.sql.functions.elt`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.elt.html) |   |  |
 | [`pyspark.sql.functions.encode`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.encode.html) |   |  |
 | [`pyspark.sql.functions.endswith`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.endswith.html) |   |  |
-| [`pyspark.sql.functions.equal_null`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.equal_null.html) |   |  |
+| [`pyspark.sql.functions.equal_null`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.equal_null.html) | :material-check: |  |
 | [`pyspark.sql.functions.every`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.every.html) |   |  |
 | [`pyspark.sql.functions.exists`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.exists.html) |   |  |
 | [`pyspark.sql.functions.exp`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.exp.html) | :material-check: |  |
@@ -395,7 +395,7 @@ The overall approximate API coverage (with the caveats above) is 21.9%. We prior
 | [`pyspark.sql.functions.get`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.get.html) |   |  |
 | [`pyspark.sql.functions.get_json_object`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.get_json_object.html) |   |  |
 | [`pyspark.sql.functions.getbit`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.getbit.html) |   |  |
-| [`pyspark.sql.functions.greatest`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.greatest.html) |   |  |
+| [`pyspark.sql.functions.greatest`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.greatest.html) | :material-check: |  |
 | [`pyspark.sql.functions.grouping`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.grouping.html) |   |  |
 | [`pyspark.sql.functions.grouping_id`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.grouping_id.html) |   |  |
 | [`pyspark.sql.functions.hash`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.hash.html) |   |  |
@@ -431,7 +431,7 @@ The overall approximate API coverage (with the caveats above) is 21.9%. We prior
 | [`pyspark.sql.functions.last_value`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.last_value.html) |   |  |
 | [`pyspark.sql.functions.lcase`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lcase.html) |   |  |
 | [`pyspark.sql.functions.lead`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lead.html) |   |  |
-| [`pyspark.sql.functions.least`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.least.html) |   |  |
+| [`pyspark.sql.functions.least`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.least.html) | :material-check: |  |
 | [`pyspark.sql.functions.left`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.left.html) |   |  |
 | [`pyspark.sql.functions.length`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.length.html) |   |  |
 | [`pyspark.sql.functions.levenshtein`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.levenshtein.html) |   |  |
@@ -495,20 +495,20 @@ The overall approximate API coverage (with the caveats above) is 21.9%. We prior
 | [`pyspark.sql.functions.percentile`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.percentile.html) |   |  |
 | [`pyspark.sql.functions.percentile_approx`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.percentile_approx.html) |   |  |
 | [`pyspark.sql.functions.pi`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.pi.html) | :material-check: |  |
-| [`pyspark.sql.functions.pmod`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.pmod.html) |   |  |
+| [`pyspark.sql.functions.pmod`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.pmod.html) | :material-check: |  |
 | [`pyspark.sql.functions.posexplode`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.posexplode.html) |   |  |
 | [`pyspark.sql.functions.posexplode_outer`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.posexplode_outer.html) |   |  |
 | [`pyspark.sql.functions.position`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.position.html) |   |  |
-| [`pyspark.sql.functions.positive`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.positive.html) |   |  |
-| [`pyspark.sql.functions.pow`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.pow.html) |   |  |
-| [`pyspark.sql.functions.power`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.power.html) |   |  |
+| [`pyspark.sql.functions.positive`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.positive.html) | :material-check: |  |
+| [`pyspark.sql.functions.pow`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.pow.html) | :material-check: |  |
+| [`pyspark.sql.functions.power`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.power.html) | :material-check: |  |
 | [`pyspark.sql.functions.printf`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.printf.html) |   |  |
 | [`pyspark.sql.functions.product`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.product.html) |   |  |
 | [`pyspark.sql.functions.quarter`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.quarter.html) |   |  |
 | [`pyspark.sql.functions.radians`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.radians.html) | :material-check: |  |
 | [`pyspark.sql.functions.raise_error`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.raise_error.html) |   |  |
-| [`pyspark.sql.functions.rand`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rand.html) |   |  |
-| [`pyspark.sql.functions.randn`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.randn.html) |   |  |
+| [`pyspark.sql.functions.rand`](/pyspark-dubber/API Reference/pyspark.sql.functions/pyspark.sql.functions.rand) | :material-check: | The seed value is accepted for API compatibility, but is unused. Even if set, the function will not be reproducible. |
+| [`pyspark.sql.functions.randn`](/pyspark-dubber/API Reference/pyspark.sql.functions/pyspark.sql.functions.randn) | :material-check: | The seed value is accepted for API compatibility, but is unused. Even if set, the function will not be reproducible. |
 | [`pyspark.sql.functions.rank`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rank.html) |   |  |
 | [`pyspark.sql.functions.reduce`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.reduce.html) |   |  |
 | [`pyspark.sql.functions.reflect`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.reflect.html) |   |  |
@@ -533,7 +533,7 @@ The overall approximate API coverage (with the caveats above) is 21.9%. We prior
 | [`pyspark.sql.functions.replace`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.replace.html) |   |  |
 | [`pyspark.sql.functions.reverse`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.reverse.html) |   |  |
 | [`pyspark.sql.functions.right`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.right.html) |   |  |
-| [`pyspark.sql.functions.rint`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rint.html) |   |  |
+| [`pyspark.sql.functions.rint`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rint.html) | :material-check: |  |
 | [`pyspark.sql.functions.rlike`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rlike.html) |   |  |
 | [`pyspark.sql.functions.round`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.round.html) | :material-check: |  |
 | [`pyspark.sql.functions.row_number`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.row_number.html) |   |  |
@@ -660,30 +660,30 @@ The overall approximate API coverage (with the caveats above) is 21.9%. We prior
 | [`pyspark.sql.functions.years`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.years.html) |   |  |
 | [`pyspark.sql.functions.zip_with`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.zip_with.html) |   |  |
 
-## DataTypes (15/29 = 52%)
+## DataTypes (23/29 = 79%)
 
 | API | Implemented | Notes |
 | --- | :---------: | ----- |
 | [`pyspark.sql.types.AnsiIntervalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.AnsiIntervalType.html) |   |  |
 | [`pyspark.sql.types.ArrayType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.ArrayType.html) | :material-check: |  |
 | [`pyspark.sql.types.AtomicType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.AtomicType.html) | :material-check: |  |
-| [`pyspark.sql.types.BinaryType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.BinaryType.html) |   |  |
+| [`pyspark.sql.types.BinaryType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.BinaryType.html) | :material-check: |  |
 | [`pyspark.sql.types.BooleanType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.BooleanType.html) | :material-check: |  |
 | [`pyspark.sql.types.ByteType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.ByteType.html) | :material-check: |  |
-| [`pyspark.sql.types.CharType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.CharType.html) |   |  |
+| [`pyspark.sql.types.CharType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.CharType.html) | :material-check: |  |
 | [`pyspark.sql.types.DataType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DataType.html) | :material-check: |  |
 | [`pyspark.sql.types.DateType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DateType.html) | :material-check: |  |
 | [`pyspark.sql.types.DayTimeIntervalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DayTimeIntervalType.html) |   |  |
-| [`pyspark.sql.types.DecimalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DecimalType.html) |   |  |
+| [`pyspark.sql.types.DecimalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DecimalType.html) | :material-check: |  |
 | [`pyspark.sql.types.DoubleType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.DoubleType.html) | :material-check: |  |
 | [`pyspark.sql.types.FloatType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.FloatType.html) | :material-check: |  |
-| [`pyspark.sql.types.FractionalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.FractionalType.html) |   |  |
+| [`pyspark.sql.types.FractionalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.FractionalType.html) | :material-check: |  |
 | [`pyspark.sql.types.IntegerType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.IntegerType.html) | :material-check: |  |
-| [`pyspark.sql.types.IntegralType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.IntegralType.html) |   |  |
+| [`pyspark.sql.types.IntegralType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.IntegralType.html) | :material-check: |  |
 | [`pyspark.sql.types.LongType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.LongType.html) | :material-check: |  |
 | [`pyspark.sql.types.MapType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.MapType.html) | :material-check: |  |
-| [`pyspark.sql.types.NullType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.NullType.html) |   |  |
-| [`pyspark.sql.types.NumericType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.NumericType.html) |   |  |
+| [`pyspark.sql.types.NullType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.NullType.html) | :material-check: |  |
+| [`pyspark.sql.types.NumericType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.NumericType.html) | :material-check: |  |
 | [`pyspark.sql.types.ShortType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.ShortType.html) | :material-check: |  |
 | [`pyspark.sql.types.StringType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.StringType.html) | :material-check: |  |
 | [`pyspark.sql.types.StructField`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.StructField.html) |   |  |
@@ -691,6 +691,6 @@ The overall approximate API coverage (with the caveats above) is 21.9%. We prior
 | [`pyspark.sql.types.TimestampNTZType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.TimestampNTZType.html) |   |  |
 | [`pyspark.sql.types.TimestampType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.TimestampType.html) | :material-check: |  |
 | [`pyspark.sql.types.UserDefinedType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.UserDefinedType.html) |   |  |
-| [`pyspark.sql.types.VarcharType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.VarcharType.html) |   |  |
+| [`pyspark.sql.types.VarcharType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.VarcharType.html) | :material-check: |  |
 | [`pyspark.sql.types.YearMonthIntervalType`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.YearMonthIntervalType.html) |   |  |
 

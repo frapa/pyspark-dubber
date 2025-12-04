@@ -4,6 +4,7 @@ from typing import Any
 
 import ibis
 import ibis.expr.datatypes
+from duckdb.experimental.spark.sql.functions import length
 from duckdb.experimental.spark.sql.types import StructField
 
 
@@ -89,9 +90,11 @@ class DataType(abc.ABC):
     @abc.abstractmethod
     def _to_pyspark(self, st): ...
 
+    def __str__(self) -> str:
+        return self.simpleString()
 
-class AtomicType(DataType, abc.ABC):
-    pass
+
+class AtomicType(DataType, abc.ABC): ...
 
 
 @dataclasses.dataclass
@@ -198,16 +201,62 @@ class StringType(AtomicType):
     def _to_pyspark(self, st):
         return st.StringType()
 
-    def __str__(self) -> str:
-        return "string"
-
     @staticmethod
     def _ddl_base_names() -> tuple[str, ...]:
         return ("string",)
 
 
 @dataclasses.dataclass
-class ByteType(AtomicType):
+class CharType(StringType):
+    length: int
+
+    def to_ibis(self) -> ibis.DataType:
+        return ibis.expr.datatypes.string(self.length)
+
+    def simpleString(self) -> str:
+        return f"char({self.length})"
+
+    @staticmethod
+    def _ddl_base_names() -> tuple[str, ...]:
+        return (f"char",)
+
+
+@dataclasses.dataclass
+class VarcharType(StringType):
+    length: int
+
+    def to_ibis(self) -> ibis.DataType:
+        return ibis.expr.datatypes.string(self.length)
+
+    def simpleString(self) -> str:
+        return f"varchar({self.length})"
+
+    @staticmethod
+    def _ddl_base_names() -> tuple[str, ...]:
+        return (f"varchar",)
+
+
+@dataclasses.dataclass
+class BinaryType(AtomicType):
+    def to_ibis(self) -> ibis.DataType:
+        return ibis.expr.datatypes.binary
+
+    def _to_pyspark(self, st):
+        return st.BinaryType()
+
+    @staticmethod
+    def _ddl_base_names() -> tuple[str, ...]:
+        return ("binary",)
+
+
+class NumericType(AtomicType, abc.ABC): ...
+
+
+class IntegralType(NumericType, abc.ABC): ...
+
+
+@dataclasses.dataclass
+class ByteType(IntegralType):
     def to_ibis(self) -> ibis.DataType:
         return ibis.expr.datatypes.int8
 
@@ -220,7 +269,7 @@ class ByteType(AtomicType):
 
 
 @dataclasses.dataclass
-class ShortType(AtomicType):
+class ShortType(IntegralType):
     def to_ibis(self) -> ibis.DataType:
         return ibis.expr.datatypes.int16
 
@@ -233,7 +282,7 @@ class ShortType(AtomicType):
 
 
 @dataclasses.dataclass
-class IntegerType(AtomicType):
+class IntegerType(IntegralType):
     def to_ibis(self) -> ibis.DataType:
         return ibis.expr.datatypes.int32
 
@@ -246,7 +295,7 @@ class IntegerType(AtomicType):
 
 
 @dataclasses.dataclass
-class LongType(AtomicType):
+class LongType(IntegralType):
     def to_ibis(self) -> ibis.DataType:
         return ibis.expr.datatypes.int64
 
@@ -258,8 +307,11 @@ class LongType(AtomicType):
         return "bigint", "long"
 
 
+class FractionalType(NumericType, abc.ABC): ...
+
+
 @dataclasses.dataclass
-class FloatType(AtomicType):
+class FloatType(FractionalType):
     def to_ibis(self) -> ibis.DataType:
         return ibis.expr.datatypes.float32
 
@@ -272,7 +324,7 @@ class FloatType(AtomicType):
 
 
 @dataclasses.dataclass
-class DoubleType(AtomicType):
+class DoubleType(FractionalType):
     def to_ibis(self) -> ibis.DataType:
         return ibis.expr.datatypes.float64
 
@@ -282,6 +334,25 @@ class DoubleType(AtomicType):
     @staticmethod
     def _ddl_base_names() -> tuple[str, ...]:
         return ("double",)
+
+
+@dataclasses.dataclass
+class DecimalType(FractionalType):
+    precision: int = 10
+    scale: int = 0
+
+    def to_ibis(self) -> ibis.DataType:
+        return ibis.expr.datatypes.decimal(self.precision, self.scale)
+
+    def _to_pyspark(self, st):
+        return st.DecimalType(self.precision, self.scale)
+
+    def simpleString(self) -> str:
+        return f"decimal({self.precision},{self.scale})"
+
+    @staticmethod
+    def _ddl_base_names() -> tuple[str, ...]:
+        return ("decimal", "dec", "numeric")
 
 
 @dataclasses.dataclass
@@ -308,3 +379,16 @@ class TimestampType(AtomicType):
     @staticmethod
     def _ddl_base_names() -> tuple[str, ...]:
         return "timestamp", "timestamp_ntz"
+
+
+@dataclasses.dataclass
+class NullType(AtomicType):
+    def to_ibis(self) -> ibis.DataType:
+        return ibis.expr.datatypes.null
+
+    def _to_pyspark(self, st):
+        return st.NullType()
+
+    @staticmethod
+    def _ddl_base_names() -> tuple[str, ...]:
+        return ("void",)

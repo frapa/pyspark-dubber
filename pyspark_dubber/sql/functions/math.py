@@ -105,7 +105,6 @@ def log2(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().log2())
 
 
-
 def degrees(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().degrees())
 
@@ -125,13 +124,17 @@ def pi() -> Expr:
 def ceil(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().ceil())
 
+
 ceiling = ceil
+
 
 def floor(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().floor())
 
+
 def positive(col: ColumnOrName) -> Expr:
     return _col_fn(col)
+
 
 def negate(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().negate())
@@ -164,11 +167,14 @@ def pow(col1: ColumnOrName | int | float, col2: ColumnOrName | int | float) -> E
 
 power = pow
 
+
 def sqrt(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().sqrt())
 
+
 def cbrt(col: ColumnOrName) -> Expr:
-    return pow(col, 1/3)
+    return pow(col, 1 / 3)
+
 
 @incompatibility(
     "The seed value is accepted for API compatibility, "
@@ -177,9 +183,13 @@ def cbrt(col: ColumnOrName) -> Expr:
 def rand(seed: int | None = None) -> Expr:
     return Expr(ibis.random())
 
+
 randn = rand
 
-def uniform(min: Expr | int | float, max: Expr | int | float, seed: int | None = None) -> Expr:
+
+def uniform(
+    min: Expr | int | float, max: Expr | int | float, seed: int | None = None
+) -> Expr:
     if isinstance(min, (int, float)):
         min = lit(min)
     if isinstance(max, (int, float)):
@@ -187,7 +197,9 @@ def uniform(min: Expr | int | float, max: Expr | int | float, seed: int | None =
     return rand(seed) * (max - min) + min
 
 
-def pmod(dividend: ColumnOrName | int | float, divisor: ColumnOrName | int | float) -> Expr:
+def pmod(
+    dividend: ColumnOrName | int | float, divisor: ColumnOrName | int | float
+) -> Expr:
     if isinstance(dividend, (int, float)):
         dividend = lit(dividend)
     if isinstance(divisor, (int, float)):
@@ -196,11 +208,12 @@ def pmod(dividend: ColumnOrName | int | float, divisor: ColumnOrName | int | flo
 
 
 def greatest(*cols: ColumnOrName) -> Expr:
-    if len(cols) == 0:
+    if not cols:
         raise ValueError("At least one column must be provided to greatest()")
     return Expr(ibis.greatest(_col_fn(c).to_ibis() for c in cols))
 
+
 def least(*cols: ColumnOrName) -> Expr:
-    if len(cols) == 0:
+    if not cols:
         raise ValueError("At least one column must be provided to least()")
     return Expr(ibis.least(_col_fn(c).to_ibis() for c in cols))

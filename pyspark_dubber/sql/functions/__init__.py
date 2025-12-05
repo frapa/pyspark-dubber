@@ -4,8 +4,14 @@ from pyspark_dubber.sql.functions.normal import (
     count,
     column,
 )
-from pyspark_dubber.sql.functions.sort import asc_nulls_first, asc_nulls_last, asc, desc_nulls_first, desc_nulls_last, \
-    desc
+from pyspark_dubber.sql.functions.sort import (
+    asc_nulls_first,
+    asc_nulls_last,
+    asc,
+    desc_nulls_first,
+    desc_nulls_last,
+    desc,
+)
 from pyspark_dubber.sql.functions.predicate import isnull, isnotnull, equal_null
 from pyspark_dubber.sql.functions.conditional import when
 from pyspark_dubber.sql.functions.datetime import to_timestamp, current_timestamp
@@ -60,8 +66,38 @@ from pyspark_dubber.sql.functions.math import (
     greatest,
     least,
 )
-from pyspark_dubber.sql.functions.string import ascii
-from pyspark_dubber.sql.functions.misc import version, broadcast, bitwise_not, bitwiseNOT
+from pyspark_dubber.sql.functions.string import (
+    ascii,
+    bit_length,
+    char,
+    char_length,
+    character_length,
+    length,
+    concat,
+    concat_ws,
+    contains,
+    startswith,
+    endswith,
+    find_in_set,
+    locate,
+    instr,
+    position,
+    substr,
+    substring,
+    lcase,
+    lower,
+    levenshtein,
+    left,
+    lpad,
+    right,
+    rpad,
+)
+from pyspark_dubber.sql.functions.misc import (
+    version,
+    broadcast,
+    bitwise_not,
+    bitwiseNOT,
+)
 
 __all__ = [
     "col",
@@ -129,6 +165,29 @@ __all__ = [
     "desc_nulls_last",
     "desc",
     "ascii",
+    "bit_length",
+    "char",
+    "char_length",
+    "character_length",
+    "length",
+    "concat",
+    "concat_ws",
+    "contains",
+    "startswith",
+    "endswith",
+    "find_in_set",
+    "locate",
+    "instr",
+    "position",
+    "substr",
+    "substring",
+    "lcase",
+    "lower",
+    "levenshtein",
+    "left",
+    "lpad",
+    "right",
+    "rpad",
     "version",
     "broadcast",
     "bitwise_not",

@@ -60,10 +60,8 @@ class Expr:
     def between(
         self, lower: "Expr | ScalarValue", upper: "Expr | ScalarValue"
     ) -> "Expr":
-        if isinstance(lower, ScalarValue):
-            lower = lit(lower)
-        if isinstance(upper, ScalarValue):
-            upper = lit(upper)
+        lower = lit(lower)
+        upper = lit(upper)
         return Expr(
             self._ibis_expr.between(lower.to_ibis(), upper.to_ibis()).name(
                 f"(({self} >= {lower}) AND ({self} <= {upper}))"
@@ -84,19 +82,13 @@ class Expr:
         )
 
     def contains(self, other: "Expr | str") -> "Expr":
-        if isinstance(other, str):
-            other = lit(other)
-        return Expr(self._ibis_expr.contains(other.to_ibis()))
+        return Expr(self._ibis_expr.contains(lit(other).to_ibis()))
 
     def startswith(self, other: "Expr | str") -> "Expr":
-        if isinstance(other, str):
-            other = lit(other)
-        return Expr(self._ibis_expr.startswith(other.to_ibis()))
+        return Expr(self._ibis_expr.startswith(lit(other).to_ibis()))
 
     def endswith(self, other: "Expr | str") -> "Expr":
-        if isinstance(other, str):
-            other = lit(other)
-        return Expr(self._ibis_expr.endswith(other.to_ibis()))
+        return Expr(self._ibis_expr.endswith(lit(other).to_ibis()))
 
     def isNull(self) -> "Expr":
         return Expr(self._ibis_expr.isnull())
@@ -141,35 +133,25 @@ class Expr:
         return Expr(-self._ibis_expr)
 
     def __add__(self, other: "Expr | int | float") -> "Expr":
-        if isinstance(other, (int, float)):
-            other = lit(other)
-        return Expr(self._ibis_expr + other.to_ibis())
+        return Expr(self._ibis_expr + lit(other).to_ibis())
 
     def __sub__(self, other: "Expr | int | float") -> "Expr":
-        if isinstance(other, (int, float)):
-            other = lit(other)
-        return Expr(self._ibis_expr - other.to_ibis())
+        return Expr(self._ibis_expr - lit(other).to_ibis())
 
     def __mul__(self, other: "Expr | int | float") -> "Expr":
-        if isinstance(other, (int, float)):
-            other = lit(other)
-        return Expr(self._ibis_expr * other.to_ibis())
+        return Expr(self._ibis_expr * lit(other).to_ibis())
 
     def __div__(self, other: "Expr | int | float") -> "Expr":
         return self.__truediv__(other)
 
     def __truediv__(self, other: "Expr | int | float") -> "Expr":
-        if isinstance(other, (int, float)):
-            other = lit(other)
-        return Expr(self._ibis_expr / other.to_ibis())
+        return Expr(self._ibis_expr / lit(other).to_ibis())
 
     def __radd__(self, other: "Expr | int | float") -> "Expr":
         return other + self
 
     def __rsub__(self, other: "Expr | int | float") -> "Expr":
-        if isinstance(other, (int, float)):
-            other = lit(other)
-        return other - self
+        return lit(other) - self
 
     def __rmul__(self, other: "Expr | int | float") -> "Expr":
         return other * self
@@ -178,38 +160,28 @@ class Expr:
         return self.__rtruediv__(other)
 
     def __rtruediv__(self, other: "Expr | int | float") -> "Expr":
-        if isinstance(other, (int, float)):
-            other = lit(other)
-        return other / self
+        return lit(other) / self
 
     def __mod__(self, other: "Expr | int | float") -> "Expr":
-        if isinstance(other, (int, float)):
-            other = lit(other)
-        return Expr(self._ibis_expr % other.to_ibis())
+        return Expr(self._ibis_expr % lit(other).to_ibis())
 
     def __rmod__(self, other: "Expr | int | float") -> "Expr":
-        if isinstance(other, (int, float)):
-            other = lit(other)
-        return other % self
+        return lit(other) % self
 
     def __pow__(self, exponent: "Expr | int | float") -> "Expr":
-        if isinstance(exponent, (int, float)):
-            exponent = lit(exponent)
-        return Expr(self._ibis_expr ** exponent.to_ibis())
+        return Expr(self._ibis_expr ** lit(exponent).to_ibis())
 
     def __rpow__(self, base: "Expr | int | float") -> "Expr":
-        if isinstance(base, (int, float)):
-            base = lit(base)
-        return base**self
+        return lit(base) ** self
 
     def __and__(self, other: "Expr | int") -> "Expr":
-        return Expr(self._ibis_expr & other.to_ibis())
+        return Expr(self._ibis_expr & lit(other).to_ibis())
 
     def __or__(self, other: "Expr | int") -> "Expr":
-        return Expr(self._ibis_expr | other.to_ibis())
+        return Expr(self._ibis_expr | lit(other).to_ibis())
 
     def __xor__(self, other: "Expr | int") -> "Expr":
-        return Expr(self._ibis_expr ^ other.to_ibis())
+        return Expr(self._ibis_expr ^ lit(other).to_ibis())
 
     def __invert__(self) -> "Expr":
         return Expr(~self._ibis_expr)

@@ -8,7 +8,7 @@ from pyspark_dubber.sql.functions.predicate import isnan
 
 
 def coalesce(*cols: ColumnOrName) -> Expr:
-    if len(cols) == 0:
+    if not cols:
         raise ValueError("At least one column must be provided to coalesce()")
     return Expr(ibis.coalesce(_col_fn(c).to_ibis() for c in cols))
 

@@ -12,7 +12,9 @@ dependencies = [
     "ibis-framework[duckdb]",
     "pandas",
     "pyarrow",
-    "pyarrow-hotfix"
+    "pyarrow-hotfix",
+    "sqlglot[rs]",
+    "python-dateutil",
 ]
 
 [project.optional-dependencies]

@@ -26,6 +26,14 @@ class DataType(abc.ABC):
         if isinstance(schema, ibis.DataType):
             if schema.is_string():
                 return StringType()
+            elif schema.is_binary():
+                return BinaryType()
+            elif schema.is_boolean():
+                return BooleanType()
+            elif schema.is_int8() or schema.is_uint8():
+                return ByteType()
+            elif schema.is_int16() or schema.is_uint16():
+                return ShortType()
             elif schema.is_int32() or schema.is_uint32():
                 return IntegerType()
             elif schema.is_int64() or schema.is_uint64():
@@ -34,8 +42,22 @@ class DataType(abc.ABC):
                 return FloatType()
             elif schema.is_float64():
                 return DoubleType()
+            elif schema.is_decimal():
+                return DecimalType(schema.precision, schema.scale)
+            elif schema.is_date():
+                return DateType()
+            elif schema.is_timestamp():
+                return TimestampType()
+            elif schema.is_null():
+                return NullType()
             elif schema.is_array():
                 return ArrayType(DataType.from_ibis(schema.value_type), True)
+            elif schema.is_map():
+                return MapType(
+                    DataType.from_ibis(schema.key_type),
+                    DataType.from_ibis(schema.value_type),
+                    True,
+                )
             elif schema.is_struct():
                 return StructType(
                     [
@@ -47,7 +69,6 @@ class DataType(abc.ABC):
                 raise NotImplementedError(
                     f"Ibis schema conversion not implemented for type: {schema}"
                 )
-
         return StructType(
             [
                 StructField(name, DataType.from_ibis(typ), typ.nullable)
@@ -75,7 +96,7 @@ class DataType(abc.ABC):
         raise ValueError(f"No DataType found for DDL: {ddl}")
 
     @abc.abstractmethod
-    def to_ibis(self) -> ibis.DataType: ...
+    def to_ibis(self, nullable: bool = True) -> ibis.DataType: ...
 
     def to_pyspark(self):
         try:
@@ -113,9 +134,16 @@ class StructType(DataType):
     def names(self) -> list[str]:
         return list(f.name for f in self.fields)
 
-    def to_ibis(self) -> ibis.DataType:
+    def to_ibis(self, nullable=True) -> ibis.DataType:
         return ibis.expr.datatypes.Struct.from_tuples(
-            [(f.name, f.dataType.to_ibis()) for f in self.fields]
+            [
+                (
+                    f.name,
+                    f.dataType.to_ibis(nullable=f.nullable),
+                )
+                for f in self.fields
+            ],
+            nullable=nullable,
         )
 
     def _to_pyspark(self, st):
@@ -142,8 +170,9 @@ class ArrayType(DataType):
     elementType: DataType
     containsNull: bool = True
 
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.Array(self.elementType.to_ibis())
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        elem_dtype = self.elementType.to_ibis(nullable=self.containsNull)
+        return ibis.expr.datatypes.Array(elem_dtype, nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.ArrayType(self.elementType.to_pyspark(), self.containsNull)
@@ -162,8 +191,10 @@ class MapType(DataType):
     valueType: DataType
     valueContainsNull: bool = True
 
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.Map(self.keyType.to_ibis(), self.valueType.to_ibis())
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        key_dtype = self.keyType.to_ibis(nullable=False)
+        val_dtype = self.valueType.to_ibis(nullable=self.valueContainsNull)
+        return ibis.expr.datatypes.Map(key_dtype, val_dtype, nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.MapType(
@@ -182,8 +213,8 @@ class MapType(DataType):
 
 @dataclasses.dataclass
 class BooleanType(AtomicType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.boolean
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("boolean", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.BooleanType()
@@ -195,8 +226,8 @@ class BooleanType(AtomicType):
 
 @dataclasses.dataclass
 class StringType(AtomicType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.string
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("string", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.StringType()
@@ -210,8 +241,8 @@ class StringType(AtomicType):
 class CharType(StringType):
     length: int
 
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.string(self.length)
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("string", nullable=nullable)
 
     def simpleString(self) -> str:
         return f"char({self.length})"
@@ -225,8 +256,8 @@ class CharType(StringType):
 class VarcharType(StringType):
     length: int
 
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.string(self.length)
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("string", nullable=nullable)
 
     def simpleString(self) -> str:
         return f"varchar({self.length})"
@@ -238,8 +269,8 @@ class VarcharType(StringType):
 
 @dataclasses.dataclass
 class BinaryType(AtomicType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.binary
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("bytes", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.BinaryType()
@@ -257,8 +288,8 @@ class IntegralType(NumericType, abc.ABC): ...
 
 @dataclasses.dataclass
 class ByteType(IntegralType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.int8
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("int8", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.ByteType()
@@ -270,8 +301,8 @@ class ByteType(IntegralType):
 
 @dataclasses.dataclass
 class ShortType(IntegralType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.int16
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("int16", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.ShortType()
@@ -283,8 +314,8 @@ class ShortType(IntegralType):
 
 @dataclasses.dataclass
 class IntegerType(IntegralType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.int32
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("int32", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.IntegerType()
@@ -296,8 +327,8 @@ class IntegerType(IntegralType):
 
 @dataclasses.dataclass
 class LongType(IntegralType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.int64
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("int64", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.LongType()
@@ -312,8 +343,8 @@ class FractionalType(NumericType, abc.ABC): ...
 
 @dataclasses.dataclass
 class FloatType(FractionalType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.float32
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("float32", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.FloatType()
@@ -325,8 +356,8 @@ class FloatType(FractionalType):
 
 @dataclasses.dataclass
 class DoubleType(FractionalType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.float64
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("float64", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.DoubleType()
@@ -341,8 +372,8 @@ class DecimalType(FractionalType):
     precision: int = 10
     scale: int = 0
 
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.decimal(self.precision, self.scale)
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype(f"decimal({self.precision}, {self.scale})", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.DecimalType(self.precision, self.scale)
@@ -357,8 +388,8 @@ class DecimalType(FractionalType):
 
 @dataclasses.dataclass
 class DateType(AtomicType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.date
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("date", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.DateType()
@@ -370,8 +401,8 @@ class DateType(AtomicType):
 
 @dataclasses.dataclass
 class TimestampType(AtomicType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.timestamp
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("timestamp", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.TimestampType()
@@ -383,8 +414,8 @@ class TimestampType(AtomicType):
 
 @dataclasses.dataclass
 class NullType(AtomicType):
-    def to_ibis(self) -> ibis.DataType:
-        return ibis.expr.datatypes.null
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("null", nullable=nullable)
 
     def _to_pyspark(self, st):
         return st.NullType()

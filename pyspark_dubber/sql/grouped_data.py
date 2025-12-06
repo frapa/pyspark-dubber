@@ -2,6 +2,7 @@ import dataclasses
 
 import ibis.expr.types.groupby
 
+import pyspark_dubber.sql.functions.aggregate
 from pyspark_dubber.sql.dataframe import DataFrame
 from pyspark_dubber.sql.expr import Expr
 
@@ -14,4 +15,6 @@ class GroupedData:
         return DataFrame(self._ibis_df.agg(*[e.to_ibis() for e in exprs]))
 
     def count(self) -> "DataFrame":
-        return DataFrame(self._ibis_df.agg(count=self._ibis_df.table.to_expr().count()))
+        return DataFrame(
+            self._ibis_df.agg(count=pyspark_dubber.sql.functions.aggregate.count())
+        )

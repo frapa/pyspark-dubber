@@ -4,6 +4,7 @@ from typing import Iterable, Any
 import ibis
 import numpy
 import pandas
+import pyarrow
 
 from pyspark_dubber.errors import PySparkTypeError, PySparkValueError
 from pyspark_dubber.sql.dataframe import DataFrame
@@ -15,6 +16,7 @@ from pyspark_dubber.sql.types import (
     StructField,
     StringType,
     LongType,
+    BooleanType,
 )
 
 
@@ -73,7 +75,12 @@ class SparkSession:
 
         ibis_struct = final_schema.to_ibis()
         ibis_schema = ibis.Schema.from_tuples(ibis_struct.fields.items())
-        return DataFrame(ibis.memtable(data, schema=ibis_schema))
+        # Convert to pyarrow, because pandas is shit and casts types weirdly (like int to float if there's a null)
+        arrow_data = pyarrow.Table.from_pylist(
+            [dict(zip(ibis_struct.names, r)) for r in data],
+            schema=ibis_schema.to_pyarrow(),
+        )
+        return DataFrame(ibis.memtable(arrow_data, schema=ibis_schema))
 
     def _infer_schema(
         self,
@@ -110,6 +117,8 @@ class SparkSession:
                 if fields[i] is None:
                     if isinstance(value, str):
                         fields[i] = StructField(col, StringType(), True)
+                    elif isinstance(value, bool):
+                        fields[i] = StructField(col, BooleanType(), True)
                     elif isinstance(value, int):
                         fields[i] = StructField(col, LongType(), True)
                     elif value is None:

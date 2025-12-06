@@ -1,9 +1,11 @@
 from pyspark_dubber.sql.functions.normal import (
+    call_function,
     col,
     lit,
-    count,
     column,
+    expr,
 )
+from pyspark_dubber.sql.functions.aggregate import count
 from pyspark_dubber.sql.functions.sort import (
     asc_nulls_first,
     asc_nulls_last,
@@ -193,4 +195,6 @@ __all__ = [
     "bitwise_not",
     "bitwiseNOT",
     "when",
+    "expr",
+    "call_function",
 ]

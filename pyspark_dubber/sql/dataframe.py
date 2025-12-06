@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Sequence, Literal
+from typing import Sequence, Literal, Any
 
 import ibis
 import ibis.expr.operations
@@ -8,6 +8,7 @@ import pandas
 from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions.normal import ColumnOrName
+from pyspark_dubber.sql.functions import expr, col
 from pyspark_dubber.sql.output import SparkOutput
 from pyspark_dubber.sql.row import Row
 from pyspark_dubber.sql.types import StructType, DataType
@@ -34,7 +35,8 @@ class DataFrame:
     def write(self) -> SparkOutput:
         return SparkOutput(self._ibis_df)
 
-    def printSchema(self) -> None:
+    @incompatibility("The `level` parameter is not honored.")
+    def printSchema(self, level: int | None = None) -> None:
         schema = DataType.from_ibis(self._ibis_df.schema())
         print("root")
         _print_struct_or_array(schema)
@@ -73,22 +75,23 @@ class DataFrame:
         schema = DataType.from_ibis(self._ibis_df.schema())
 
         header = [f.name for f in schema.fields]
+        justification = [">" for h in header]
         rows = []
         lengths = [len(h) for h in header]
-        for row in self._ibis_df.limit(n).to_pandas().to_dict(orient="records"):
-            cells = [str(v) for v in row.values()]
+        for row in self._ibis_df.limit(n).to_pyarrow().to_pylist():
+            cells = [_format_value(c) for c in row.values()]
             rows.append(cells)
             lengths = [max(lengths[i], len(c)) for i, c in enumerate(cells)]
 
         divider = "+" + "+".join("-" * l for l in lengths) + "+"
 
         print(divider)
-        header_str = "|".join(f"{h:<{l}}" for h, l in zip(header, lengths))
+        header_str = "|".join(_format_cell(h, l, j) for h, l, j in zip(header, lengths, justification))
         print(f"|{header_str}|")
 
         print(divider)
         for cells in rows:
-            cell_str = "|".join(f"{c:<{l}}" for c, l in zip(cells, lengths))
+            cell_str = "|".join(_format_cell(c, l, j) for c, l, j in zip(cells, lengths, justification))
             print(f"|{cell_str}|")
 
         print(divider)
@@ -105,7 +108,7 @@ class DataFrame:
         # TODO: does this work when selecting expressions that define new columns?
         # Use dict for ordering and for and automatic duplicate removal
         cols = {
-            e if isinstance(e, str) else str(id(e)): _col_expr_to_ibis(e)
+            e if isinstance(e, str) else str(id(e)): col(e).to_ibis()
             for c in cols
             for e in (self._ibis_df.columns if isinstance(c, str) and c == "*" else [c])
         }
@@ -129,14 +132,11 @@ class DataFrame:
             self._ibis_df.rename({new: existing for existing, new in colsMap.items()})
         )
 
-    @incompatibility("Using a string as a SQL expressions is not supported yet.")
     def filter(self, condition: Expr | str) -> "DataFrame":
         # TODO: this is important but ibis does not seem to have a way to do this
         if isinstance(condition, str):
-            raise NotImplementedError(
-                "SQL expressions are not yet supported in filter yet."
-            )
-        return DataFrame(self._ibis_df.filter(_col_expr_to_ibis(condition)))
+            condition = expr(condition)
+        return DataFrame(self._ibis_df.filter(condition.to_ibis()))
 
     where = filter
 
@@ -160,7 +160,7 @@ class DataFrame:
 
         sorted_ibis_exprs = []
         for c, asc in zip(cols, ascending):
-            ibis_expr = _col_expr_to_ibis(c)
+            ibis_expr = col(c).to_ibis()
             # TODO: test edge case when the column is an expression with a specific sort order
             #   (for example col("my_col").desc()) but the ascending parameter is also set for
             #   the column. Which one takes precedence in pyspark?
@@ -243,7 +243,7 @@ class DataFrame:
             return self.crossJoin(other)
 
         result = self._ibis_df.join(
-            other._ibis_df, predicates=[_col_expr_to_ibis(e) for e in on], how=how
+            other._ibis_df, predicates=[col(e).to_ibis() for e in on], how=how
         )
         return DataFrame(result)
 
@@ -287,7 +287,7 @@ class DataFrame:
                 raise ValueError("agg() does not support multiple dict arguments")
             exprs = [e.alias(n) for n, e in exprs[0].items()]
 
-        return DataFrame(self._ibis_df.agg([_col_expr_to_ibis(e) for e in exprs]))
+        return DataFrame(self._ibis_df.agg([e.to_ibis() for e in exprs]))
 
     def alias(self, alias: str) -> "DataFrame":
         return DataFrame(self._ibis_df.alias(alias))
@@ -302,7 +302,7 @@ class DataFrame:
             (
                 c
                 if isinstance(c, str)
-                else _resolve_ibis_expr(_col_expr_to_ibis(c), self._ibis_df).get_name()
+                else _resolve_ibis_expr(c.to_ibis(), self._ibis_df).get_name()
             )
             for c in cols
         ]
@@ -362,16 +362,23 @@ def _print_struct_or_array(typ: StructType | ArrayType, indent: str = "") -> Non
                 _print_struct_or_array(f.dataType, indent=f"{indent} |   ")
 
 
-def _col_expr_to_ibis(col: ColumnOrName) -> ibis.Value | ibis.Deferred | str:
-    if isinstance(col, str):
-        return ibis.deferred[col]
-
-    return col.to_ibis()
-
-
 def _resolve_ibis_expr(
     expr: ibis.Value | ibis.Deferred, table: ibis.Table
 ) -> ibis.Value:
     if isinstance(expr, ibis.Deferred):
         return expr.resolve(table)
     return expr
+
+
+def _format_cell(value: str, length: int, justification: Literal["<", ">"]) -> str:
+    if justification == "<":
+        return f"{value:<{length}}"
+    return f"{_format_value(value):>{length}}"
+
+
+def _format_value(value: Any) -> str:
+    if value is None:
+        return "NULL"
+    if isinstance(value, bool):
+        return str(value).lower()
+    return str(value)

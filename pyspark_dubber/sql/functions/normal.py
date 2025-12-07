@@ -46,6 +46,16 @@ def expr(str_: str) -> Expr:
 
 
 def _build_ibis_expr(ast: sqlglot.Expression) -> ibis.Value | ibis.Deferred:
+    # Order is important because, for example, expressions and case statements are
+    # subclasses of Func in sqlglot.
+    if isinstance(ast, sqlglot.expressions.Case):
+        conditions = ast.args["ifs"]
+        default = ast.args.get("default")
+        return ibis.cases(
+            *[(_build_ibis_expr(cond.this), _build_ibis_expr(cond.args["true"])) for cond in conditions],
+            else_=default and _build_ibis_expr(default),
+        )
+
     if isinstance(ast, sqlglot.expressions.Binary):
         left = _build_ibis_expr(ast.left)
         right = _build_ibis_expr(ast.right)
@@ -107,7 +117,11 @@ def _build_ibis_expr(ast: sqlglot.Expression) -> ibis.Value | ibis.Deferred:
         return ibis.deferred[ast.name]
 
     if isinstance(ast, sqlglot.expressions.Literal):
-        return ibis.literal(ast.to_py())
+        value = ast.to_py()
+        if isinstance(value, int):
+            return ibis.literal(value).cast("int32")
+        return ibis.literal(value)
+
 
     raise NotImplementedError(
         f"Parsing of expression '{ast.sql(dialect='spark')}' not implemented:\n{repr(ast)}"

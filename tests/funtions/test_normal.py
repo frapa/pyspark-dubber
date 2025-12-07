@@ -1,6 +1,3 @@
-import sys
-from importlib import reload
-
 from tests.conftest import parametrize, comparison_test
 
 
@@ -24,6 +21,8 @@ def test_call_function(spark, load, func_name: str) -> None:
     add={"sql": "a + 1"},
     func={"sql": "abs(a)"},
     boolean={"sql": "a > 0 AND !is_deleted"},
+    case={"sql": "CASE WHEN a > 0 THEN 1 ELSE 0 END"},
+    case_no_else={"sql": "CASE WHEN a > 0 THEN 1 END"},
 )
 @comparison_test
 def test_expr(spark, load, sql: str) -> None:

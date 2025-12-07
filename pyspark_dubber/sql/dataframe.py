@@ -339,6 +339,22 @@ class DataFrame:
                 value = {k: value for k in subset}
         return DataFrame(self._ibis_df.fill_null(value))
 
+    @incompatibility(
+        "The `thresh` parameter is not honored."
+    )
+    def dropna(
+        self,
+        how: str = "any",
+        thresh: int | None = None,
+        subset: str | Sequence[str] | None = None,
+    ) -> "DataFrame":
+        if isinstance(subset, str):
+            subset = [subset]
+        return DataFrame(self._ibis_df.drop_null(subset, how=how))
+
+    def isLocal(self):
+        return True
+
     def __getitem__(self, name: str) -> Expr:
         if name not in self._ibis_df.columns:
             raise ValueError(f"Column {name} does not exist")

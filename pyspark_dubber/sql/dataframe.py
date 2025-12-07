@@ -183,6 +183,11 @@ class DataFrame:
 
     sort = orderBy
 
+    def union(self, other: "DataFrame") -> "DataFrame":
+        return DataFrame(self._ibis_df.union(other._ibis_df))
+
+    unionAll = union
+
     def unionByName(
         self, other: "DataFrame", allowMissingColumns: bool = False
     ) -> "DataFrame":

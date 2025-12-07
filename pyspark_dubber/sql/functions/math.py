@@ -2,8 +2,8 @@ import ibis
 
 from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr
-from pyspark_dubber.sql.functions.normal import lit, _col_fn
 from pyspark_dubber.sql.functions.normal import ColumnOrName, col as col_fn
+from pyspark_dubber.sql.functions.normal import lit, _col_fn
 
 
 def avg(col: ColumnOrName) -> Expr:
@@ -14,7 +14,8 @@ mean = avg
 
 
 def abs(col: ColumnOrName) -> Expr:
-    return Expr(col_fn(col).to_ibis().abs())
+    col = _col_fn(col)
+    return Expr(col.to_ibis().abs()).alias(f"abs({col})")
 
 
 def exp(col: ColumnOrName) -> Expr:
@@ -155,10 +156,6 @@ def round(col: ColumnOrName, scale: int | None = None) -> Expr:
 
 
 rint = round
-
-
-def isnan(col: ColumnOrName) -> Expr:
-    return Expr(col_fn(col).to_ibis().isnan())
 
 
 def pow(col1: ColumnOrName | int | float, col2: ColumnOrName | int | float) -> Expr:

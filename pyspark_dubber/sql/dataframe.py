@@ -1,4 +1,5 @@
 import dataclasses
+import math
 from typing import Sequence, Literal, Any
 
 import ibis
@@ -7,12 +8,12 @@ import pandas
 
 from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr
-from pyspark_dubber.sql.functions.normal import ColumnOrName
 from pyspark_dubber.sql.functions import expr, col
+from pyspark_dubber.sql.functions.normal import ColumnOrName
 from pyspark_dubber.sql.output import SparkOutput
 from pyspark_dubber.sql.row import Row
-from pyspark_dubber.sql.types import StructType, DataType
 from pyspark_dubber.sql.types import ArrayType
+from pyspark_dubber.sql.types import StructType, DataType
 
 
 @dataclasses.dataclass
@@ -75,7 +76,7 @@ class DataFrame:
         schema = DataType.from_ibis(self._ibis_df.schema())
 
         header = [f.name for f in schema.fields]
-        justification = [">" for h in header]
+        justification: list[Literal["<", ">"]] = [">" for _ in header]
         rows = []
         lengths = [len(h) for h in header]
         for row in self._ibis_df.limit(n).to_pyarrow().to_pylist():
@@ -86,12 +87,16 @@ class DataFrame:
         divider = "+" + "+".join("-" * l for l in lengths) + "+"
 
         print(divider)
-        header_str = "|".join(_format_cell(h, l, j) for h, l, j in zip(header, lengths, justification))
+        header_str = "|".join(
+            _format_cell(h, l, j) for h, l, j in zip(header, lengths, justification)
+        )
         print(f"|{header_str}|")
 
         print(divider)
         for cells in rows:
-            cell_str = "|".join(_format_cell(c, l, j) for c, l, j in zip(cells, lengths, justification))
+            cell_str = "|".join(
+                _format_cell(c, l, j) for c, l, j in zip(cells, lengths, justification)
+            )
             print(f"|{cell_str}|")
 
         print(divider)
@@ -381,4 +386,6 @@ def _format_value(value: Any) -> str:
         return "NULL"
     if isinstance(value, bool):
         return str(value).lower()
+    if isinstance(value, float) and math.isnan(value):
+        return "NaN"
     return str(value)

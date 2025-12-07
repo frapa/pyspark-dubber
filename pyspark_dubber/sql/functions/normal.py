@@ -1,12 +1,11 @@
-import operator
 from functools import cache
 from typing import Callable
 
 import ibis
 import sqlglot
 
-from pyspark_dubber.sql.expr import Expr, lit
 from pyspark_dubber.sql import functions
+from pyspark_dubber.sql.expr import Expr, lit
 
 ColumnOrName = Expr | str
 
@@ -38,7 +37,7 @@ def call_function(funcName: str, *cols: ColumnOrName) -> Expr:
         raise ValueError(f"Function '{funcName}' not found.")
 
     args_str = ", ".join(map(str, cols))
-    return func(*[_col_fn(c) for c in cols]).alias(f"{funcName}({args_str})")
+    return func(*[_col_fn(c) for c in cols])
 
 
 def expr(str_: str) -> Expr:

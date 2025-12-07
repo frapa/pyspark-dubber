@@ -1,8 +1,9 @@
 import dataclasses
 from datetime import date, datetime
 
+import ibis.common.deferred
+import ibis.expr.operations
 import ibis.expr.types
-from ibis.expr.operations import scalar
 
 from pyspark_dubber.sql.types import DataType
 
@@ -185,6 +186,22 @@ class Expr:
 
     def __invert__(self) -> "Expr":
         return Expr(~self._ibis_expr)
+
+    def __str__(self) -> str:
+        if isinstance(self._ibis_expr, ibis.expr.operations.Alias):
+            return self._ibis_expr.name
+        if isinstance(self._ibis_expr, ibis.Deferred) and isinstance(
+            self._ibis_expr._resolver, ibis.common.deferred.Item
+        ):
+            # To avoid extra quoting
+            if isinstance(self._ibis_expr._resolver.indexer, ibis.common.deferred.Just):
+                return str(self._ibis_expr._resolver.indexer.value)
+            return str(self._ibis_expr._resolver.indexer)
+        if isinstance(self._ibis_expr, ibis.expr.types.Value) and isinstance(
+            self._ibis_expr.op(), ibis.expr.operations.Field
+        ):
+            return self._ibis_expr.op().name
+        return str(self._ibis_expr)
 
 
 @dataclasses.dataclass

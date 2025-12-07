@@ -3,8 +3,7 @@ import ibis
 from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.expr import WhenExpr
 from pyspark_dubber.sql.functions.normal import ColumnOrName, _col_fn, lit
-from pyspark_dubber.sql.functions import isnull
-from pyspark_dubber.sql.functions.predicate import isnan
+from pyspark_dubber.sql.functions.predicate import isnan, isnull
 
 
 def coalesce(*cols: ColumnOrName) -> Expr:

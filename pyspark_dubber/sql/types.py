@@ -4,7 +4,6 @@ from typing import Any
 
 import ibis
 import ibis.expr.datatypes
-from duckdb.experimental.spark.sql.functions import length
 from duckdb.experimental.spark.sql.types import StructField
 
 

@@ -1,11 +1,12 @@
 from itertools import count
-from typing import Iterable, Any
+from typing import Iterable, Any, Sequence
 
 import ibis
 import numpy
 import pandas
 import pyarrow
 
+from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.errors import PySparkTypeError, PySparkValueError
 from pyspark_dubber.sql.dataframe import DataFrame
 from pyspark_dubber.sql.input import DataFrameReader
@@ -17,6 +18,8 @@ from pyspark_dubber.sql.types import (
     StringType,
     LongType,
     BooleanType,
+    DoubleType,
+    DataType,
 )
 
 
@@ -47,16 +50,25 @@ class SparkSession:
 
     builder = Builder()
 
+    @incompatibility(
+        "Generally `createDataFrame` is a complex method, so certain edge "
+        "cases are not handled correctly. Some notable incompatibilities with pyspark:\n\n"
+        "- numpy arrays are not yet accepted as input data type.\n"
+        "- `samplingRatio` is not honored.\n"
+    )
     def createDataFrame(
         self,
         # TODO: RDD support
         data: Iterable[Row | dict[str, Any] | Any] | pandas.DataFrame | numpy.ndarray,
-        schema: StructType | AtomicType | str | list[str] | None = None,
+        schema: StructType | AtomicType | str | Sequence[str] | None = None,
         samplingRatio: float | None = None,
         verifySchema: bool = True,
     ) -> DataFrame:
         if isinstance(data, numpy.ndarray):
             raise NotImplementedError("Numpy ndarray support is not implemented yet.")
+
+        if isinstance(schema, str):
+            schema = DataType.fromDDL(schema)
 
         data_for_schema = data
         if isinstance(data, pandas.DataFrame):
@@ -67,7 +79,7 @@ class SparkSession:
 
         # Ibis implements all this but we re-implement a first pass to raise
         # the same errors as pyspark for error-level compatibility
-        if schema is None or isinstance(schema, list):
+        if schema is None or isinstance(schema, Sequence):
             final_schema = self._infer_schema(data_for_schema, schema)
         elif verifySchema:
             self._verify_schema(data_for_schema, schema)
@@ -88,7 +100,7 @@ class SparkSession:
         preferred_column_names: list[str] | None = None,
     ) -> StructType:
         if preferred_column_names is None:
-            preferred_column_names = (f"_{i}" for i, n in count(1))
+            preferred_column_names = (f"_{i}" for i in count(1))
 
         data = list(data)
         if not data:
@@ -121,6 +133,8 @@ class SparkSession:
                         fields[i] = StructField(col, BooleanType(), True)
                     elif isinstance(value, int):
                         fields[i] = StructField(col, LongType(), True)
+                    elif isinstance(value, float):
+                        fields[i] = StructField(col, DoubleType(), True)
                     elif value is None:
                         continue
                     else:
@@ -143,12 +157,16 @@ class SparkSession:
         data: Iterable[Row | dict[str, Any] | Any],
         schema: StructType | AtomicType | str,
     ) -> None:
-        if isinstance(schema, str):
-            raise NotImplementedError("DDL schema support is not implemented yet.")
-
         for row in data:
             if isinstance(row, dict):
                 row = Row(**row)
+            elif isinstance(row, Sequence):
+                if isinstance(schema, AtomicType):
+                    raise PySparkTypeError(
+                        f"[CANNOT_ACCEPT_OBJECT_IN_TYPE] `{type(schema).__name__}` "
+                        f"can not accept object `{row}` in type `{type(row).__name__}`."
+                    )
+                row = Row(**dict(zip(schema.names, row)))
             elif not isinstance(row, Row):
                 # Atomic type
                 if not isinstance(schema, AtomicType):

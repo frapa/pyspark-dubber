@@ -184,7 +184,41 @@ class DataFrame:
     sort = orderBy
 
     def union(self, other: "DataFrame") -> "DataFrame":
-        return DataFrame(self._ibis_df.union(other._ibis_df))
+        """Returns a new DataFrame containing union of rows in this and another DataFrame.
+
+        This is equivalent to `UNION ALL` in SQL. To do a SQL-style set union
+        (that does deduplication of elements), use this function followed by :func:`distinct`.
+
+        Also as standard in SQL, this function resolves columns by position (not by name).
+        """
+        # PySpark union resolves by position, but ibis union resolves by name and type.
+        # To match PySpark behavior, select columns from other by position, rename them
+        # to match self's column names, and handle type differences.
+        my_schema = self._ibis_df.schema()
+        other_schema = other._ibis_df.schema()
+        other_cols = other._ibis_df.columns
+
+        # Build column expressions for both DataFrames, handling type mismatches
+        my_aligned_cols = {}
+        other_aligned_cols = {}
+
+        for i, my_name in enumerate(my_schema.names):
+            other_col = other_cols[i]
+            my_type = my_schema[my_name]
+            other_type = other_schema[other_col]
+
+            if my_type == other_type:
+                # Types match, no casting needed
+                my_aligned_cols[my_name] = self._ibis_df[my_name]
+                other_aligned_cols[my_name] = other._ibis_df[other_col]
+            else:
+                # Types differ - PySpark widens to string
+                my_aligned_cols[my_name] = self._ibis_df[my_name].cast("string")
+                other_aligned_cols[my_name] = other._ibis_df[other_col].cast("string")
+
+        my_aligned = self._ibis_df.select(**my_aligned_cols)
+        other_aligned = other._ibis_df.select(**other_aligned_cols)
+        return DataFrame(my_aligned.union(other_aligned))
 
     unionAll = union
 
@@ -349,12 +383,10 @@ class DataFrame:
     )
     def dropna(
         self,
-        how: str = "any",
+        how: str = Literal["any", "all"],
         thresh: int | None = None,
         subset: str | Sequence[str] | None = None,
     ) -> "DataFrame":
-        if isinstance(subset, str):
-            subset = [subset]
         return DataFrame(self._ibis_df.drop_null(subset, how=how))
 
     def isLocal(self):

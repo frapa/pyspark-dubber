@@ -7,8 +7,8 @@ import sqlglot
 from pyspark_dubber.sql import functions
 from pyspark_dubber.sql.expr import Expr, lit
 
-ColumnOrName = Expr | str
-
+Column = Expr
+ColumnOrName = Column | str
 
 def _col_fn(col: ColumnOrName) -> Expr:
     if isinstance(col, Expr):

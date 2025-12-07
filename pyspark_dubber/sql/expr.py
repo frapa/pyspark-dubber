@@ -112,6 +112,10 @@ class Expr:
     def eqNullSafe(self, other: "Expr") -> "Expr":
         return Expr(self._ibis_expr.identical_to(other.to_ibis()))
 
+    def isin(self, *cols: "Expr | ScalarValue") -> "Expr":
+        values = [lit(c).to_ibis() for c in cols]
+        return Expr(self._ibis_expr.isin(values))
+
     def __eq__(self, other: "Expr") -> "Expr":
         return Expr(self._ibis_expr == lit(other).to_ibis())
 

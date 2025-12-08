@@ -1,4 +1,5 @@
 import dataclasses
+import itertools
 import math
 from typing import Sequence, Literal, Any
 
@@ -82,7 +83,7 @@ class DataFrame:
         for row in self._ibis_df.limit(n).to_pyarrow().to_pylist():
             cells = [_format_value(c) for c in row.values()]
             rows.append(cells)
-            lengths = [max(lengths[i], len(c)) for i, c in enumerate(cells)]
+            lengths = [max(lengths[i], len(c), 3) for i, c in enumerate(cells)]
 
         divider = "+" + "+".join("-" * l for l in lengths) + "+"
 
@@ -388,4 +389,8 @@ def _format_value(value: Any) -> str:
         return str(value).lower()
     if isinstance(value, float) and math.isnan(value):
         return "NaN"
+    if isinstance(value, bytes):
+        hex_val = value.hex().upper()
+        bytes_list = " ".join(hex_val[i:i+2] for i in range(0, len(hex_val), 2))
+        return f"[{bytes_list}]"
     return str(value)

@@ -190,6 +190,7 @@ class Expr:
     def __str__(self) -> str:
         if isinstance(self._ibis_expr, ibis.expr.operations.Alias):
             return self._ibis_expr.name
+
         if isinstance(self._ibis_expr, ibis.Deferred) and isinstance(
             self._ibis_expr._resolver, ibis.common.deferred.Item
         ):
@@ -197,10 +198,15 @@ class Expr:
             if isinstance(self._ibis_expr._resolver.indexer, ibis.common.deferred.Just):
                 return str(self._ibis_expr._resolver.indexer.value)
             return str(self._ibis_expr._resolver.indexer)
+
         if isinstance(self._ibis_expr, ibis.expr.types.Value) and isinstance(
             self._ibis_expr.op(), ibis.expr.operations.Field
         ):
             return self._ibis_expr.op().name
+
+        if isinstance(self._ibis_expr.op(), ibis.expr.operations.Literal):
+            return str(self._ibis_expr.op().value)
+
         return str(self._ibis_expr)
 
 

@@ -40,8 +40,8 @@ def call_function(funcName: str, *cols: ColumnOrName) -> Expr:
     return func(*[_col_fn(c) for c in cols])
 
 
-def expr(str_: str) -> Expr:
-    ast = sqlglot.parse_one(str_, dialect="spark")
+def expr(str: str) -> Expr:
+    ast = sqlglot.parse_one(str, dialect="spark")
     return Expr(_build_ibis_expr(ast))
 
 
@@ -52,7 +52,10 @@ def _build_ibis_expr(ast: sqlglot.Expression) -> ibis.Value | ibis.Deferred:
         conditions = ast.args["ifs"]
         default = ast.args.get("default")
         return ibis.cases(
-            *[(_build_ibis_expr(cond.this), _build_ibis_expr(cond.args["true"])) for cond in conditions],
+            *[
+                (_build_ibis_expr(cond.this), _build_ibis_expr(cond.args["true"]))
+                for cond in conditions
+            ],
             else_=default and _build_ibis_expr(default),
         )
 
@@ -121,7 +124,6 @@ def _build_ibis_expr(ast: sqlglot.Expression) -> ibis.Value | ibis.Deferred:
         if isinstance(value, int):
             return ibis.literal(value).cast("int32")
         return ibis.literal(value)
-
 
     raise NotImplementedError(
         f"Parsing of expression '{ast.sql(dialect='spark')}' not implemented:\n{repr(ast)}"

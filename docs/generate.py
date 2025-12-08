@@ -104,7 +104,15 @@ API_AREAS = [
         dubber_types,
         "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.types.{api}.html",
         lambda t: inspect.isclass(t)
-        and issubclass(t, (types.DataType, dubber_types.DataType)),
+        and issubclass(
+            t,
+            (
+                types.DataType,
+                dubber_types.DataType,
+                types.StructField,
+                dubber_types.StructField,
+            ),
+        ),
     ),
 ]
 

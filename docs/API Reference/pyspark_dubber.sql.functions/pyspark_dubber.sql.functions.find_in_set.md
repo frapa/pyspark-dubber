@@ -2,8 +2,8 @@
 
 ```python
 pyspark_dubber.sql.functions.find_in_set(
-	str_: str,
-	str_array: pyspark_dubber.sql.expr.Expr | str,
+	str: str,
+	strarray: pyspark_dubber.sql.expr.Expr | str,
 )
 ```
 

@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from itertools import count
 from typing import Iterable, Any, Sequence
 
@@ -20,6 +21,8 @@ from pyspark_dubber.sql.types import (
     BooleanType,
     DoubleType,
     DataType,
+    DateType,
+    TimestampType,
 )
 
 
@@ -135,6 +138,10 @@ class SparkSession:
                         fields[i] = StructField(col, LongType(), True)
                     elif isinstance(value, float):
                         fields[i] = StructField(col, DoubleType(), True)
+                    elif isinstance(value, date):
+                        fields[i] = StructField(col, DateType(), True)
+                    elif isinstance(value, datetime):
+                        fields[i] = StructField(col, TimestampType(), True)
                     elif value is None:
                         continue
                     else:

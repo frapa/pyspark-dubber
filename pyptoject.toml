@@ -15,6 +15,7 @@ dependencies = [
     "pyarrow-hotfix",
     "sqlglot[rs]",
     "python-dateutil",
+    "tzlocal",
 ]
 
 [project.optional-dependencies]

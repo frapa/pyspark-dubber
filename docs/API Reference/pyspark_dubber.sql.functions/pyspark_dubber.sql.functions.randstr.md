@@ -11,5 +11,5 @@ pyspark_dubber.sql.functions.randstr(
 
 !!! warning "Incompatibility Note"
 
-    The `seed` argument is not honored.
+    The `seed` argument is not honored. Output is lowercase-only.
 

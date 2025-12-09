@@ -218,7 +218,10 @@ def _iter_apis(obj: Any, filter_: Callable[[Any], bool] | None = None) -> Iterab
         if api.startswith("_") or not callable(api_func):
             continue
 
-        if obj is functions and getattr(obj, api).__module__ != "pyspark.sql.functions":
+        if obj is functions and getattr(obj, api).__module__ not in {
+            "pyspark.sql.functions",
+            "pyspark.sql.functions.builtin",
+        }:
             continue
 
         if filter_ is not None and not filter_(api_func):

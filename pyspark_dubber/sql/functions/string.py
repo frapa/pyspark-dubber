@@ -98,12 +98,16 @@ substring = substr
 def lower(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().lower())
 
+
 lcase = lower
+
 
 def upper(col: ColumnOrName) -> Expr:
     return Expr(col_fn(col).to_ibis().upper())
 
+
 ucase = upper
+
 
 def levenshtein(
     left: ColumnOrName, right: ColumnOrName, threshold: int | None = None
@@ -125,7 +129,13 @@ def lpad(col: ColumnOrName, len: Expr | int, pad: Expr | str) -> Expr:
 
 
 def ltrim(col: ColumnOrName, trim: ColumnOrName | None = None) -> Expr:
-    return _trim(lambda e: e.lstrip(), pyarrow.compute.utf8_ltrim, lambda s, t: s.lstrip(t), col, trim)
+    return _trim(
+        lambda e: e.lstrip(),
+        pyarrow.compute.utf8_ltrim,
+        lambda s, t: s.lstrip(t),
+        col,
+        trim,
+    )
 
 
 def right(col: Expr | str, len: ColumnOrName | int) -> Expr:
@@ -139,10 +149,22 @@ def rpad(col: ColumnOrName, len: Expr | int, pad: Expr | str) -> Expr:
 
 
 def rtrim(col: ColumnOrName, trim: ColumnOrName | None = None) -> Expr:
-    return _trim(lambda e: e.rstrip(), pyarrow.compute.utf8_rtrim, lambda s, t: s.rstrip(t), col, trim)
+    return _trim(
+        lambda e: e.rstrip(),
+        pyarrow.compute.utf8_rtrim,
+        lambda s, t: s.rstrip(t),
+        col,
+        trim,
+    )
 
 
-def _trim(ibis_func: Callable, pyarrow_op: Callable, python_func: Callable, col: ColumnOrName, trim: ColumnOrName | None = None) -> Expr:
+def _trim(
+    ibis_func: Callable,
+    pyarrow_op: Callable,
+    python_func: Callable,
+    col: ColumnOrName,
+    trim: ColumnOrName | None = None,
+) -> Expr:
     if trim is None:
         return Expr(ibis_func(col_fn(col).to_ibis()))
 
@@ -166,16 +188,25 @@ def _trim(ibis_func: Callable, pyarrow_op: Callable, python_func: Callable, col:
 
 
 def trim(col: ColumnOrName, trim: ColumnOrName | None = None) -> Expr:
-    return _trim(lambda e: e.strip(), pyarrow.compute.utf8_trim, lambda s, t: s.strip(t), col, trim)
+    return _trim(
+        lambda e: e.strip(),
+        pyarrow.compute.utf8_trim,
+        lambda s, t: s.strip(t),
+        col,
+        trim,
+    )
 
 
 # Could not spot any difference
 btrim = trim
 
+
 @incompatibility("The `seed` argument is not honored. Output is lowercase-only.")
 def randstr(length: Expr | int, seed: Expr | int | None = None) -> Expr:
     # TODO: validate length, that can only be either 16 or 32
-    return Expr((ibis.random() * sys.maxsize).cast("str").hexdigest().substr(1, length)).alias(f"randstr({length}, {seed})")
+    return Expr(
+        (ibis.random() * sys.maxsize).cast("str").hexdigest().substr(1, length)
+    ).alias(f"randstr({length}, {seed})")
 
 
 def regex_count(str: ColumnOrName, pattern: ColumnOrName) -> Expr:
@@ -230,7 +261,6 @@ def split_part(
     )
 
 
-
 @incompatibility("Negative counts are not supported.")
 def substring_index(str: ColumnOrName, delim: str, count: int) -> Expr:
     str_ = col_fn(str)
@@ -253,7 +283,9 @@ def to_binary(col: Expr | str, format: ColumnOrName = lit("hex")) -> Expr:
     if isinstance(format.to_ibis().op(), ibis.expr.operations.Literal):
         format_str = format.to_ibis().op().value.lower()
         if format_str == "utf8" or format_str == "utf-8":
-            return Expr(lit(col).to_ibis().cast("binary")).alias(f"to_binary({col}, {format})")
+            return Expr(lit(col).to_ibis().cast("binary")).alias(
+                f"to_binary({col}, {format})"
+            )
 
     @ibis.udf.scalar.python
     def to_binary(data: str, format: str) -> bytes:
@@ -270,7 +302,9 @@ def to_binary(col: Expr | str, format: ColumnOrName = lit("hex")) -> Expr:
         data = f"{data}{'=' * (len(data) % 4)}"
         return base64_lib.b64decode(data.encode())
 
-    return Expr(to_binary(lit(col).to_ibis(), format.to_ibis())).alias(f"to_binary({col}, {format})")
+    return Expr(to_binary(lit(col).to_ibis(), format.to_ibis())).alias(
+        f"to_binary({col}, {format})"
+    )
 
 
 def translate(srcCol: ColumnOrName, matching: str, replace: str) -> Expr:

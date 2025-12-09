@@ -391,6 +391,6 @@ def _format_value(value: Any) -> str:
         return "NaN"
     if isinstance(value, bytes):
         hex_val = value.hex().upper()
-        bytes_list = " ".join(hex_val[i:i+2] for i in range(0, len(hex_val), 2))
+        bytes_list = " ".join(hex_val[i : i + 2] for i in range(0, len(hex_val), 2))
         return f"[{bytes_list}]"
     return str(value)

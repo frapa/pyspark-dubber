@@ -58,7 +58,7 @@ def test_date_from_unix_date(spark, load):
 
     df.select(
         "*",
-        functions.date_from_unix_date("days"),
+        functions.date_from_unix_date(df.days),
     ).show()
 
 

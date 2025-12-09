@@ -89,7 +89,7 @@ class DataType(abc.ABC):
             if subclass.__name__ == "AtomicType":
                 continue
 
-            if ddl in subclass._ddl_base_names():
+            if ddl in (subclass._ddl_base_names() or ()):
                 return subclass()
 
         raise ValueError(f"No DataType found for DDL: {ddl}")
@@ -411,6 +411,9 @@ class TimestampType(AtomicType):
         return "timestamp", "timestamp_ntz"
 
 
+TimestampNTZType = TimestampType
+
+
 @dataclasses.dataclass
 class NullType(AtomicType):
     def to_ibis(self, nullable=True) -> ibis.DataType:
@@ -422,3 +425,34 @@ class NullType(AtomicType):
     @staticmethod
     def _ddl_base_names() -> tuple[str, ...]:
         return ("void",)
+
+
+@dataclasses.dataclass
+class DayTimeIntervalType(AtomicType):
+    def to_ibis(self, nullable=True) -> ibis.DataType:
+        return ibis.dtype("interval", nullable=nullable)
+
+    def _to_pyspark(self, st):
+        return st.DayTimeIntervalType()
+
+    @staticmethod
+    def _ddl_base_names() -> tuple[str, ...]:
+        return (
+            "interval year",
+            "interval year to month",
+            "interval month",
+            "interval day",
+            "interval day to hour",
+            "interval day to minute",
+            "interval day to second",
+            "interval hour",
+            "interval hour to minute",
+            "interval hour to second",
+            "interval minute",
+            "interval minute to second",
+            "interval second",
+        )
+
+
+YearMonthIntervalType = DayTimeIntervalType
+CalendarIntervalType = DayTimeIntervalType

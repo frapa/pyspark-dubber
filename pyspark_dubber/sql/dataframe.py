@@ -26,6 +26,7 @@ class DataFrame:
     def columns(self) -> list[str]:
         return list(self._ibis_df.columns)
 
+    @property
     def schema(self) -> StructType:
         return DataType.from_ibis(self._ibis_df.schema)
 

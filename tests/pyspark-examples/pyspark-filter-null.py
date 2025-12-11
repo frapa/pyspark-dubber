@@ -5,19 +5,15 @@ author SparkByExamples.com
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
-spark: SparkSession = SparkSession.builder \
-    .master("local[1]") \
-    .appName("SparkByExamples.com") \
-    .getOrCreate()
 
-data = [
-    ("James",None,"M"),
-    ("Anna","NY","F"),
-    ("Julia",None,None)
-]
+spark: SparkSession = (
+    SparkSession.builder.master("local[1]").appName("SparkByExamples.com").getOrCreate()
+)
 
-columns = ["name","state","gender"]
-df =spark.createDataFrame(data,columns)
+data = [("James", None, "M"), ("Anna", "NY", "F"), ("Julia", None, None)]
+
+columns = ["name", "state", "gender"]
+df = spark.createDataFrame(data, columns)
 
 df.printSchema()
 df.show()
@@ -39,7 +35,3 @@ df.createOrReplaceTempView("DATA")
 spark.sql("SELECT * FROM DATA where STATE IS NULL").show()
 spark.sql("SELECT * FROM DATA where STATE IS NULL AND GENDER IS NULL").show()
 spark.sql("SELECT * FROM DATA where STATE IS NOT NULL").show()
-
-
-
-

@@ -102,7 +102,13 @@ def comparison_test(func: Callable) -> Callable:
             dubber_result = dubber_result.toPandas().to_dict(orient="records")
 
         assert dubber_stdout == spark_stdout
-        assert dubber_result == spark_result
+
+        if spark_result is not None and dubber_result is not None:
+            assert dubber_result.toPandas().to_dict(
+                orient="records"
+            ) == spark_result.toPandas().to_dict(orient="records")
+        else:
+            assert dubber_result == spark_result
 
         print(f"pyspark:\n{spark_stdout}\npyspark-dubber\n{dubber_stdout}\n")
 

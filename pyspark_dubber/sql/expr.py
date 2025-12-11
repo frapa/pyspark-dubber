@@ -1,5 +1,6 @@
 import dataclasses
 from datetime import date, datetime
+from typing import Sequence
 
 import ibis.common.deferred
 import ibis.expr.operations
@@ -111,6 +112,14 @@ class Expr:
 
     def eqNullSafe(self, other: "Expr") -> "Expr":
         return Expr(self._ibis_expr.identical_to(other.to_ibis()))
+
+    def isin(self, *cols: "Expr | LiteralValue") -> "Expr":
+        if len(cols) > 0 and isinstance(cols[0], Sequence):
+            if len(cols[0]) > 1:
+                raise ValueError("isin() does not support multiple sequences")
+            cols = cols[0]
+        values = [lit(c).to_ibis() for c in cols]
+        return Expr(self._ibis_expr.isin(values))
 
     def __eq__(self, other: "Expr") -> "Expr":
         return Expr(self._ibis_expr == lit(other).to_ibis())

@@ -90,12 +90,26 @@ class SparkSession:
 
         ibis_struct = final_schema.to_ibis()
         ibis_schema = ibis.Schema.from_tuples(ibis_struct.fields.items())
-        # Convert to pyarrow, because pandas is shit and casts types weirdly (like int to float if there's a null)
-        arrow_data = pyarrow.Table.from_pylist(
-            [dict(zip(ibis_struct.names, r)) for r in data],
-            schema=ibis_schema.to_pyarrow(),
-        )
-        return DataFrame(ibis.memtable(arrow_data, schema=ibis_schema))
+        # Convert to pyarrow, because pandas is casting types weirdly (like int to float if there's a null)
+        if isinstance(data, pandas.DataFrame):
+            return DataFrame(ibis.memtable(data, schema=ibis_schema))
+        elif isinstance(data, numpy.ndarray):
+            raise NotImplementedError("Numpy ndarray support is not implemented yet.")
+        else:
+            if len(data) > 0 and isinstance(data[0], dict):
+                arrow_data = pyarrow.Table.from_pylist(
+                    data, schema=ibis_schema.to_pyarrow()
+                )
+            elif len(data) > 0 and isinstance(data[0], Row):
+                arrow_data = pyarrow.Table.from_pylist(
+                    [r.asDict() for r in data], schema=ibis_schema.to_pyarrow()
+                )
+            else:
+                arrow_data = pyarrow.Table.from_pylist(
+                    [dict(zip(ibis_struct.names, r)) for r in data],
+                    schema=ibis_schema.to_pyarrow(),
+                )
+            return DataFrame(ibis.memtable(arrow_data, schema=ibis_schema))
 
     def _infer_schema(
         self,

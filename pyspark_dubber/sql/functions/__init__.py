@@ -55,6 +55,7 @@ from pyspark_dubber.sql.functions.misc import (
     broadcast,
     bitwise_not,
     bitwiseNOT,
+    assert_true,
 )
 from pyspark_dubber.sql.functions.normal import (
     call_function,
@@ -331,4 +332,5 @@ __all__ = [
     "unix_seconds",
     "unix_millis",
     "unix_micros",
+    "assert_true",
 ]

@@ -8,6 +8,7 @@ import ibis.expr.operations
 import pandas
 
 from pyspark_dubber.docs import incompatibility
+from pyspark_dubber.errors import AnalysisException
 from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions import expr, col
 from pyspark_dubber.sql.functions.normal import ColumnOrName
@@ -24,6 +25,9 @@ class DataFrame:
     @property
     def columns(self) -> list[str]:
         return list(self._ibis_df.columns)
+
+    def schema(self) -> StructType:
+        return DataType.from_ibis(self._ibis_df.schema)
 
     @property
     def dtypes(self) -> list[tuple[str, str]]:
@@ -183,24 +187,43 @@ class DataFrame:
 
     sort = orderBy
 
+    def union(self, other: "DataFrame") -> "DataFrame":
+        if len(self.columns) != len(other.columns):
+            raise ValueError("Cannot union dataframes with different column counts.")
+        elif [t for _, t in self.dtypes] != [t for _, t in other.dtypes]:
+            raise ValueError(f"Cannot union dataframes with different dtypes. {self.dtypes} != {other.dtypes}")
+
+        other_aligned = other.select(*(
+            col(o).alias(c)
+            for c, o in zip(self.columns, other.columns)
+        ))
+        return self.unionByName(other_aligned)
+
+    unionAll = union
+
     def unionByName(
         self, other: "DataFrame", allowMissingColumns: bool = False
     ) -> "DataFrame":
-        if allowMissingColumns:
-            my_cols = set(self._ibis_df.columns)
-            other_cols = set(other._ibis_df.columns)
+        my_cols = set(self._ibis_df.columns)
+        other_cols = set(other._ibis_df.columns)
+        my_missing_cols = other_cols.difference(my_cols)
+        other_missing_cols = my_cols.difference(other_cols)
 
-            my_missing_cols = other_cols.difference(my_cols)
+        if allowMissingColumns:
             me_filled = self._ibis_df.mutate(
                 **{c: ibis.null(other._ibis_df.schema()[c]) for c in my_missing_cols}
             )
 
-            other_missing_cols = my_cols.difference(other_cols)
             other_filled = other._ibis_df.mutate(
                 **{c: ibis.null(self._ibis_df.schema()[c]) for c in other_missing_cols}
             )
 
             return DataFrame(me_filled).unionByName(DataFrame(other_filled))
+
+        if other_missing_cols:
+            raise AnalysisException(f'Cannot resolve column name "{other_missing_cols.pop()}" among ({', '.join(other_cols)}).')
+        if my_missing_cols:
+            raise AnalysisException(f'Cannot resolve column name "{my_missing_cols.pop()}" among ({', '.join(my_cols)}).')
 
         return DataFrame(self._ibis_df.union(other._ibis_df))
 
@@ -338,6 +361,18 @@ class DataFrame:
             else:
                 value = {k: value for k in subset}
         return DataFrame(self._ibis_df.fill_null(value))
+
+    @incompatibility("The `thresh` parameter is not honored.")
+    def dropna(
+        self,
+        how: str = Literal["any", "all"],
+        thresh: int | None = None,
+        subset: str | Sequence[str] | None = None,
+    ) -> "DataFrame":
+        return DataFrame(self._ibis_df.drop_null(subset, how=how))
+
+    def isLocal(self):
+        return True
 
     def __getitem__(self, name: str) -> Expr:
         if name not in self._ibis_df.columns:

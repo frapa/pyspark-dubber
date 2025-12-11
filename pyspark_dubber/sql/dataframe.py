@@ -8,6 +8,7 @@ import ibis.expr.operations
 import pandas
 
 from pyspark_dubber.docs import incompatibility
+from pyspark_dubber.errors import AnalysisException
 from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions import expr, col
 from pyspark_dubber.sql.functions.normal import ColumnOrName
@@ -24,6 +25,9 @@ class DataFrame:
     @property
     def columns(self) -> list[str]:
         return list(self._ibis_df.columns)
+
+    def schema(self) -> StructType:
+        return DataType.from_ibis(self._ibis_df.schema)
 
     @property
     def dtypes(self) -> list[tuple[str, str]]:
@@ -184,62 +188,42 @@ class DataFrame:
     sort = orderBy
 
     def union(self, other: "DataFrame") -> "DataFrame":
-        """Returns a new DataFrame containing union of rows in this and another DataFrame.
+        if len(self.columns) != len(other.columns):
+            raise ValueError("Cannot union dataframes with different column counts.")
+        elif [t for _, t in self.dtypes] != [t for _, t in other.dtypes]:
+            raise ValueError(f"Cannot union dataframes with different dtypes. {self.dtypes} != {other.dtypes}")
 
-        This is equivalent to `UNION ALL` in SQL. To do a SQL-style set union
-        (that does deduplication of elements), use this function followed by :func:`distinct`.
-
-        Also as standard in SQL, this function resolves columns by position (not by name).
-        """
-        # PySpark union resolves by position, but ibis union resolves by name and type.
-        # To match PySpark behavior, select columns from other by position, rename them
-        # to match self's column names, and handle type differences.
-        my_schema = self._ibis_df.schema()
-        other_schema = other._ibis_df.schema()
-        other_cols = other._ibis_df.columns
-
-        # Build column expressions for both DataFrames, handling type mismatches
-        my_aligned_cols = {}
-        other_aligned_cols = {}
-
-        for i, my_name in enumerate(my_schema.names):
-            other_col = other_cols[i]
-            my_type = my_schema[my_name]
-            other_type = other_schema[other_col]
-
-            if my_type == other_type:
-                # Types match, no casting needed
-                my_aligned_cols[my_name] = self._ibis_df[my_name]
-                other_aligned_cols[my_name] = other._ibis_df[other_col]
-            else:
-                # Types differ - PySpark widens to string
-                my_aligned_cols[my_name] = self._ibis_df[my_name].cast("string")
-                other_aligned_cols[my_name] = other._ibis_df[other_col].cast("string")
-
-        my_aligned = self._ibis_df.select(**my_aligned_cols)
-        other_aligned = other._ibis_df.select(**other_aligned_cols)
-        return DataFrame(my_aligned.union(other_aligned))
+        other_aligned = other.select(*(
+            col(o).alias(c)
+            for c, o in zip(self.columns, other.columns)
+        ))
+        return self.unionByName(other_aligned)
 
     unionAll = union
 
     def unionByName(
         self, other: "DataFrame", allowMissingColumns: bool = False
     ) -> "DataFrame":
-        if allowMissingColumns:
-            my_cols = set(self._ibis_df.columns)
-            other_cols = set(other._ibis_df.columns)
+        my_cols = set(self._ibis_df.columns)
+        other_cols = set(other._ibis_df.columns)
+        my_missing_cols = other_cols.difference(my_cols)
+        other_missing_cols = my_cols.difference(other_cols)
 
-            my_missing_cols = other_cols.difference(my_cols)
+        if allowMissingColumns:
             me_filled = self._ibis_df.mutate(
                 **{c: ibis.null(other._ibis_df.schema()[c]) for c in my_missing_cols}
             )
 
-            other_missing_cols = my_cols.difference(other_cols)
             other_filled = other._ibis_df.mutate(
                 **{c: ibis.null(self._ibis_df.schema()[c]) for c in other_missing_cols}
             )
 
             return DataFrame(me_filled).unionByName(DataFrame(other_filled))
+
+        if other_missing_cols:
+            raise AnalysisException(f'Cannot resolve column name "{other_missing_cols.pop()}" among ({', '.join(other_cols)}).')
+        if my_missing_cols:
+            raise AnalysisException(f'Cannot resolve column name "{my_missing_cols.pop()}" among ({', '.join(my_cols)}).')
 
         return DataFrame(self._ibis_df.union(other._ibis_df))
 

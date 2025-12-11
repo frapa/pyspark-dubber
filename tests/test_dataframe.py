@@ -5,7 +5,6 @@ from tests.conftest import comparison_test, parametrize
 
 
 def test_dataframe_drop(spark_dubber: DubberSparkSession) -> None:
-    """This uses the examples from the spark documentation"""
     df = spark_dubber.createDataFrame(
         [(14, "Tom"), (23, "Alice"), (16, "Bob")], ["age", "name"]
     )
@@ -68,14 +67,48 @@ def test_union(spark, load, data, schema):
 
 
 @comparison_test
-def test_union_different_order(spark, load):
+def test_union_error(spark, load):
     df1 = spark.createDataFrame([(1, "a"), (2, "b")], ["id", "value"])
     df2 = spark.createDataFrame([("c", 3), ("d", 4)], ["value", "id"])
 
     df1.show()
     df2.show()
 
-    try:
+    with pytest.raises(Exception):
         df1.union(df2).show()
-    except Exception as err:
-        print(err)
+
+
+@comparison_test
+def test_union_by_name(spark, load) -> None:
+    df1 = spark.createDataFrame(
+        [(1, "a"), (2, "b")],
+        ["id", "value"],
+    )
+    df2 = spark.createDataFrame(
+        [("c", 3), ("d", 4)],
+        ["value", "id"],
+    )
+
+    df1.show()
+    df2.show()
+
+    df1.unionByName(df2).show()
+
+
+@comparison_test
+def test_union_by_name_error(spark, load) -> None:
+    df1 = spark.createDataFrame(
+        [(1, "a"), (2, "b")],
+        ["id", "value"],
+    )
+    df2 = spark.createDataFrame(
+        [(3, "c"), (4, "d")],
+        ["col_x", "col_y"],
+    )
+
+    df1.show()
+    df2.show()
+
+    errors = load("errors")
+    with pytest.raises(errors.AnalysisException):
+        df1.unionByName(df2).show()

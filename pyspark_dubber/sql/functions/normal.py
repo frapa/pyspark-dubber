@@ -10,6 +10,7 @@ from pyspark_dubber.sql.expr import Expr, lit
 Column = Expr
 ColumnOrName = Column | str
 
+
 def _col_fn(col: ColumnOrName) -> Expr:
     if isinstance(col, Expr):
         return col

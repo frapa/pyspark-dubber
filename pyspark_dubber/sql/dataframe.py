@@ -378,9 +378,7 @@ class DataFrame:
                 value = {k: value for k in subset}
         return DataFrame(self._ibis_df.fill_null(value))
 
-    @incompatibility(
-        "The `thresh` parameter is not honored."
-    )
+    @incompatibility("The `thresh` parameter is not honored.")
     def dropna(
         self,
         how: str = Literal["any", "all"],

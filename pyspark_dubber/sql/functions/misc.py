@@ -20,6 +20,7 @@ def bitwise_not(col: ColumnOrName) -> Expr:
 
 bitwiseNOT = bitwise_not
 
+
 @incompatibility(
     "This function does not raise an actual exception like PySpark's assert_true. "
     "Instead, it returns null when the condition is true and the error message when false. "

@@ -3,6 +3,7 @@ import ibis
 from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions.normal import ColumnOrName, _col_fn
 
+
 def isnull(col: ColumnOrName) -> Expr:
     col = _col_fn(col)
     return col.isNull().alias(f"({col} IS NULL)")

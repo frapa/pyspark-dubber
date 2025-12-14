@@ -192,12 +192,13 @@ class DataFrame:
         if len(self.columns) != len(other.columns):
             raise ValueError("Cannot union dataframes with different column counts.")
         elif [t for _, t in self.dtypes] != [t for _, t in other.dtypes]:
-            raise ValueError(f"Cannot union dataframes with different dtypes. {self.dtypes} != {other.dtypes}")
+            raise ValueError(
+                f"Cannot union dataframes with different dtypes. {self.dtypes} != {other.dtypes}"
+            )
 
-        other_aligned = other.select(*(
-            col(o).alias(c)
-            for c, o in zip(self.columns, other.columns)
-        ))
+        other_aligned = other.select(
+            *(col(o).alias(c) for c, o in zip(self.columns, other.columns))
+        )
         return self.unionByName(other_aligned)
 
     unionAll = union
@@ -222,9 +223,13 @@ class DataFrame:
             return DataFrame(me_filled).unionByName(DataFrame(other_filled))
 
         if other_missing_cols:
-            raise AnalysisException(f'Cannot resolve column name "{other_missing_cols.pop()}" among ({', '.join(other_cols)}).')
+            raise AnalysisException(
+                f'Cannot resolve column name "{other_missing_cols.pop()}" among ({', '.join(other_cols)}).'
+            )
         if my_missing_cols:
-            raise AnalysisException(f'Cannot resolve column name "{my_missing_cols.pop()}" among ({', '.join(my_cols)}).')
+            raise AnalysisException(
+                f'Cannot resolve column name "{my_missing_cols.pop()}" among ({', '.join(my_cols)}).'
+            )
 
         return DataFrame(self._ibis_df.union(other._ibis_df))
 

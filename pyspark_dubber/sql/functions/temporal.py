@@ -1,3 +1,4 @@
+import re
 from datetime import date, datetime
 from typing import Literal
 
@@ -53,11 +54,6 @@ datediff = date_diff
 @sql_func(col_name_args=("start", "days"))
 def date_sub(start: ColumnOrName, days: ColumnOrName | int) -> Expr:
     return start - days.as_interval("D")
-
-
-# @sql_func(col_name_args=("date"))
-# def date_format(date: ColumnOrName, format: str) -> Expr:
-#     return date.to_ibis().strftime(fmt)
 
 
 @sql_func(col_name_args="col")
@@ -300,7 +296,13 @@ def unix_date(col: ColumnOrName) -> Expr:
 
 @sql_func(col_name_args="col")
 def unix_seconds(col: ColumnOrName) -> Expr:
-    return (col - ibis.timestamp(1970, 1, 1, 0, 0, 0)).as_unit("s")
+    return col.epoch_seconds()
+
+
+def to_unix_timestamp(
+    timestamp: ColumnOrName, format: ColumnOrName | None = None
+) -> Expr:
+    return unix_seconds(to_timestamp_ntz(timestamp, format))
 
 
 @sql_func(col_name_args="col")
@@ -311,3 +313,95 @@ def unix_millis(col: ColumnOrName) -> Expr:
 @sql_func(col_name_args="col")
 def unix_micros(col: ColumnOrName) -> Expr:
     return (col - ibis.timestamp(1970, 1, 1, 0, 0, 0)).as_unit("us")
+
+
+@incompatibility(
+    "Certain esoteric formatting options are not supported, such as:\n\n"
+    "- G for the era designator\n"
+    "- Q for quarter of year\n"
+    "- timezones might be formatted differently or be offset by your local timezone,"
+    " since pyspark seems to assume UTC."
+)
+@sql_func(col_name_args="date")
+def date_format(date: ColumnOrName, format: str) -> Expr:
+    fmt = _spark_to_ibis_format(format)
+    return date.strftime(fmt)
+
+
+def _spark_to_ibis_format(fmt: str) -> str:
+    fmt = (
+        fmt.replace("yyyy", "%Y")
+        .replace("yyy", "%Y")
+        .replace("yy", "%y")
+        .replace("DDD", "%j")
+        .replace("DD", "%-j")
+        .replace("D", "%-j")
+        .replace("dd", "%-d")
+        .replace("L", "M")
+        .replace("MMMM", "%B")
+        .replace("MMM", "%b")
+        .replace("MM", "%m")
+        .replace("M", "%-m")
+        .replace("q", "Q")
+        .replace("EEEE", "%A")
+        .replace("EEE", "%a")
+        .replace("EE", "%a")
+        .replace("E", "%a")
+        .replace("F", "%w")
+        .replace("HH", "%H")
+        .replace("mm", "%M")
+        .replace("ss", "%S")
+        .replace("s", "%-S")
+        .replace("hh", "%I")
+        .replace("h", "%I")
+        .replace("kk", "%H")
+        .replace("X", "Z")
+        .replace("x", "Z")
+    )
+    fmt = re.sub(r"([^%-]|^)y", r"\1%Y", fmt)
+    fmt = re.sub(r"([^%-]|^)d", r"\1%-d", fmt)
+    fmt = re.sub(r"([^%-]|^)H", r"\1%-H", fmt)
+    fmt = re.sub(r"([^%-]|^)m", r"\1%-M", fmt)
+    fmt = re.sub(r"([^%-]|^)k", r"\1%-H", fmt)
+    fmt = re.sub(r"([^%-]|^)a", r"\1%p", fmt)
+    fmt = re.sub(r"([^%-]|^)Z", r"\1%z", fmt)
+    fmt = re.sub(r"([^%-]|^)z", r"\1%Z", fmt)
+    return fmt
+
+
+@sql_func(col_name_args="col")
+def to_date(col: ColumnOrName, format: str | None = None) -> Expr:
+    if format is None:
+        return col.cast("date")
+    fmt = _spark_to_ibis_format(format)
+    return col.as_date(fmt)
+
+
+@sql_func(col_name_args="col")
+def to_timestamp(col: ColumnOrName, format: str | None = None) -> Expr:
+    if format is None:
+        return col.cast("timestamp")
+    fmt = _spark_to_ibis_format(format)
+    return col.as_timestamp(fmt)
+
+
+@incompatibility("Using a non-lieral column is not supported for the format string.")
+@sql_func(col_name_args=("timestamp", "format"))
+def to_timestamp_ntz(
+    timestamp: ColumnOrName, format: ColumnOrName | None = None
+) -> Expr:
+    if format is None:
+        return timestamp.cast("timestamp")
+
+    if isinstance(format.op(), ibis.expr.operations.Literal):
+        fmt = _spark_to_ibis_format(format.op().value)
+    else:
+        raise ValueError(
+            "format can only be a literal string as of now, not a column expression."
+        )
+
+    return timestamp.as_timestamp(fmt)
+
+
+to_timestamp_ltz = to_timestamp_ntz
+try_to_timestamp = to_timestamp

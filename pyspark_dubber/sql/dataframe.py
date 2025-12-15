@@ -17,6 +17,8 @@ from pyspark_dubber.sql.row import Row
 from pyspark_dubber.sql.types import ArrayType
 from pyspark_dubber.sql.types import StructType, DataType
 
+from pyspark.storagelevel import StorageLevel
+
 
 @dataclasses.dataclass
 class DataFrame:
@@ -379,6 +381,35 @@ class DataFrame:
 
     def isLocal(self):
         return True
+
+    def checkpoint(self,
+        eager: bool = True
+    ) -> "DataFrame":
+        return self  #noop
+
+    def coalesce(self,
+        numPartitions: int
+    ) -> "DataFrame":
+        return self #noop
+
+    def createGlobalTempView(self,
+        name: str
+    ) -> bool:
+        return True #noop
+
+    createOrReplaceGlobalTempView = createGlobalTempView
+
+    def createTempView(self,
+        name: str
+    ) -> bool:
+        return True #noop
+
+    createOrReplaceTempView = createTempView
+
+    def persist(self,
+        storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_DESER
+    ) -> "DataFrame":
+        return self #noop
 
     def __getitem__(self, name: str) -> Expr:
         if name not in self._ibis_df.columns:

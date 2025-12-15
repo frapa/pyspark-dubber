@@ -212,6 +212,7 @@ from pyspark_dubber.sql.functions.temporal import (
 )
 from pyspark_dubber.sql.functions.array import (
     array_append,
+    array_contains,
 )
 
 __all__ = [
@@ -422,4 +423,5 @@ __all__ = [
     "try_to_timestamp",
     "to_unix_timestamp",
     "array_append",
+    "array_contains",
 ]

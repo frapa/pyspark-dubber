@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.groupBy/">
+        <link rel="canonical" href="https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.sortWithinPartitions/">
       
       
-        <link rel="prev" href="../DataFrame.filter/">
+        <link rel="prev" href="../DataFrame.sort/">
       
       
-        <link rel="next" href="../DataFrame.groupby/">
+        <link rel="next" href="../DataFrame.where/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>DataFrame.groupBy - PySpark Dubber</title>
+        <title>DataFrame.sortWithinPartitions - PySpark Dubber</title>
       
     
     
@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#dataframegroupby" class="md-skip">
+        <a href="#dataframesortwithinpartitions" class="md-skip">
           Skip to content
         </a>
       
@@ -122,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              DataFrame.groupBy
+              DataFrame.sortWithinPartitions
             
           </span>
         </div>
@@ -531,19 +531,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../DataFrame.groupBy/" class="md-nav__link">
         
   
   
@@ -559,7 +550,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -709,10 +699,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../DataFrame.sortWithinPartitions/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -728,6 +727,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1678,15 +1678,16 @@
   
 
 
-<h1 id="dataframegroupby">DataFrame.groupBy</h1>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">DataFrame</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span>
+<h1 id="dataframesortwithinpartitions">DataFrame.sortWithinPartitions</h1>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">DataFrame</span><span class="o">.</span><span class="n">sortWithinPartitions</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="o">*</span><span class="n">cols</span><span class="p">:</span> <span class="n">pyspark_dubber</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">expr</span><span class="o">.</span><span class="n">Expr</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">ascending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><a href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html">PySpark API Reference</a></p>
+<p><a href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sortWithinPartitions.html">PySpark API Reference</a></p>
 <div class="admonition warning">
 <p class="admonition-title">Incompatibility Note</p>
-<p>Currently only column names are supported for grouping, column expressions are not supported.</p>
+<p>Sorting by column ordinals (which are 1-based, not 0-based) is not supported yet. Additionally, this function still needs better testing around edge cases, when sorting with complex column expressions which include sorting.</p>
 </div>
 
 

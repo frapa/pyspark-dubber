@@ -392,6 +392,18 @@ class DataFrame:
     ) -> "DataFrame":
         return self #noop
 
+    def repartition(self,
+        numPartitions: int,
+        *cols: ColumnOrName
+    ) -> "DataFrame":
+        return self #noop
+
+    def repartitionByRange(self,
+        numPartitions: int,
+        *cols: ColumnOrName
+    ) -> "DataFrame":
+        return self #noop
+
     def createGlobalTempView(self,
         name: str
     ) -> bool:

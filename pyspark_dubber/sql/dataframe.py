@@ -1,5 +1,4 @@
 import dataclasses
-import itertools
 import math
 from typing import Sequence, Literal, Any
 
@@ -187,6 +186,7 @@ class DataFrame:
         return DataFrame(self._ibis_df.order_by(*sorted_ibis_exprs))
 
     sort = orderBy
+    sortWithinPartitions = orderBy
 
     def union(self, other: "DataFrame") -> "DataFrame":
         if len(self.columns) != len(other.columns):
@@ -379,6 +379,33 @@ class DataFrame:
 
     def isLocal(self):
         return True
+
+    def checkpoint(self, eager: bool = True) -> "DataFrame":
+        return self
+
+    def coalesce(self, numPartitions: int) -> "DataFrame":
+        return self
+
+    def repartition(self, numPartitions: int, *cols: ColumnOrName) -> "DataFrame":
+        return self
+
+    def repartitionByRange(
+        self, numPartitions: int, *cols: ColumnOrName
+    ) -> "DataFrame":
+        return self
+
+    def createGlobalTempView(self, name: str) -> bool:
+        return True
+
+    createOrReplaceGlobalTempView = createGlobalTempView
+
+    def createTempView(self, name: str) -> bool:
+        return True
+
+    createOrReplaceTempView = createTempView
+
+    def persist(self, storageLevel) -> "DataFrame":
+        return self
 
     def __getitem__(self, name: str) -> Expr:
         if name not in self._ibis_df.columns:

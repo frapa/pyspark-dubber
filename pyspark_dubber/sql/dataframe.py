@@ -190,6 +190,9 @@ class DataFrame:
 
     sort = orderBy
 
+    sortWithinPartitions = orderBy
+
+
     def union(self, other: "DataFrame") -> "DataFrame":
         if len(self.columns) != len(other.columns):
             raise ValueError("Cannot union dataframes with different column counts.")

@@ -17,3 +17,15 @@ def array_append(self,
     value = ibis.literal(value)
   new_col = col_expr.concat(ibis.array([value]))
   return self.mutate(**{col_name: new_col})
+
+def array_contains(self,
+    col: ColumnOrName,
+    value: LiteralValue | Expr
+) -> Expr:
+  if isinstance(col, str):
+    col_expr = self[col]
+  else:
+    col_expr = col
+  if isinstance(value, LiteralValue):
+    value = ibis.literal(value)
+  return col_expr.contains(value)

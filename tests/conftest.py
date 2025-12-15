@@ -22,12 +22,12 @@ ROOT_PATH = Path(__file__).parent.parent
 sys.path.append(str(ROOT_PATH))
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def spark() -> SparkSession:
     return SparkSession.builder.getOrCreate()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def spark_dubber() -> DubberSparkSession:
     return DubberSparkSession.builder.getOrCreate()
 

@@ -1,6 +1,6 @@
-from datetime import date
+from datetime import date, datetime
 
-from tests.conftest import comparison_test
+from tests.conftest import comparison_test, parametrize
 
 
 @comparison_test
@@ -99,3 +99,49 @@ def test_monthname(spark, load):
         "*",
         functions.monthname("date"),
     ).show()
+
+
+@parametrize(
+    yyyy={"fmt": "yyyy"},
+    yyy={"fmt": "yyy"},
+    yy={"fmt": "yy"},
+    y={"fmt": "y"},
+    DDD={"fmt": "DDD"},
+    DD={"fmt": "DD"},
+    D={"fmt": "D"},
+    dd={"fmt": "dd"},
+    d={"fmt": "d"},
+    L={"fmt": "L"},
+    MMMM={"fmt": "MMMM"},
+    MMM={"fmt": "MMM"},
+    MM={"fmt": "MM"},
+    M={"fmt": "M"},
+    EEEE={"fmt": "EEEE"},
+    EEE={"fmt": "EEE"},
+    EE={"fmt": "EE"},
+    E={"fmt": "E"},
+    F={"fmt": "F"},
+    HH={"fmt": "HH"},
+    H={"fmt": "H"},
+    mm={"fmt": "mm"},
+    m={"fmt": "m"},
+    ss={"fmt": "ss"},
+    s={"fmt": "s"},
+    hh={"fmt": "hh"},
+    h={"fmt": "h"},
+    kk={"fmt": "kk"},
+    k={"fmt": "k"},
+    X={"fmt": "X"},
+    Z={"fmt": "Z"},
+    x={"fmt": "x"},
+    z={"fmt": "z"},
+    a={"fmt": "a"},
+)
+@comparison_test
+def test_date_format(spark, load, fmt: str):
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame([(datetime(2024, 2, 13, 22, 4, 17),)], ("date",))
+    df.printSchema()
+
+    df.select("*", functions.date_format("date", fmt)).show()

@@ -40,6 +40,8 @@ def sql_func(
                     f"is missing from function {func.__name__}"
                 )
 
+            if kwargs[arg] is None:
+                kwargs[arg] = None
             if not isinstance(kwargs[arg], str):
                 kwargs[arg] = lit(kwargs[arg])
             kwargs[arg] = col_fn(kwargs[arg]).to_ibis()

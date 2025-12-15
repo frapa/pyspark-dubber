@@ -210,6 +210,9 @@ from pyspark_dubber.sql.functions.temporal import (
     try_to_timestamp,
     to_unix_timestamp,
 )
+from pyspark_dubber.sql.functions.array import (
+    array_append,
+)
 
 __all__ = [
     "col",
@@ -418,4 +421,5 @@ __all__ = [
     "to_timestamp_ltz",
     "try_to_timestamp",
     "to_unix_timestamp",
+    "array_append",
 ]

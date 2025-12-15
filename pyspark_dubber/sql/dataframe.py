@@ -399,6 +399,9 @@ class DataFrame:
 
     createOrReplaceGlobalTempView = createGlobalTempView
 
+    def registerTempTable(self, name: str) -> bool:
+        return True
+
     def createTempView(self, name: str) -> bool:
         return True
 

@@ -20,7 +20,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest",
-    "pyspark == 3.*",
+    "pyspark",
     "setuptools",  # pandas still depends on it post 3.12 because it sucks
     "mkdocs-material",
 ]

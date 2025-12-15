@@ -24,3 +24,6 @@ dev = [
     "setuptools",  # pandas still depends on it post 3.12 because it sucks
     "mkdocs-material",
 ]
+
+[tool.hatch.version]
+path = "pyspark_dubber/__init__.py"

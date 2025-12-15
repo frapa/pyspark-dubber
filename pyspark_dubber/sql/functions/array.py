@@ -1,13 +1,12 @@
 import ibis
 
-from pyspark_dubber.sql import DataFrame
 from pyspark_dubber.sql.expr import Expr, LiteralValue
 from pyspark_dubber.sql.functions.normal import ColumnOrName
 
 def array_append(self,
     col: ColumnOrName,
     value: LiteralValue | Expr
-) -> "DataFrame":
+) -> Expr:
   if isinstance(col, str):
     col_expr = self[col]
   else:

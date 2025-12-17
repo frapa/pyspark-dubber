@@ -1,8 +1,6 @@
 import functools
 from typing import Callable, Sequence
 
-import ibis
-
 from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions.normal import col as col_fn, lit
 
@@ -10,7 +8,7 @@ from pyspark_dubber.sql.functions.normal import col as col_fn, lit
 def sql_func(
     func: Callable | None = None, *, col_name_args: Sequence[str] | str | None = None
 ) -> Callable:
-    """Helper decorator that wraps the result in and Expr and ensures
+    """Helper decorator that wraps the result in an Expr and ensures
     the expression is aliased to the function name.
 
     Additionally, the arguments marked at col_name_args are

@@ -23,6 +23,7 @@ from pyspark_dubber.sql.types import (
     DataType,
     DateType,
     TimestampType,
+    ArrayType,
 )
 
 
@@ -144,24 +145,10 @@ class SparkSession:
 
             for i, (col, value) in enumerate(dict_row.items()):
                 if fields[i] is None:
-                    if isinstance(value, str):
-                        fields[i] = StructField(col, StringType(), True)
-                    elif isinstance(value, bool):
-                        fields[i] = StructField(col, BooleanType(), True)
-                    elif isinstance(value, int):
-                        fields[i] = StructField(col, LongType(), True)
-                    elif isinstance(value, float):
-                        fields[i] = StructField(col, DoubleType(), True)
-                    elif isinstance(value, datetime):
-                        fields[i] = StructField(col, TimestampType(), True)
-                    elif isinstance(value, date):
-                        fields[i] = StructField(col, DateType(), True)
-                    elif value is None:
+                    inferred_type = self._infer_type(value)
+                    if inferred_type is None:
                         continue
-                    else:
-                        raise NotImplementedError(
-                            f"Type not implemented yet: {type(value).__name__}"
-                        )
+                    fields[i] = StructField(col, inferred_type, True)
 
             if None not in fields:
                 break
@@ -172,6 +159,37 @@ class SparkSession:
             )
 
         return StructType(fields)
+
+    def _infer_type(self, value: Any) -> DataType | None:
+        """Infer the DataType for a given value."""
+        if value is None:
+            return None
+        elif isinstance(value, str):
+            return StringType()
+        elif isinstance(value, bool):
+            return BooleanType()
+        elif isinstance(value, int):
+            return LongType()
+        elif isinstance(value, float):
+            return DoubleType()
+        elif isinstance(value, datetime):
+            return TimestampType()
+        elif isinstance(value, date):
+            return DateType()
+        elif isinstance(value, list):
+            # Infer element type from first non-null element
+            element_type = None
+            for elem in value:
+                element_type = self._infer_type(elem)
+                if element_type is not None:
+                    break
+            if element_type is None:
+                element_type = StringType()  # Default to string for empty arrays
+            return ArrayType(element_type, True)
+        else:
+            raise NotImplementedError(
+                f"Type not implemented yet: {type(value).__name__}"
+            )
 
     def _verify_schema(
         self,

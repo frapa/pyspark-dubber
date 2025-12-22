@@ -223,12 +223,14 @@ class DataFrame:
             return DataFrame(me_filled).unionByName(DataFrame(other_filled))
 
         if other_missing_cols:
+            cols_fmt = ', '.join(other_cols)
             raise AnalysisException(
-                f'Cannot resolve column name "{other_missing_cols.pop()}" among ({', '.join(other_cols)}).'
+                f'Cannot resolve column name "{other_missing_cols.pop()}" among ({cols_fmt}).'
             )
         if my_missing_cols:
+            cols_fmt = ', '.join(my_cols)
             raise AnalysisException(
-                f'Cannot resolve column name "{my_missing_cols.pop()}" among ({', '.join(my_cols)}).'
+                f'Cannot resolve column name "{my_missing_cols.pop()}" among ({cols_fmt}).'
             )
 
         return DataFrame(self._ibis_df.union(other._ibis_df))

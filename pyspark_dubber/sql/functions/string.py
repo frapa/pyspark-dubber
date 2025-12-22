@@ -299,7 +299,8 @@ def to_binary(col: Expr | str, format: ColumnOrName = lit("hex")) -> Expr:
         if format == "utf8" or format == "utf-8":
             return data.encode("utf-8")
 
-        data = f"{data}{'=' * (len(data) % 4)}"
+        padding = '=' * (len(data) % 4)
+        data = f"{data}{padding}"
         return base64_lib.b64decode(data.encode())
 
     return Expr(to_binary(lit(col).to_ibis(), format.to_ibis())).alias(

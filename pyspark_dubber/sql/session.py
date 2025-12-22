@@ -184,7 +184,9 @@ class SparkSession:
                 if element_type is not None:
                     break
             if element_type is None:
-                element_type = StringType()  # Default to string for empty arrays
+                raise PySparkTypeError(
+                    f"Type error. Could no determine the type of {value}"
+                )
             return ArrayType(element_type, True)
         else:
             raise NotImplementedError(

@@ -468,5 +468,6 @@ def _format_value(value: Any) -> str:
         # Format arrays like PySpark: [a, b, c] instead of ['a', 'b', 'c']
         # Recursively format elements to handle nested arrays
         formatted_items = [_format_value(item) for item in value]
-        return f"[{', '.join(formatted_items)}]"
+        joined = ", ".join(formatted_items)
+        return f"[{joined}]"
     return str(value)

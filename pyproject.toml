@@ -6,6 +6,19 @@ build-backend = "hatchling.build"
 name = "pyspark-dubber"
 dynamic = ["version"]
 requires-python = ">= 3.10"
+authors = [
+    { name = "Francesco Pasa", email = "francescopasa@gmail.com" },
+    { name = "Marco Lotz" },
+]
+description = """
+A compatibility layer for the pyspark API, allowing you to run pyspark code on
+backends such as DuckDB and Polars without porting your code.
+"""
+readme = "README.md"
+license = "LGPL-3.0-or-later"
+
+[project.urls]
+documentation = "https://frapa.github.io/pyspark-dubber/"
 
 dependencies = [
     "ibis-framework[duckdb]",

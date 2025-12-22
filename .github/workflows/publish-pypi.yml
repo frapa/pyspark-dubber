@@ -11,10 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -23,6 +26,23 @@ jobs:
 
       - name: Install hatch
         run: pip install hatch
+
+      - name: Update version from tag
+        run: |
+          TAG_VERSION=${GITHUB_REF_NAME}
+          echo "Updating version to $TAG_VERSION"
+          hatch version "$TAG_VERSION"
+
+      - name: Commit and push version update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pyspark_dubber/__init__.py
+          if git commit -m "chore: update version to ${GITHUB_REF_NAME} [skip ci]"; then
+            git push origin main
+          else
+            echo "No changes to commit"
+          fi
 
       - name: Build package
         run: hatch build

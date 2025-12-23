@@ -56,6 +56,21 @@ def test_array_append_string_literal(spark, load) -> None:
 
 
 @comparison_test
+def test_array_compact(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, None, 2],), ([None, None],), ([3, 4],)],
+        ["data"],
+    )
+
+    df.select(
+        "*",
+        functions.array_compact("data"),
+    ).show()
+
+
+@comparison_test
 def test_array_max(spark, load) -> None:
     functions = load("sql.functions")
 

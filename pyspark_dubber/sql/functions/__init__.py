@@ -213,6 +213,7 @@ from pyspark_dubber.sql.functions.temporal import (
 from pyspark_dubber.sql.functions.array import (
     array,
     array_append,
+    array_compact,
     array_contains,
     array_distinct,
     array_intersect,
@@ -443,6 +444,7 @@ __all__ = [
     "to_unix_timestamp",
     "array",
     "array_append",
+    "array_compact",
     "array_concat",
     "array_contains",
     "array_distinct",

@@ -18,6 +18,11 @@ def array_contains(col: ColumnOrName, value: Expr | LiteralValue) -> Expr:
 
 
 @sql_func(col_name_args="col")
+def array_compact(col: ColumnOrName) -> Expr:
+    return col.filter(lambda v: v.notnull())
+
+
+@sql_func(col_name_args="col")
 def array_distinct(col: ColumnOrName) -> Expr:
     return col.unique()
 

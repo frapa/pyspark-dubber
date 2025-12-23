@@ -18,6 +18,18 @@ def test_array_contains(spark, load) -> None:
 
 
 @comparison_test
+def test_array_contains_string_literal(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [(None,), (["a", "b", "c"],)],
+        ["data"],
+    )
+
+    df.select(functions.array_contains(df.data, "a")).show()
+
+
+@comparison_test
 def test_array_append(spark, load) -> None:
     functions = load("sql.functions")
 
@@ -29,6 +41,18 @@ def test_array_append(spark, load) -> None:
         "*",
         functions.array_append("b", 5),
     ).show()
+
+
+@comparison_test
+def test_array_append_string_literal(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [(None,), (["a", "b", "c"],)],
+        ["data"],
+    )
+
+    df.select(functions.array_append(df.data, "d")).show()
 
 
 @comparison_test

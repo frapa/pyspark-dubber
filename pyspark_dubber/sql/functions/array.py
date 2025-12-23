@@ -4,16 +4,17 @@ from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr, LiteralValue
 from pyspark_dubber.sql.functions._helper import sql_func
 from pyspark_dubber.sql.functions.normal import ColumnOrName, col as col_fn
+from pyspark_dubber.sql.expr import lit
 
 
-@sql_func(col_name_args=("col", "value"))
-def array_append(col: ColumnOrName, value: ColumnOrName | LiteralValue) -> Expr:
-    return col.concat(ibis.array([value]))
+@sql_func(col_name_args=("col"))
+def array_append(col: ColumnOrName, value: Expr | LiteralValue) -> Expr:
+    return col.concat(ibis.array([lit(value).to_ibis()]))
 
 
-@sql_func(col_name_args=("col", "value"))
-def array_contains(col: ColumnOrName, value: ColumnOrName | LiteralValue) -> Expr:
-    return col.contains(value)
+@sql_func(col_name_args=("col"))
+def array_contains(col: ColumnOrName, value: Expr | LiteralValue) -> Expr:
+    return col.contains(lit(value).to_ibis())
 
 
 @sql_func(col_name_args="col")

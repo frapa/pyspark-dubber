@@ -9,6 +9,7 @@ import pyarrow
 from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr, lit
 from pyspark_dubber.sql.functions import col as col_fn
+from pyspark_dubber.sql.functions._helper import sql_func
 from pyspark_dubber.sql.functions.normal import ColumnOrName
 
 
@@ -209,17 +210,17 @@ def randstr(length: Expr | int, seed: Expr | int | None = None) -> Expr:
     ).alias(f"randstr({length}, {seed})")
 
 
-def regex_count(str: ColumnOrName, pattern: ColumnOrName) -> Expr:
+def regexp_count(str: ColumnOrName, pattern: ColumnOrName) -> Expr:
     return Expr(col_fn(str).to_ibis().re_split(col_fn(pattern).to_ibis()).length() - 1)
 
 
-def regex_extract(str: ColumnOrName, pattern: str, idx: int) -> Expr:
+def regexp_extract(str: ColumnOrName, pattern: str, idx: int) -> Expr:
     return Expr(col_fn(str).to_ibis().re_extract(lit(pattern).to_ibis(), idx))
 
 
-# def regex_extract_all(str: ColumnOrName, regexp: ColumnOrName, idx: Expr | int | None = None) -> Expr:
-#     idx = lit(idx)
-#     return Expr(col_fn(str).to_ibis().re_extract(col_fn(regexp).to_ibis(), idx))
+@sql_func(col_name_args=("str", "regexp"))
+def regexp_extract_all(str: ColumnOrName, regexp: ColumnOrName, idx: Expr | int = 1) -> Expr:
+    return str.re_extract(regexp, lit(idx))
 
 
 def repeat(col: ColumnOrName, n: ColumnOrName | int) -> Expr:

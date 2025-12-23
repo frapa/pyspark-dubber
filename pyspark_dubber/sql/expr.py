@@ -236,3 +236,6 @@ class WhenExpr(Expr):
 
     def to_ibis(self) -> ibis.expr.types.Value | ibis.Deferred:
         return ibis.cases(*[(c.to_ibis(), v.to_ibis()) for c, v in self.branches])
+
+
+Column = Expr

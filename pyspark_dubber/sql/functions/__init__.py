@@ -28,6 +28,7 @@ from pyspark_dubber.sql.functions.aggregate import (
     try_avg,
     try_sum,
 )
+from pyspark_dubber.sql.functions.collection import filter
 from pyspark_dubber.sql.functions.conditional import when
 from pyspark_dubber.sql.functions.hash import (
     md5,
@@ -35,6 +36,7 @@ from pyspark_dubber.sql.functions.hash import (
     sha,
     sha2,
 )
+from pyspark_dubber.sql.functions.json import from_json
 from pyspark_dubber.sql.functions.math import (
     avg,
     mean,
@@ -140,8 +142,8 @@ from pyspark_dubber.sql.functions.string import (
     trim,
     btrim,
     randstr,
-    regex_count,
-    regex_extract,
+    regexp_count,
+    regexp_extract,
     repeat,
     replace,
     split,
@@ -150,7 +152,7 @@ from pyspark_dubber.sql.functions.string import (
     to_binary,
     translate,
     base64,
-    unbase64,
+    unbase64, regexp_extract_all,
 )
 from pyspark_dubber.sql.functions.temporal import (
     add_months,
@@ -330,8 +332,9 @@ __all__ = [
     "trim",
     "btrim",
     "randstr",
-    "regex_count",
-    "regex_extract",
+    "regexp_count",
+    "regexp_extract",
+    "regexp_extract_all",
     "repeat",
     "replace",
     "split",
@@ -465,4 +468,6 @@ __all__ = [
     "sort_array",
     "size",
     "element_at",
+    "from_json",
+    "filter",
 ]

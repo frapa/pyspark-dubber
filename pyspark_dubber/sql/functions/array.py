@@ -68,7 +68,7 @@ def array_repeat(col: ColumnOrName, count: ColumnOrName | int) -> Expr:
         count_expr = count
     else:
         count_expr = col_fn(count).to_ibis()
-    return col.repeat(count_expr)
+    return ibis.array([col]).repeat(count_expr)
 
 
 @sql_func(col_name_args="col")

@@ -1,27 +1,35 @@
 from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions._helper import sql_func
-from pyspark_dubber.sql.functions.normal import ColumnOrName
+from pyspark_dubber.sql.functions.normal import ColumnOrName, col as col_fn
 from pyspark_dubber.sql.functions.array import array_size
 
 def size(col: ColumnOrName) -> Expr:
   return array_size(col).alias(f"size({col})")
 
-@sql_func(col_name_args=("col"))
 def element_at(col: ColumnOrName, index: ColumnOrName | int) -> Expr:
-  if isinstance(index, int):
-    # Convert 1-based to 0-based index
-    # Spark: positive indices are 1-based, negative indices work from end (-1 is last)
-    if index > 0:
-      idx = index - 1
+    col_expr = col_fn(col).to_ibis()
+    if isinstance(index, int):
+        # Convert 1-based to 0-based index
+        # Spark: positive indices are 1-based, negative indices work from end (-1 is last)
+        if index > 0:
+            idx = index - 1
+        else:
+            idx = index
     else:
-      idx = index
-  else:
-    idx = col - 1
-  return Expr(col[idx]).alias(f"element_at({col}, {index})")
+        idx = col_fn(index).to_ibis() - 1
+    return Expr(col_expr[idx]).alias(f"element_at({col}, {index})")
+
+
+def get(col: ColumnOrName, index: ColumnOrName | int) -> Expr:
+    return element_at(col, index).alias(f"get({col}, {index})")
 
 
 @incompatibility("comparator parameter is not supported")
-@sql_func(col_name_args="col")
 def array_sort(col: ColumnOrName, comparator=None) -> Expr:
-  return col.sort()
+    col_expr = col_fn(col).to_ibis()
+    result = col_expr.sort()
+    # PySpark displays the internal lambda function as the column name
+    # We replicate this for compatibility, though it's not user-friendly
+    ugly_name = f"array_sort({col}, lambdafunction((IF(((namedlambdavariable() IS NULL) AND (namedlambdavariable() IS NULL)), 0, (IF((namedlambdavariable() IS NULL), 1, (IF((namedlambdavariable() IS NULL), -1, (IF((namedlambdavariable() < namedlambdavariable()), -1, (IF((namedlambdavariable() > namedlambdavariable()), 1, 0)))))))))), namedlambdavariable(), namedlambdavariable()))"
+    return Expr(result).alias(ugly_name)

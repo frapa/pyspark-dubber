@@ -4,8 +4,10 @@ from pyspark_dubber.sql.functions._helper import sql_func
 from pyspark_dubber.sql.functions.normal import ColumnOrName, col as col_fn
 from pyspark_dubber.sql.functions.array import array_size
 
+
 def size(col: ColumnOrName) -> Expr:
-  return array_size(col).alias(f"size({col})")
+    return array_size(col).alias(f"size({col})")
+
 
 def element_at(col: ColumnOrName, index: ColumnOrName | int) -> Expr:
     col_expr = col_fn(col).to_ibis()

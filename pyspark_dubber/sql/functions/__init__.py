@@ -224,15 +224,16 @@ from pyspark_dubber.sql.functions.array import (
     array_remove,
     array_repeat,
     array_size,
-    array_sort,
     array_union,
     arrays_overlap,
     arrays_zip,
-    array_concat,
-    element_at,
     flatten,
-    size,
     sort_array,
+)
+from pyspark_dubber.sql.functions.collection import (
+    size,
+    element_at,
+    array_sort,
 )
 
 __all__ = [
@@ -445,7 +446,6 @@ __all__ = [
     "array",
     "array_append",
     "array_compact",
-    "array_concat",
     "array_contains",
     "array_distinct",
     "array_intersect",
@@ -460,8 +460,9 @@ __all__ = [
     "array_union",
     "arrays_overlap",
     "arrays_zip",
-    "element_at",
     "flatten",
     "size",
     "sort_array",
+    "size",
+    "element_at"
 ]

@@ -401,6 +401,9 @@ class DataFrame:
 
     createOrReplaceGlobalTempView = createGlobalTempView
 
+    def registerTempTable(self, name: str) -> bool:
+        return True
+
     def createTempView(self, name: str) -> bool:
         return True
 
@@ -463,4 +466,10 @@ def _format_value(value: Any) -> str:
         hex_val = value.hex().upper()
         bytes_list = " ".join(hex_val[i : i + 2] for i in range(0, len(hex_val), 2))
         return f"[{bytes_list}]"
+    if isinstance(value, list):
+        # Format arrays like PySpark: [a, b, c] instead of ['a', 'b', 'c']
+        # Recursively format elements to handle nested arrays
+        formatted_items = [_format_value(item) for item in value]
+        joined = ", ".join(formatted_items)
+        return f"[{joined}]"
     return str(value)

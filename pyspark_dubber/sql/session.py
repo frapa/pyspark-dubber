@@ -221,7 +221,7 @@ class SparkSession:
 
             keys = list(row.asDict().keys())
             for i, field in enumerate(schema.fields):
-                if i > len(row):
+                if i >= len(row):
                     raise PySparkValueError(
                         f"[MISSING_FIELD] Missing field: {field.name}."
                     )
@@ -231,7 +231,7 @@ class SparkSession:
                     field.dataType, StringType
                 ):
                     raise PySparkTypeError(
-                        f"Type mismatch: {field.dataType} != {StringType()}."
+                        f"Type mismatch for field '{field.name}': {field.dataType} != {StringType()}."
                     )
 
             # TODO: extra fields?

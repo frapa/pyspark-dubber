@@ -1,10 +1,63 @@
 import abc
 import dataclasses
+import re
 from typing import Any
 
 import ibis
 import ibis.expr.datatypes
+import lark
 from duckdb.experimental.spark.sql.types import StructField
+
+DDL_GRAMMAR = f"""
+%import common.WS
+%ignore WS
+
+start: _type | _struct_fields
+_type: struct | array | map | ATOMIC
+
+struct: "struct" "<" _struct_fields ">"
+_struct_fields: struct_field ("," struct_field)*
+struct_field: NAME _type
+
+array: "array" "<" _type ">"
+map: "map" "<" _type "," _type ">"
+
+ATOMIC: "string" | "timestamp" | "date" | "boolean" | "binary" | "decimal" | "float" | "double" | "byte" | "short" | "int" | "long" 
+NAME: /[A-Za-z_][A-Za-z0-9_]*/i
+"""
+ddl_parser = lark.Lark(DDL_GRAMMAR)
+
+
+class _DDLTransformer(lark.Transformer):
+    def start(self, args):
+        return StructType(args)
+
+    def struct_field(self, args):
+        return StructField(args[0].value, args[1])
+
+    def struct(self, args):
+        return StructType(args)
+
+    def array(self, args):
+        return ArrayType(args[0])
+
+    def map(self, args):
+        return MapType(args[0], args[1])
+
+    def ATOMIC(self, ddl):
+        subclass_list = DataType.__subclasses__()
+        while subclass_list:
+            subclass = subclass_list.pop()
+            subclass_list.extend(subclass.__subclasses__())
+
+            # Abstract class
+            if abc.ABC in subclass.__bases__:
+                continue
+
+            if ddl in subclass._ddl_base_names():
+                return subclass()
+
+        raise ValueError(f"No DataType found for DDL: {ddl}")
 
 
 class DataType(abc.ABC):
@@ -77,22 +130,11 @@ class DataType(abc.ABC):
 
     @staticmethod
     def fromDDL(ddl: str) -> "DataType":
-        ddl = ddl.replace(":", "")
-
-        # TODO: support more types
-        subclass_list = DataType.__subclasses__()
-        while subclass_list:
-            subclass = subclass_list.pop()
-            subclass_list.extend(subclass.__subclasses__())
-
-            # Abstract class
-            if subclass.__name__ == "AtomicType":
-                continue
-
-            if ddl in (subclass._ddl_base_names() or ()):
-                return subclass()
-
-        raise ValueError(f"No DataType found for DDL: {ddl}")
+        # TODO: Support nullability
+        ddl = ddl.replace(":", "").strip().lower()
+        ast = ddl_parser.parse(ddl)
+        res = _DDLTransformer().transform(ast)
+        return res
 
     @abc.abstractmethod
     def to_ibis(self, nullable: bool = True) -> ibis.DataType: ...

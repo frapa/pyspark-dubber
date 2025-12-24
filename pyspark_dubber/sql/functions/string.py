@@ -1,6 +1,7 @@
 import base64 as base64_lib
 import sys
-from typing import Callable
+from collections.abc import Sequence
+from typing import Callable, Any
 
 import ibis
 import ibis.expr.operations
@@ -333,3 +334,18 @@ def unbase64(col: ColumnOrName) -> Expr:
 
     col_bin = col_fn(col).to_ibis().cast("binary")
     return Expr(_base64_decode(col_bin)).alias(f"unbase64({col})")
+
+
+@sql_func(col_name_args="format")
+def printf(format: ColumnOrName, *cols: ColumnOrName) -> Expr:
+    cols = [col_fn(c).to_ibis() for c in cols]
+
+    @ibis.udf.scalar.python
+    def _printf(format: str, cols: Sequence[Any]) -> str:
+        return format % cols
+
+    return _printf(format, cols)
+
+
+def format_string(format: str, *cols: ColumnOrName) -> Expr:
+    return printf(lit(format), *cols)

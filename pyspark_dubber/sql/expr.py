@@ -218,6 +218,13 @@ class Expr:
 
         return str(self._ibis_expr)
 
+    def __getitem__(self, name: str | int) -> "Expr":
+        return Expr(self._ibis_expr[name])
+
+    def __getattr__(self, name: str) -> "Expr":
+        print("AAAAA", name)
+        return Expr(getattr(self._ibis_expr, name))
+
 
 @dataclasses.dataclass
 class WhenExpr(Expr):

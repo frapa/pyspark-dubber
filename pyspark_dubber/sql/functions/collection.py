@@ -6,9 +6,9 @@ from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions._helper import sql_func
 from pyspark_dubber.sql.functions.normal import ColumnOrName, col as col_fn
 from pyspark_dubber.sql.functions.array import array_size
-from pyspark_dubber.sql.functions.normal import ColumnOrName
 
 UnaryOrBinary = Callable[[Expr], Expr] | Callable[[Expr, Expr], Expr]
+
 
 def size(col: ColumnOrName) -> Expr:
     return array_size(col).alias(f"size({col})")
@@ -52,3 +52,13 @@ def filter(col: ColumnOrName, f: UnaryOrBinary) -> Expr:
         ibis_func = lambda v, i: f(Expr(v), Expr(i)).to_ibis()
 
     return col.filter(ibis_func)
+
+
+@sql_func(col_name_args="col")
+def transform(col: ColumnOrName, f: UnaryOrBinary) -> Expr:
+    if len(inspect.signature(f).parameters) == 1:
+        ibis_func = lambda v: f(Expr(v)).to_ibis()
+    else:
+        ibis_func = lambda v, i: f(Expr(v), Expr(i)).to_ibis()
+
+    return col.map(ibis_func)

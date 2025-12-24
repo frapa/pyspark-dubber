@@ -25,6 +25,7 @@ dependencies = [
     "sqlglot[rs]",
     "python-dateutil",
     "tzlocal",
+    "lark",
 ]
 
 [project.optional-dependencies]

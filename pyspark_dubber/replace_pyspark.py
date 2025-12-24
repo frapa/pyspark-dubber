@@ -17,8 +17,8 @@ class _PySparkReplacer:
     def __enter__(self) -> "_PySparkReplacer":
         sys.modules["pyspark"] = pyspark
         sys.modules["pyspark.sql"] = sql
-        sys.modules["pyspark"] = functions
-        sys.modules["pyspark"] = types
+        sys.modules["pyspark.sql.functions"] = functions
+        sys.modules["pyspark.sql.types"] = types
         return self
 
     def __exit__(

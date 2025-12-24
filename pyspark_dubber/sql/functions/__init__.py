@@ -28,7 +28,7 @@ from pyspark_dubber.sql.functions.aggregate import (
     try_avg,
     try_sum,
 )
-from pyspark_dubber.sql.functions.collection import filter
+from pyspark_dubber.sql.functions.collection import filter, transform
 from pyspark_dubber.sql.functions.conditional import when
 from pyspark_dubber.sql.functions.hash import (
     md5,
@@ -152,7 +152,7 @@ from pyspark_dubber.sql.functions.string import (
     to_binary,
     translate,
     base64,
-    unbase64, regexp_extract_all,
+    unbase64, regexp_extract_all, format_string, printf,
 )
 from pyspark_dubber.sql.functions.temporal import (
     add_months,
@@ -470,4 +470,7 @@ __all__ = [
     "element_at",
     "from_json",
     "filter",
+    "transform",
+    "format_string",
+    "printf",
 ]

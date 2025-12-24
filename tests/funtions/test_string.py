@@ -98,3 +98,20 @@ def test_to_binary(spark, load, fmt) -> None:
     result = df.select(functions.to_binary(df.e, functions.lit(fmt)))
     result.printSchema()
     result.show()
+
+
+@parametrize(
+    hex={"fmt": "hex"},
+    utf8={"fmt": "utf-8"},
+    utf8_variant={"fmt": "utf8"},
+    base64={"fmt": "base64"},
+)
+@comparison_test
+def test_printf(spark, load, fmt) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame([("abc",)], ["e"])
+
+    result = df.select(functions.to_binary(df.e, functions.lit(fmt)))
+    result.printSchema()
+    result.show()

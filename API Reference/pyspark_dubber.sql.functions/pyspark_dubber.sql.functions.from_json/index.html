@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.rtrim/">
+        <link rel="canonical" href="https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.from_json/">
       
       
-        <link rel="prev" href="../pyspark_dubber.sql.functions.randstr/">
+        <link rel="prev" href="../pyspark_dubber.sql.functions.find_in_set/">
       
       
-        <link rel="next" href="../pyspark_dubber.sql.functions.sha2/">
+        <link rel="next" href="../pyspark_dubber.sql.functions.from_utc_timestamp/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>pyspark_dubber.sql.functions.rtrim - PySpark Dubber</title>
+        <title>pyspark_dubber.sql.functions.from_json - PySpark Dubber</title>
       
     
     
@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#pyspark_dubbersqlfunctionsrtrim" class="md-skip">
+        <a href="#pyspark_dubbersqlfunctionsfrom_json" class="md-skip">
           Skip to content
         </a>
       
@@ -122,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              pyspark_dubber.sql.functions.rtrim
+              pyspark_dubber.sql.functions.from_json
             
           </span>
         </div>
@@ -1227,10 +1227,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../pyspark_dubber.sql.functions.from_json/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1246,6 +1255,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1479,19 +1489,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../pyspark_dubber.sql.functions.rtrim/" class="md-nav__link">
         
   
   
@@ -1507,7 +1508,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1790,16 +1790,17 @@
   
 
 
-<h1 id="pyspark_dubbersqlfunctionsrtrim">pyspark_dubber.sql.functions.rtrim</h1>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">pyspark_dubber</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">rtrim</span><span class="p">(</span>
+<h1 id="pyspark_dubbersqlfunctionsfrom_json">pyspark_dubber.sql.functions.from_json</h1>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">pyspark_dubber</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">col</span><span class="p">:</span> <span class="n">pyspark_dubber</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">expr</span><span class="o">.</span><span class="n">Expr</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">trim</span><span class="p">:</span> <span class="n">pyspark_dubber</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">expr</span><span class="o">.</span><span class="n">Expr</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">schema</span><span class="p">:</span> <span class="n">pyspark_dubber</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">DataType</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><a href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rtrim.html">PySpark API Reference</a></p>
+<p><a href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.from_json.html">PySpark API Reference</a></p>
 <div class="admonition warning">
 <p class="admonition-title">Incompatibility Note</p>
-<p>The <code>trim</code> argument is not honored, only whitespaces can be trimmed.</p>
+<p>options are completely ignored</p>
 </div>
 
 

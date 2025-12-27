@@ -84,7 +84,7 @@ class DataFrame:
         justification: list[Literal["<", ">"]] = [">" for _ in header]
         rows = []
         lengths = [len(h) for h in header]
-        for row in self._ibis_df.limit(n).to_pyarrow().to_pylist():
+        for row in self._ibis_df.limit(n).to_pyarrow().to_pylist(maps_as_pydicts="strict"):
             cells = [_format_value(c) for c in row.values()]
             rows.append(cells)
             lengths = [max(lengths[i], len(c), 3) for i, c in enumerate(cells)]
@@ -471,4 +471,6 @@ def _format_value(value: Any) -> str:
         formatted_items = [_format_value(item) for item in value]
         joined = ", ".join(formatted_items)
         return f"[{joined}]"
+    if isinstance(value, dict):
+        return f"""{{{', '.join(_format_value(v) for k, v in value.items())}}}"""
     return str(value)

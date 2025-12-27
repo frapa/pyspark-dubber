@@ -30,7 +30,11 @@ ddl_parser = lark.Lark(DDL_GRAMMAR)
 
 class _DDLTransformer(lark.Transformer):
     def start(self, args):
-        return StructType(args)
+        if not args:
+            raise ValueError("No types provided")
+        if isinstance(args[0], StructField):
+            return StructType(args)
+        return args[0]
 
     def struct_field(self, args):
         return StructField(args[0].value, args[1])

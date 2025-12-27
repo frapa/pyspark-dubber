@@ -3,7 +3,7 @@
 ```python
 pyspark_dubber.sql.functions.approx_percentile(
 	col: pyspark_dubber.sql.expr.Expr | str,
-	percentage: pyspark_dubber.sql.expr.Expr | float | Sequence[float],
+	percentage: Union[pyspark_dubber.sql.expr.Expr, float, Sequence[float]],
 	accuracy: pyspark_dubber.sql.expr.Expr | int = 10000,
 )
 ```

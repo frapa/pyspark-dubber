@@ -2,6 +2,7 @@ import contextlib
 import functools
 import importlib
 import io
+import pprint
 import sys
 from collections.abc import Callable
 from io import StringIO
@@ -69,10 +70,12 @@ def capture_output() -> Generator[StringIO, Any, None]:
 
 
 def load_object(prefix: str) -> Callable[[str], Any]:
-    def _load(path: str) -> Any:
+    # Cache to avoid re-importing the same module over and over again
+    @functools.cache
+    def _load(path: str, prefix: str) -> Any:
         return importlib.import_module(f"{prefix}.{path}")
 
-    return _load
+    return functools.partial(_load, prefix=prefix)
 
 
 def comparison_test(func: Callable) -> Callable:
@@ -88,7 +91,7 @@ def comparison_test(func: Callable) -> Callable:
         with capture_output() as pyspark_output:
             spark_result = func(spark=spark, load=load_object("pyspark"), **kwargs)
 
-        with replace_pyspark(), capture_output() as dubber_output:
+        with capture_output() as dubber_output:
             dubber_result = func(
                 spark=spark_dubber, load=load_object("pyspark_dubber"), **kwargs
             )
@@ -102,13 +105,7 @@ def comparison_test(func: Callable) -> Callable:
             dubber_result = dubber_result.toPandas().to_dict(orient="records")
 
         assert dubber_stdout == spark_stdout
-
-        if spark_result is not None and dubber_result is not None:
-            assert dubber_result.toPandas().to_dict(
-                orient="records"
-            ) == spark_result.toPandas().to_dict(orient="records")
-        else:
-            assert dubber_result == spark_result
+        assert dubber_result == spark_result
 
         print(f"pyspark:\n{spark_stdout}\npyspark-dubber\n{dubber_stdout}\n")
 

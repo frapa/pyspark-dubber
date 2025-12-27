@@ -2,8 +2,8 @@
 
 ```python
 SparkSession.createDataFrame(
-	data: Iterable[pyspark_dubber.sql.row.Row | dict[str, Any] | Any] | pandas.core.frame.DataFrame | numpy.ndarray,
-	schema: pyspark_dubber.sql.types.StructType | pyspark_dubber.sql.types.AtomicType | str | Sequence[str] | None = None,
+	data: Union[Iterable[pyspark_dubber.sql.row.Row | dict[str, Any] | Any], pandas.core.frame.DataFrame, numpy.ndarray],
+	schema: Union[pyspark_dubber.sql.types.StructType, pyspark_dubber.sql.types.AtomicType, str, Sequence[str], NoneType] = None,
 	samplingRatio: float | None = None,
 	verifySchema: bool = True,
 )

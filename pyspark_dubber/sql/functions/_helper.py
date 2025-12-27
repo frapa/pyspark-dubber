@@ -6,7 +6,7 @@ from pyspark_dubber.sql.functions.normal import col as col_fn, lit
 
 
 def sql_func(
-    func: Callable | None = None, *, col_name_args: Sequence[str] | str | None = None
+    func: Callable | None = None, *, col_name_args: Sequence[str] | str | None = None, do_not_print_args: Sequence[str] | str | None = None
 ) -> Callable:
     """Helper decorator that wraps the result in an Expr and ensures
     the expression is aliased to the function name.
@@ -19,17 +19,22 @@ def sql_func(
     elif isinstance(col_name_args, str):
         col_name_args = (col_name_args,)
 
+    if do_not_print_args is None:
+        do_not_print_args = ()
+    elif isinstance(do_not_print_args, str):
+        do_not_print_args = (do_not_print_args,)
+
     if func is None:
 
         def _decorator(func: Callable) -> Callable:
-            return sql_func(func, col_name_args=col_name_args)
+            return sql_func(func, col_name_args=col_name_args, do_not_print_args=do_not_print_args)
 
         return _decorator
 
     @functools.wraps(func)
     def _wrapper(*args, **kwargs):
         kwargs.update(dict(zip(func.__annotations__.keys(), args)))
-        arg_fmt = ", ".join(map(str, kwargs.values()))
+        arg_fmt = ", ".join(str(v) for k, v in kwargs.items() if k not in do_not_print_args)
 
         for arg in col_name_args:
             if arg not in kwargs:

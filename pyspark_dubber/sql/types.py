@@ -15,14 +15,14 @@ DDL_GRAMMAR = f"""
 start: _type | _struct_fields
 _type: struct | array | map | ATOMIC
 
-struct: "struct" "<" _struct_fields ">"
+struct: "struct"i "<" _struct_fields ">"
 _struct_fields: struct_field ("," struct_field)*
 struct_field: NAME _type
 
-array: "array" "<" _type ">"
-map: "map" "<" _type "," _type ">"
+array: "array"i "<" _type ">"
+map: "map"i "<" _type "," _type ">"
 
-ATOMIC: "string" | "timestamp" | "date" | "boolean" | "binary" | "decimal" | "float" | "double" | "byte" | "short" | "int" | "long" 
+ATOMIC: "string"i | "timestamp"i | "date"i | "boolean"i | "binary"i | "decimal"i | "float"i | "double"i | "byte"i | "short"i | "int"i | "long"i 
 NAME: /[A-Za-z_][A-Za-z0-9_]*/i
 """
 ddl_parser = lark.Lark(DDL_GRAMMAR)
@@ -58,7 +58,7 @@ class _DDLTransformer(lark.Transformer):
             if abc.ABC in subclass.__bases__:
                 continue
 
-            if ddl in subclass._ddl_base_names():
+            if ddl.lower() in subclass._ddl_base_names():
                 return subclass()
 
         raise ValueError(f"No DataType found for DDL: {ddl}")
@@ -135,7 +135,7 @@ class DataType(abc.ABC):
     @staticmethod
     def fromDDL(ddl: str) -> "DataType":
         # TODO: Support nullability
-        ddl = ddl.replace(":", "").strip().lower()
+        ddl = ddl.replace(":", "").strip()
         ast = ddl_parser.parse(ddl)
         res = _DDLTransformer().transform(ast)
         return res

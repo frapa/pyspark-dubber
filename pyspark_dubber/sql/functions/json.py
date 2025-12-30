@@ -8,7 +8,7 @@ from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr
 from pyspark_dubber.sql.functions._helper import sql_func
 from pyspark_dubber.sql.functions.normal import ColumnOrName
-from pyspark_dubber.sql.types import DataType, StructType, MapType, StringType, IntegerType
+from pyspark_dubber.sql.types import DataType, StructType
 
 
 

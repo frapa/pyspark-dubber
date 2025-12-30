@@ -8,6 +8,7 @@ from tests.conftest import parametrize, comparison_test
         "data": [('{"a": null, "b": 2, "c": true, "d": { "g": ["g", "gg"] }}',)],
         "schema": "struct<a int, b string, c boolean, d struct<f string, g array<string>>>",
     },
+    duckdb_casing={        "data": [('{"caseSensitive": 123}',)],        "schema": "caseSensitive INT"    },
 )
 @comparison_test
 def test_from_json(spark, load, data, schema) -> None:

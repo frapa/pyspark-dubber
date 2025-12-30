@@ -13,7 +13,11 @@ ColumnOrName = Expr | str
 def _col_fn(col: ColumnOrName) -> Expr:
     if isinstance(col, Expr):
         return col
-    return Expr(ibis.deferred[col])
+    parts = col.split(".")
+    e = Expr(ibis.deferred[parts[0]])
+    for attr in parts[1:]:
+        e = e[attr]
+    return e
 
 
 col = _col_fn

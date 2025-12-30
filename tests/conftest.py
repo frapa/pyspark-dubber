@@ -2,7 +2,7 @@ import contextlib
 import functools
 import importlib
 import io
-import pprint
+import os
 import sys
 from collections.abc import Callable
 from io import StringIO
@@ -12,7 +12,6 @@ from typing import Generator, Any
 import pytest
 from pyspark.sql import SparkSession, DataFrame
 
-from pyspark_dubber.replace_pyspark import replace_pyspark
 from pyspark_dubber.sql import (
     SparkSession as DubberSparkSession,
     DataFrame as DubberDataFrame,
@@ -21,6 +20,9 @@ from pyspark_dubber.sql import (
 # Ensure pyspark_dubber is importable
 ROOT_PATH = Path(__file__).parent.parent
 sys.path.append(str(ROOT_PATH))
+
+# On Windows it might not work otherwise
+os.environ["PYSPARK_PYTHON"] = sys.executable
 
 
 @pytest.fixture(scope="session")

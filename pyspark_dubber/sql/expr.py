@@ -222,7 +222,6 @@ class Expr:
         return Expr(self._ibis_expr[name])
 
     def __getattr__(self, name: str) -> "Expr":
-        print("AAAAA", name)
         return Expr(getattr(self._ibis_expr, name))
 
 

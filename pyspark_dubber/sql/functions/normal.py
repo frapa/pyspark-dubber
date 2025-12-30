@@ -129,6 +129,9 @@ def _build_ibis_expr(ast: sqlglot.Expression) -> ibis.Value | ibis.Deferred:
             return ibis.literal(value).cast("int32")
         return ibis.literal(value)
 
+    if isinstance(ast, sqlglot.expressions.Null):
+        return ibis.null()
+
     raise NotImplementedError(
         f"Parsing of expression '{ast.sql(dialect='spark')}' not implemented:\n{repr(ast)}"
     )

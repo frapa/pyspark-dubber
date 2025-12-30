@@ -95,6 +95,12 @@ def _build_ibis_expr(ast: sqlglot.Expression) -> ibis.Value | ibis.Deferred:
                 return left.cast(bool) | right.cast(bool)
             case sqlglot.expressions.BitwiseOr():
                 return left | right
+            case sqlglot.expressions.Xor():
+                return left ^ right
+            case sqlglot.expressions.Is():
+                return left.is_(right)
+            case sqlglot.expressions.In():
+                return left.isin(right)
             case _:
                 raise NotImplementedError(
                     f"Binary operator '{ast.sql(dialect='spark')}' not implemented."

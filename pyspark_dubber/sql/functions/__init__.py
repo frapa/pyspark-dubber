@@ -237,6 +237,7 @@ from pyspark_dubber.sql.functions.collection import (
     element_at,
     array_sort,
 )
+from pyspark_dubber.sql.functions.struct import struct
 
 __all__ = [
     "col",
@@ -473,4 +474,5 @@ __all__ = [
     "transform",
     "format_string",
     "printf",
+    "struct",
 ]

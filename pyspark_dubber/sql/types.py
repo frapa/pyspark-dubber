@@ -1,6 +1,5 @@
 import abc
 import dataclasses
-import re
 from typing import Any
 
 import ibis

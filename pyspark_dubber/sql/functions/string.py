@@ -1,7 +1,7 @@
 import base64 as base64_lib
+import re
 import sys
-from collections.abc import Sequence
-from typing import Callable, Any
+from typing import Callable
 
 import ibis
 import ibis.expr.operations
@@ -219,9 +219,24 @@ def regexp_extract(str: ColumnOrName, pattern: str, idx: int) -> Expr:
     return Expr(col_fn(str).to_ibis().re_extract(lit(pattern).to_ibis(), idx))
 
 
-@sql_func(col_name_args=("str", "regexp"))
-def regexp_extract_all(str: ColumnOrName, regexp: ColumnOrName, idx: Expr | int = 1) -> Expr:
-    return ibis.array([str.re_extract(regexp, lit(idx).to_ibis())])
+@incompatibility("For technical reasons, the first argument is called `str_` instead of `str`.")
+@sql_func(col_name_args=("str_", "regexp"))
+def regexp_extract_all(str_: ColumnOrName, regexp: ColumnOrName, idx: Expr | int = 1) -> Expr:
+    if isinstance(regexp.op(), ibis.expr.operations.Literal):
+        compiled_pattern = re.compile(regexp.op().value)
+
+        @ibis.udf.scalar.python
+        def _regexp_extract(data: str, i: int) -> list[str]:
+            return [g[i-1] for g in compiled_pattern.findall(data)]
+
+        return _regexp_extract(str_, lit(idx).to_ibis())
+
+    @ibis.udf.scalar.python
+    def _regexp_extract(data: str, pattern: str, i: int) -> list[str]:
+        compiled_pattern = re.compile(pattern)
+        return [g[i-1] for g in compiled_pattern.findall(data)]
+
+    return _regexp_extract(str_, regexp, lit(idx).to_ibis())
 
 
 def repeat(col: ColumnOrName, n: ColumnOrName | int) -> Expr:

@@ -115,3 +115,30 @@ def test_printf(spark, load, fmt) -> None:
     result = df.select(functions.to_binary(df.e, functions.lit(fmt)))
     result.printSchema()
     result.show()
+
+
+@comparison_test
+def test_regex_extract(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame([("100-200",)], ["str"])
+
+    df.select(
+        "*",
+        functions.regexp_extract("str", r"(\d+)-(\d+)", 1).alias("first_number"),
+        functions.regexp_extract("str", r"(\d+)-(\d+)", 2).alias("second_number"),
+    ).show()
+
+
+@comparison_test
+def test_regex_extract_all(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame([("100-200, 300-400",)], ["str"])
+
+    df.select(
+        "*",
+        functions.regexp_extract_all("str", functions.lit(r"(\d+)-(\d+)")).alias(
+            "all_matches"
+        ),
+    ).show()

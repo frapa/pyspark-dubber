@@ -132,11 +132,17 @@ def _get_name(col: ibis.Value | ibis.Deferred) -> str:
     if isinstance(col, ibis.Value):
         return col.get_name()
 
-    if (
-        isinstance(col, ibis.Deferred)
-        and isinstance(col._resolver, ibis.common.deferred.Call)
-        and col._resolver.func.name.value in {"name", "alias"}
-    ):
-        return str(col._resolver.args[0].value)
+    if isinstance(col, ibis.Deferred):
+        if (
+            isinstance(col._resolver, ibis.common.deferred.Call)
+            and col._resolver.func.name.value in {"name", "alias"}
+        ):
+            return str(col._resolver.args[0].value)
+
+        elif isinstance(col._resolver, ibis.common.deferred.Item):
+            # To avoid extra quoting
+            if isinstance(col._resolver.indexer, ibis.common.deferred.Just):
+                return str(col._resolver.indexer.value)
+            return str(col._resolver.indexer)
 
     return str(col)

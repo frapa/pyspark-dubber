@@ -221,7 +221,7 @@ def regexp_extract(str: ColumnOrName, pattern: str, idx: int) -> Expr:
 
 @sql_func(col_name_args=("str", "regexp"))
 def regexp_extract_all(str: ColumnOrName, regexp: ColumnOrName, idx: Expr | int = 1) -> Expr:
-    return str.re_extract(regexp, lit(idx))
+    return ibis.array([str.re_extract(regexp, lit(idx).to_ibis())])
 
 
 def repeat(col: ColumnOrName, n: ColumnOrName | int) -> Expr:
@@ -341,10 +341,10 @@ def printf(format: ColumnOrName, *cols: ColumnOrName) -> Expr:
     cols = [col_fn(c).to_ibis() for c in cols]
 
     @ibis.udf.scalar.python
-    def _printf(format: str, cols: Sequence[Any]) -> str:
+    def _printf(format: str, *cols: str) -> str:
         return format % cols
 
-    return _printf(format, cols)
+    return _printf(format, *cols)
 
 
 def format_string(format: str, *cols: ColumnOrName) -> Expr:

@@ -110,7 +110,33 @@ def arrays_overlap(col1: ColumnOrName, col2: ColumnOrName) -> Expr:
 def arrays_zip(*cols: ColumnOrName) -> Expr:
     if not cols:
         raise ValueError("arrays_zip requires at least one column")
-    ibis_cols = [col_fn(c).to_ibis() for c in cols]
-    result = ibis_cols[0].zip(*ibis_cols[1:])
+
+    cols = [col_fn(c) for c in cols]
+    ibis_cols = [c.to_ibis() for c in cols]
+    result = (
+        ibis_cols[0]
+        .zip(*ibis_cols[1:])
+        # Change names of the struct fields, from f1, f2 to the original column names
+        .map(lambda s: ibis.struct({
+            _get_name(c.to_ibis()): s[f]
+            for f, c in zip(s.names, cols)
+        }))
+    )
+
     col_names = ", ".join(str(c) for c in cols)
     return Expr(result).alias(f"arrays_zip({col_names})")
+
+
+def _get_name(col: ibis.Value | ibis.Deferred) -> str:
+    """Gets alias or name of the column."""
+    if isinstance(col, ibis.Value):
+        return col.get_name()
+
+    if (
+        isinstance(col, ibis.Deferred)
+        and isinstance(col._resolver, ibis.common.deferred.Call)
+        and col._resolver.func.name.value in {"name", "alias"}
+    ):
+        return str(col._resolver.args[0].value)
+
+    return str(col)

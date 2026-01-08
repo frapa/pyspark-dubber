@@ -1,6 +1,6 @@
 import ibis
 
-from pyspark_dubber.sql.expr import Expr
+from pyspark_dubber.sql.expr import Expr, LiteralValue
 from pyspark_dubber.sql.expr import WhenExpr
 from pyspark_dubber.sql.functions.normal import ColumnOrName, _col_fn, lit
 from pyspark_dubber.sql.functions.predicate import isnan, isnull
@@ -35,5 +35,5 @@ def nanvl(col1: ColumnOrName, col2: ColumnOrName) -> Expr:
     return when(isnan(col1), lit(col2)).otherwise(col1)
 
 
-def when(condition: Expr, value: Expr) -> WhenExpr:
-    return WhenExpr(None, [(condition, value)])
+def when(condition: Expr, value: Expr | LiteralValue) -> WhenExpr:
+    return WhenExpr(None, [(condition, lit(value))])

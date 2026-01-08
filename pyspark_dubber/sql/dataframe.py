@@ -292,7 +292,7 @@ class DataFrame:
         return DataFrame(self._ibis_df.cross_join(other._ibis_df))
 
     def collect(self) -> list[Row]:
-        return [Row(**d) for d in self._ibis_df.to_pandas().to_dict(orient="records")]
+        return [Row(**d) for d in self._ibis_df.to_pyarrow().to_pylist(maps_as_pydicts="strict")]
 
     def first(self) -> Row | None:
         rows = self.limit(1).collect()

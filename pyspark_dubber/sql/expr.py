@@ -218,11 +218,13 @@ class Expr:
 
         return str(self._ibis_expr)
 
-    def __getitem__(self, name: str | int) -> "Expr":
+    def __getitem__(self, name: "str | int | Expr") -> "Expr":
+        if isinstance(name, Expr):
+            name = name.to_ibis()
         return Expr(self._ibis_expr[name])
 
     def __getattr__(self, name: str) -> "Expr":
-        return Expr(getattr(self._ibis_expr, name))
+        return self[name]
 
 
 @dataclasses.dataclass
@@ -230,13 +232,13 @@ class WhenExpr(Expr):
     branches: list[tuple["Expr", "Expr"]]
 
     def when(self, condition: "Expr", value: "Expr | LiteralValue") -> "WhenExpr":
-        return WhenExpr(self._ibis_expr, [*self.branches, (condition, value)])
+        return WhenExpr(self._ibis_expr, [*self.branches, (condition, lit(value))])
 
     def otherwise(self, value: "Expr | LiteralValue") -> "Expr":
         return Expr(
             ibis.cases(
                 *[(c.to_ibis(), v.to_ibis()) for c, v in self.branches],
-                else_=value.to_ibis(),
+                else_=lit(value).to_ibis(),
             )
         )
 

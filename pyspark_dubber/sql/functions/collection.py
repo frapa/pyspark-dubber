@@ -41,8 +41,6 @@ def array_sort(col: ColumnOrName, comparator=None) -> Expr:
     ugly_name = f"array_sort({col}, lambdafunction((IF(((namedlambdavariable() IS NULL) AND (namedlambdavariable() IS NULL)), 0, (IF((namedlambdavariable() IS NULL), 1, (IF((namedlambdavariable() IS NULL), -1, (IF((namedlambdavariable() < namedlambdavariable()), -1, (IF((namedlambdavariable() > namedlambdavariable()), 1, 0)))))))))), namedlambdavariable(), namedlambdavariable()))"
     return Expr(result).alias(ugly_name)
 
-    return col.filter(ibis_func)
-
 
 @sql_func(col_name_args="col")
 def filter(col: ColumnOrName, f: UnaryOrBinary) -> Expr:

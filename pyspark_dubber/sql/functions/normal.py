@@ -98,7 +98,7 @@ def _build_ibis_expr(ast: sqlglot.Expression) -> ibis.Value | ibis.Deferred:
             case sqlglot.expressions.Xor():
                 return left ^ right
             case sqlglot.expressions.Is():
-                return left.is_(right)
+                return left.identical_to(right)
             case sqlglot.expressions.In():
                 return left.isin(right)
             case _:

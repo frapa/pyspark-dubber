@@ -4,7 +4,7 @@
 DataFrame.dropna(
 	how: str = typing.Literal['any', 'all'],
 	thresh: int | None = None,
-	subset: Union[Sequence[str], str, NoneType] = None,
+	subset: str | Sequence[str] | None = None,
 )
 ```
 

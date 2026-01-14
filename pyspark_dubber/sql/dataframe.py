@@ -335,12 +335,16 @@ class DataFrame:
     )
     def drop(self, *cols: ColumnOrName) -> "DataFrame":
         cols = [
-            (
-                c
-                if isinstance(c, str)
-                else _resolve_ibis_expr(c.to_ibis(), self._ibis_df).get_name()
+            c
+            for c in (
+                    (
+                    c
+                    if isinstance(c, str)
+                    else _resolve_ibis_expr(c.to_ibis(), self._ibis_df).get_name()
+                )
+                for c in cols
             )
-            for c in cols
+            if c in self.columns
         ]
         return DataFrame(self._ibis_df.drop(*cols))
 

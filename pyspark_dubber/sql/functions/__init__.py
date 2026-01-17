@@ -28,7 +28,16 @@ from pyspark_dubber.sql.functions.aggregate import (
     try_avg,
     try_sum,
 )
-from pyspark_dubber.sql.functions.collection import filter, transform
+from pyspark_dubber.sql.functions.collection import (
+    filter,
+    transform,
+    cardinality,
+    exists,
+    forall,
+    zip_with,
+    aggregate,
+    reduce,
+)
 from pyspark_dubber.sql.functions.conditional import when
 from pyspark_dubber.sql.functions.hash import (
     md5,
@@ -231,11 +240,25 @@ from pyspark_dubber.sql.functions.array import (
     arrays_zip,
     flatten,
     sort_array,
+    # New functions
+    explode,
+    explode_outer,
+    posexplode,
+    posexplode_outer,
+    array_prepend,
+    array_except,
+    slice,
+    try_element_at,
+    reverse,
+    shuffle,
+    sequence,
+    array_insert,
 )
 from pyspark_dubber.sql.functions.collection import (
     size,
     element_at,
     array_sort,
+    get,
 )
 from pyspark_dubber.sql.functions.struct import struct
 
@@ -467,8 +490,29 @@ __all__ = [
     "flatten",
     "size",
     "sort_array",
-    "size",
     "element_at",
+    # New array functions
+    "explode",
+    "explode_outer",
+    "posexplode",
+    "posexplode_outer",
+    "array_prepend",
+    "array_except",
+    "slice",
+    "try_element_at",
+    "reverse",
+    "shuffle",
+    "sequence",
+    "array_insert",
+    # New collection functions
+    "get",
+    "cardinality",
+    "exists",
+    "forall",
+    "zip_with",
+    "aggregate",
+    "reduce",
+    # Other
     "from_json",
     "filter",
     "transform",

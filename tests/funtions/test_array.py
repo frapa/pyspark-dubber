@@ -222,3 +222,217 @@ def test_arrays_zip(spark, load) -> None:
     result.show()
 
     return result
+
+
+# New array functions tests
+
+
+@comparison_test
+def test_explode(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [("Alice", ["Java", "Python"]), ("Bob", ["Scala", "Go"])],
+        ["name", "languages"],
+    )
+
+    df.select(df.name, functions.explode(df.languages)).show()
+
+
+@comparison_test
+def test_explode_outer(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [("Alice", ["Java"]), ("Bob", None), ("Charlie", [])],
+        ["name", "languages"],
+    )
+
+    df.select(df.name, functions.explode_outer(df.languages)).show()
+
+
+@comparison_test
+def test_posexplode(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [("Alice", ["Java", "Python", "Scala"])],
+        ["name", "languages"],
+    )
+
+    df.select(df.name, functions.posexplode(df.languages)).show()
+
+
+@comparison_test
+def test_posexplode_outer(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [("Alice", ["Java"]), ("Bob", None)],
+        ["name", "languages"],
+    )
+
+    df.select(df.name, functions.posexplode_outer(df.languages)).show()
+
+
+@comparison_test
+def test_array_prepend(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([2, 3, 4],), ([5, 6],)],
+        ("arr",),
+    )
+
+    df.select("*", functions.array_prepend("arr", 1)).show()
+
+
+@comparison_test
+def test_array_except(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, 2, 3, 2], [2, 3, 4]), ([5, 6, 7], [6, 8])],
+        ("a", "b"),
+    )
+
+    df.select("*", functions.array_except("a", "b")).show()
+
+
+@comparison_test
+def test_slice(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, 2, 3, 4, 5],), ([10, 20, 30, 40],)],
+        ("arr",),
+    )
+
+    df.select(
+        "*",
+        functions.slice("arr", 2, 3),  # Start at 2 (1-based), take 3 elements
+        functions.slice("arr", 1, 2).alias("first_two"),  # First 2 elements
+    ).show()
+
+
+@comparison_test
+def test_try_element_at(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, 2, 3],), ([4, 5],)],
+        ("arr",),
+    )
+
+    df.select(
+        "*",
+        functions.try_element_at("arr", 1),  # First element
+        functions.try_element_at("arr", 10).alias("out_of_bounds"),  # Returns null
+        functions.try_element_at("arr", -1).alias("last"),  # Last element
+    ).show()
+
+
+@comparison_test
+def test_reverse(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, 2, 3, 4],), ([5, 6, 7],)],
+        ("arr",),
+    )
+
+    df.select("*", functions.reverse("arr")).show()
+
+
+@comparison_test
+def test_array_insert(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, 2, 3],), ([4, 5, 6],)],
+        ("arr",),
+    )
+
+    df.select(
+        "*",
+        functions.array_insert("arr", 2, 99),  # Insert 99 at position 2
+    ).show()
+
+
+# Collection function tests
+
+
+@comparison_test
+def test_cardinality(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, 2, 3],), ([4, 5],), (None,)],
+        ("arr",),
+    )
+
+    df.select("*", functions.cardinality("arr")).show()
+
+
+@comparison_test
+def test_get(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, 2, 3],), ([4, 5, 6],)],
+        ("arr",),
+    )
+
+    df.select(
+        "*",
+        functions.get("arr", 1),  # First element (1-based)
+        functions.get("arr", -1).alias("last"),  # Last element
+    ).show()
+
+
+@comparison_test
+def test_exists(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, 2, 3],), ([4, 5, 6],), ([-1, 0, 1],)],
+        ("arr",),
+    )
+
+    df.select(
+        "*",
+        functions.exists("arr", lambda x: x > 5),
+        functions.exists("arr", lambda x: x < 0).alias("has_negative"),
+    ).show()
+
+
+@comparison_test
+def test_forall(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, 2, 3],), ([4, 5, 6],), ([10, 20, 30],)],
+        ("arr",),
+    )
+
+    df.select(
+        "*",
+        functions.forall("arr", lambda x: x > 0),
+        functions.forall("arr", lambda x: x > 5).alias("all_gt_5"),
+    ).show()
+
+
+@comparison_test
+def test_zip_with(spark, load) -> None:
+    functions = load("sql.functions")
+
+    df = spark.createDataFrame(
+        [([1, 2, 3], [4, 5, 6]), ([10, 20], [30, 40])],
+        ("a", "b"),
+    )
+
+    df.select(
+        "*",
+        functions.zip_with("a", "b", lambda x, y: x + y),
+        functions.zip_with("a", "b", lambda x, y: x * y).alias("product"),
+    ).show()

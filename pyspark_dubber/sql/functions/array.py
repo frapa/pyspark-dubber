@@ -7,6 +7,15 @@ from pyspark_dubber.sql.functions.normal import ColumnOrName, col as col_fn
 from pyspark_dubber.sql.expr import lit
 
 
+def _spark_to_python_index(index: int) -> int:
+    """Convert PySpark's 1-based index to Python's 0-based index.
+
+    PySpark uses 1-based indexing for positive indices, while Python uses 0-based.
+    Negative indices work the same in both (counting from the end).
+    """
+    return index - 1 if index > 0 else index
+
+
 @sql_func(col_name_args=("col"))
 def array_append(col: ColumnOrName, value: Expr | LiteralValue) -> Expr:
     return col.concat(ibis.array([lit(value).to_ibis()]))
@@ -150,13 +159,25 @@ def _get_name(col: ibis.Value | ibis.Deferred) -> str:
 
 # Phase 1: Explode functions
 
+def _explode_impl(col: ColumnOrName, alias: str) -> Expr:
+    """Internal helper for explode implementations."""
+    col_expr = col_fn(col).to_ibis()
+    return Expr(col_expr.unnest()).alias(alias)
+
+
+def _posexplode_impl(col: ColumnOrName, alias: str) -> Expr:
+    """Internal helper for posexplode implementations."""
+    col_expr = col_fn(col).to_ibis()
+    enumerated = col_expr.map(lambda i, v: ibis.struct({"pos": i, "col": v}))
+    return Expr(enumerated.unnest()).alias(alias)
+
+
 def explode(col: ColumnOrName) -> Expr:
     """Returns a new row for each element in the given array or map column.
 
     Uses the alias 'col' for array elements, and 'key' and 'value' for map elements.
     """
-    col_expr = col_fn(col).to_ibis()
-    return Expr(col_expr.unnest()).alias("col")
+    return _explode_impl(col, "col")
 
 
 @incompatibility(
@@ -169,9 +190,7 @@ def explode_outer(col: ColumnOrName) -> Expr:
     Unlike explode, if the array/map is null or empty, explode_outer returns
     null instead of dropping the row.
     """
-    col_expr = col_fn(col).to_ibis()
-    # Note: Ibis unnest behavior with nulls may vary by backend
-    return Expr(col_expr.unnest()).alias("col")
+    return _explode_impl(col, "col")
 
 
 @incompatibility(
@@ -184,14 +203,7 @@ def posexplode(col: ColumnOrName) -> Expr:
     For arrays, returns (pos, col) where pos is the position (0-based).
     For maps, returns (pos, key, value).
     """
-    col_expr = col_fn(col).to_ibis()
-    # Create an array of structs with position and value
-    # This is complex and may need special handling in select()
-    # For now, using a simplified approach
-    enumerated = col_expr.map(
-        lambda i, v: ibis.struct({"pos": i, "col": v})
-    )
-    return Expr(enumerated.unnest()).alias("posexplode")
+    return _posexplode_impl(col, "posexplode")
 
 
 @incompatibility(
@@ -204,11 +216,7 @@ def posexplode_outer(col: ColumnOrName) -> Expr:
     Returns (pos, col) for array elements, or (pos, key, value) for maps.
     Preserves rows where the array/map is null or empty.
     """
-    col_expr = col_fn(col).to_ibis()
-    enumerated = col_expr.map(
-        lambda i, v: ibis.struct({"pos": i, "col": v})
-    )
-    return Expr(enumerated.unnest()).alias("posexplode_outer")
+    return _posexplode_impl(col, "posexplode_outer")
 
 
 # Phase 2: Backend-agnostic array functions
@@ -217,20 +225,12 @@ def array_prepend(col: ColumnOrName, value: Expr | LiteralValue) -> Expr:
     """Prepends an element to the beginning of the array."""
     col_expr = col_fn(col).to_ibis()
     value_expr = lit(value).to_ibis()
-    # Prepend by concatenating [value] with the array
-    # We need to construct this as: array_from_value ++ col
-    # Since ibis.array() doesn't work well with deferred expressions,
-    # we'll use a workaround: create an empty array slice and concat
-    # Or better: use SQL-level operation
-    # For now, let's try using + operator or building manually
+    # Prepend [value] to array
     try:
-        # Try using the + operator if supported
         result = ibis.array([value_expr]) + col_expr
-    except (TypeError, AttributeError):
-        # Fallback: construct using concat in a different way
-        # Create a literal array and use it
+    except (TypeError, AttributeError, ibis.common.exceptions.InputTypeError):
+        # Fallback for deferred expressions
         result = col_expr[:0].concat(ibis.array([value_expr])).concat(col_expr)
-
     return Expr(result).alias(f"array_prepend({col}, {value})")
 
 
@@ -266,8 +266,7 @@ def slice(col: ColumnOrName, start: int | ColumnOrName, length: int | ColumnOrNa
 
     # Handle column or literal start/length
     if isinstance(start, int) and start > 0:
-        # Positive index: convert from 1-based to 0-based
-        start_idx = start - 1
+        start_idx = _spark_to_python_index(start)
         if isinstance(length, int):
             end_idx = start_idx + length
             result = col_expr[start_idx:end_idx]
@@ -276,7 +275,6 @@ def slice(col: ColumnOrName, start: int | ColumnOrName, length: int | ColumnOrNa
             result = col_expr[start_idx:start_idx + length_expr]
     else:
         # For negative or column indices, implementation is limited
-        # Raise not implemented for now
         raise NotImplementedError(
             f"slice() with start={start} is not yet supported. "
             "Only positive integer start indices are currently supported."
@@ -297,14 +295,11 @@ def try_element_at(col: ColumnOrName, index: ColumnOrName | int) -> Expr:
     length = col_expr.length()
 
     if isinstance(index, int):
-        # Convert 1-based to 0-based index
         if index > 0:
-            idx = index - 1
-            # Check if index is within bounds using ibis.cases()
-            result = ibis.cases([((idx >= 0) & (idx < length), col_expr[idx])], else_=ibis.null())
+            idx = _spark_to_python_index(index)
+            result = ibis.cases([(idx < length, col_expr[idx])], else_=ibis.null())
         elif index < 0:
             idx = index
-            # Negative indices work from the end
             result = ibis.cases([((idx >= -length) & (idx < 0), col_expr[idx])], else_=ibis.null())
         else:
             # index == 0 is out of bounds in PySpark (1-based indexing)
@@ -405,13 +400,7 @@ def array_insert(
     arr_expr = col_fn(arr).to_ibis()
 
     if isinstance(pos, int):
-        # Convert 1-based to 0-based
-        if pos > 0:
-            idx = pos - 1
-        elif pos < 0:
-            idx = pos
-        else:
-            idx = 0
+        idx = _spark_to_python_index(pos) if pos != 0 else 0
 
         # Slice approach: arr[:idx] + [value] + arr[idx:]
         before = arr_expr[:idx] if idx != 0 else ibis.array([])

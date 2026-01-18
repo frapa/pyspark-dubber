@@ -5,9 +5,25 @@ from pyspark_dubber.docs import incompatibility
 from pyspark_dubber.sql.expr import Expr, LiteralValue
 from pyspark_dubber.sql.functions._helper import sql_func
 from pyspark_dubber.sql.functions.normal import ColumnOrName, col as col_fn
-from pyspark_dubber.sql.functions.array import array_size
+from pyspark_dubber.sql.functions.array import array_size, _spark_to_python_index
 
 UnaryOrBinary = Callable[[Expr], Expr] | Callable[[Expr, Expr], Expr]
+
+
+def _wrap_unary_or_binary(f: UnaryOrBinary):
+    """Wrap a user predicate function for use with Ibis.
+
+    Handles both unary (element only) and binary (element, index) predicates.
+    """
+    if len(inspect.signature(f).parameters) == 1:
+        return lambda v: f(Expr(v)).to_ibis()
+    else:
+        return lambda v, i: f(Expr(v), Expr(i)).to_ibis()
+
+
+def _wrap_predicate(f: Callable[[Expr], Expr]):
+    """Wrap a user predicate function for use with Ibis (unary only)."""
+    return lambda v: f(Expr(v)).to_ibis()
 
 
 def size(col: ColumnOrName) -> Expr:
@@ -17,12 +33,7 @@ def size(col: ColumnOrName) -> Expr:
 def element_at(col: ColumnOrName, index: ColumnOrName | int) -> Expr:
     col_expr = col_fn(col).to_ibis()
     if isinstance(index, int):
-        # Convert 1-based to 0-based index
-        # Spark: positive indices are 1-based, negative indices work from end (-1 is last)
-        if index > 0:
-            idx = index - 1
-        else:
-            idx = index
+        idx = _spark_to_python_index(index)
     else:
         idx = col_fn(index).to_ibis() - 1
     return Expr(col_expr[idx]).alias(f"element_at({col}, {index})")
@@ -44,22 +55,12 @@ def array_sort(col: ColumnOrName, comparator=None) -> Expr:
 
 @sql_func(col_name_args="col")
 def filter(col: ColumnOrName, f: UnaryOrBinary) -> Expr:
-    if len(inspect.signature(f).parameters) == 1:
-        ibis_func = lambda v: f(Expr(v)).to_ibis()
-    else:
-        ibis_func = lambda v, i: f(Expr(v), Expr(i)).to_ibis()
-
-    return col.filter(ibis_func)
+    return col.filter(_wrap_unary_or_binary(f))
 
 
 @sql_func(col_name_args="col")
 def transform(col: ColumnOrName, f: UnaryOrBinary) -> Expr:
-    if len(inspect.signature(f).parameters) == 1:
-        ibis_func = lambda v: f(Expr(v)).to_ibis()
-    else:
-        ibis_func = lambda v, i: f(Expr(v), Expr(i)).to_ibis()
-
-    return col.map(ibis_func)
+    return col.map(_wrap_unary_or_binary(f))
 
 
 # Additional collection functions
@@ -85,9 +86,7 @@ def exists(col: ColumnOrName, f: Callable[[Expr], Expr]) -> Expr:
         col: Array column
         f: Predicate function that takes an element and returns a boolean
     """
-    ibis_func = lambda v: f(Expr(v)).to_ibis()
-    # Check if any element satisfies the predicate
-    return col.filter(ibis_func).length() > 0
+    return col.filter(_wrap_predicate(f)).length() > 0
 
 
 @sql_func(col_name_args="col")
@@ -98,9 +97,7 @@ def forall(col: ColumnOrName, f: Callable[[Expr], Expr]) -> Expr:
         col: Array column
         f: Predicate function that takes an element and returns a boolean
     """
-    ibis_func = lambda v: f(Expr(v)).to_ibis()
-    # All satisfy if filtered array has same length as original
-    return col.filter(ibis_func).length() == col.length()
+    return col.filter(_wrap_predicate(f)).length() == col.length()
 
 
 def zip_with(

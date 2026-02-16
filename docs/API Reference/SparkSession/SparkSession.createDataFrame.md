@@ -2,7 +2,7 @@
 
 ```python
 SparkSession.createDataFrame(
-	data: Iterable[pyspark_dubber.sql.row.Row | dict[str, Any] | Any] | pandas.core.frame.DataFrame | numpy.ndarray,
+	data: Iterable[pyspark_dubber.sql.row.Row | dict[str, Any] | Any] | pandas.DataFrame | numpy.ndarray,
 	schema: pyspark_dubber.sql.types.StructType | pyspark_dubber.sql.types.AtomicType | str | Sequence[str] | None = None,
 	samplingRatio: float | None = None,
 	verifySchema: bool = True,

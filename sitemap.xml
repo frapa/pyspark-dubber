@@ -2,174 +2,174 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/api_coverage/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.crossJoin/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.drop/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.dropna/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.filter/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.groupBy/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.groupby/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.orderBy/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.printSchema/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.show/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.sort/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.sortWithinPartitions/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrame/DataFrame.where/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/DataFrameReader/DataFrameReader.json/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/SparkOutput/SparkOutput.csv/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/SparkOutput/SparkOutput.parquet/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/SparkSession/SparkSession.createDataFrame/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.approx_percentile/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.array_join/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.array_sort/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.date_format/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.find_in_set/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.from_json/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.from_utc_timestamp/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.ltrim/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.months_between/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.percentile/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.percentile_approx/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.rand/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.randn/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.randstr/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.regexp_extract_all/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.rtrim/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.sha2/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.sort_array/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.split/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.substring_index/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.to_binary/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.to_timestamp_ltz/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.to_timestamp_ntz/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://frapa.github.io/pyspark-dubber/API%20Reference/pyspark_dubber.sql.functions/pyspark_dubber.sql.functions.trim/</loc>
-         <lastmod>2026-01-14</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
 </urlset>

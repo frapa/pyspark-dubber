@@ -201,6 +201,11 @@ class SparkSession:
         for row in data:
             if isinstance(row, dict):
                 row = Row(**row)
+            elif isinstance(row, str):
+                raise PySparkTypeError(
+                    f"[CANNOT_ACCEPT_OBJECT_IN_TYPE] `{type(schema).__name__}` "
+                    f"can not accept object `{row}` in type `{type(row).__name__}`."
+                )
             elif isinstance(row, Sequence):
                 if isinstance(schema, AtomicType):
                     raise PySparkTypeError(

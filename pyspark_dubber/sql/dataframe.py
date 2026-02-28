@@ -81,7 +81,8 @@ class DataFrame:
         schema = DataType.from_ibis(self._ibis_df.schema())
 
         header = [f.name for f in schema.fields]
-        justification: list[Literal["<", ">"]] = [">" for _ in header]
+        just = "<" if truncate is False or truncate == 0 else ">"
+        justification: list[Literal["<", ">"]] = [just for _ in header]
         rows = []
         lengths = [len(h) for h in header]
         for row in self._ibis_df.limit(n).to_pyarrow().to_pylist(maps_as_pydicts="strict"):

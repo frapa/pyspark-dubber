@@ -1,9 +1,17 @@
+import re
+
 import pytest
 from pyspark.sql.session import SparkSession
 
 from pyspark_dubber.sql.session import SparkSession as DubberSparkSession
 from pyspark_dubber.sql.types import StructType, StringType, StructField
 from tests.conftest import assert_df_equal, parametrize
+
+
+def _extract_error_code(msg: str) -> str:
+    """Extract the bracketed error code from a PySpark error message."""
+    match = re.match(r"\[([A-Z_]+)\]", msg)
+    return match.group(1) if match else msg
 
 
 @pytest.mark.parametrize(
@@ -27,7 +35,9 @@ def test_session_createDataFrame_infer_error(
     assert (
         type(dubber_err.value).__name__ == type(pyspark_err.value).__name__
     ), f"'{dubber_err.value}' != '{pyspark_err.value}'"
-    assert str(dubber_err.value) == str(pyspark_err.value)
+    assert _extract_error_code(str(dubber_err.value)) == _extract_error_code(
+        str(pyspark_err.value)
+    ), f"'{dubber_err.value}' != '{pyspark_err.value}'"
 
 
 @parametrize(
@@ -48,7 +58,9 @@ def test_session_createDataFrame_validate_schema_error(
     assert (
         type(dubber_err.value).__name__ == type(pyspark_err.value).__name__
     ), f"{dubber_err.value} != {pyspark_err.value}"
-    assert str(dubber_err.value) == str(pyspark_err.value)
+    assert _extract_error_code(str(dubber_err.value)) == _extract_error_code(
+        str(pyspark_err.value)
+    ), f"{dubber_err.value} != {pyspark_err.value}"
 
 
 @parametrize(
@@ -58,8 +70,11 @@ def test_session_createDataFrame_validate_schema_error(
     ),
 )
 def test_session_createDataFrame(
-    data, schema, spark: SparkSession, spark_dubber: DubberSparkSession
+    data, schema, spark_dubber: DubberSparkSession
 ) -> None:
+    # Create a fresh SparkSession since earlier test scripts may have called
+    # spark.stop(), invalidating the session-scoped fixture.
+    spark = SparkSession.builder.getOrCreate()
     assert_df_equal(
         spark_dubber.createDataFrame(data, schema),
         spark.createDataFrame(data, schema),

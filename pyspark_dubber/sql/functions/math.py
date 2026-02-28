@@ -6,13 +6,6 @@ from pyspark_dubber.sql.functions.normal import ColumnOrName, col as col_fn
 from pyspark_dubber.sql.functions.normal import lit, _col_fn
 
 
-def avg(col: ColumnOrName) -> Expr:
-    return Expr(col_fn(col).to_ibis().mean())
-
-
-mean = avg
-
-
 def abs(col: ColumnOrName) -> Expr:
     col = _col_fn(col)
     return Expr(col.to_ibis().abs()).alias(f"abs({col})")

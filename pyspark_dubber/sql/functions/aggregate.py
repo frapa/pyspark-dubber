@@ -36,7 +36,9 @@ def bool_and(col: ColumnOrName) -> Expr:
     return col.all()
 
 
-every = bool_and
+@sql_func(col_name_args="col")
+def every(col: ColumnOrName) -> Expr:
+    return col.all()
 
 
 @sql_func(col_name_args="col")
@@ -44,7 +46,9 @@ def bool_or(col: ColumnOrName) -> Expr:
     return col.any()
 
 
-some = bool_or
+@sql_func(col_name_args="col")
+def some(col: ColumnOrName) -> Expr:
+    return col.any()
 
 
 @sql_func(col_name_args="col")

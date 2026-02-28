@@ -20,7 +20,7 @@ class GroupedData:
         return DataFrame(self._ibis_df.agg(*[e.to_ibis() for e in exprs]))
 
     def count(self) -> "DataFrame":
-        return DataFrame(self._ibis_df.agg(count=count().to_ibis()))
+        return DataFrame(self._ibis_df.agg(count=count("*").to_ibis()))
 
     def avg(self, *cols: str) -> "DataFrame":
         agg_exprs = {

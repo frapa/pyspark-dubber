@@ -49,14 +49,16 @@ def sql_func(
             if arg in pos_arg_names:
                 idx = pos_arg_names.index(arg)
                 val = args[idx]
-                if not isinstance(val, str):
-                    args[idx] = lit(val)
-                args[idx] = col_fn(val).to_ibis()
+                if isinstance(val, str):
+                    args[idx] = col_fn(val).to_ibis()
+                else:
+                    args[idx] = lit(val).to_ibis()
             else:
                 val = kwargs[arg]
-                if not isinstance(val, str):
-                    kwargs[arg] = lit(val)
-                kwargs[arg] = col_fn(val).to_ibis()
+                if isinstance(val, str):
+                    kwargs[arg] = col_fn(val).to_ibis()
+                else:
+                    kwargs[arg] = lit(val).to_ibis()
 
         return Expr(func(*args, **kwargs)).alias(f"{func.__name__}({arg_fmt})")
 

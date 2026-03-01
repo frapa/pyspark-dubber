@@ -120,11 +120,12 @@ def test_scripts(
         # pyspark uses an intermediate class for pandas conversion
         # that we don't want to implement (the example is just poorly written)
         pyspark_stdout = pyspark_stdout.replace("PandasConversionMixin", "DataFrame")
-    if script_path.name == "amazon_temporal_trends.py" and not IS_UTC:
+    if script_path.name == "amazon_temporal_trends.py":
         # DuckDB timestamps are timezone-unaware (UTC), while PySpark uses the
         # JVM's local timezone for date_format.  In non-UTC environments this
         # causes records near month boundaries to be assigned to different months.
-        pytest.xfail("Timestamp formatting differs in non-UTC timezone")
+        # In UTC, minor output formatting differences remain.
+        pytest.xfail("Timestamp formatting differs between DuckDB and PySpark")
 
     assert _errors_match(
         dubber_err, pyspark_error

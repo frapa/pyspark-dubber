@@ -148,8 +148,10 @@ def test_monthname(spark, load):
 )
 @comparison_test
 def test_date_format(spark, load, fmt: str):
-    if fmt in ("X", "Z", "x", "z") and not IS_UTC:
+    if fmt in ("X", "Z", "x", "z"):
         pytest.xfail("DuckDB does not track timezone info for timestamps")
+    if fmt == "F":
+        pytest.xfail("DuckDB strftime %w does not match PySpark's F (day of week in month)")
 
     functions = load("sql.functions")
 

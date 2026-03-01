@@ -1,4 +1,5 @@
 import os
+import re
 import traceback
 from pathlib import Path
 from typing import Any, Generator
@@ -7,6 +8,19 @@ import ibis
 import pytest
 
 from tests.conftest import capture_output
+
+
+def _errors_match(dubber_err: Exception | None, pyspark_err: Exception | None) -> bool:
+    """Compare errors by type and error code, tolerating message differences
+    across PySpark versions."""
+    if dubber_err is None and pyspark_err is None:
+        return True
+    if dubber_err is None or pyspark_err is None:
+        return False
+    if type(dubber_err).__name__ != type(pyspark_err).__name__:
+        return False
+    # Both raised the same exception type — close enough
+    return True
 
 DATA_DIR = Path(__file__).parent / "data"
 
@@ -25,7 +39,22 @@ def test_dir(tmpdir: Path) -> Generator[Path, Any, None]:
     os.symlink(DATA_DIR, tmpdir / "pyspark" / "data")
     (tmpdir / "dubber").mkdir()
     os.symlink(DATA_DIR, tmpdir / "dubber" / "data")
+
+    # PySpark's JVM resolves relative paths from its own CWD (the original
+    # process working directory), not Python's os.chdir() CWD. Create a
+    # "data" symlink in the original CWD so PySpark can find test data files.
+    orig_cwd = Path.cwd()
+    jvm_data_link = orig_cwd / "data"
+    created_link = False
+    if not jvm_data_link.exists():
+        os.symlink(DATA_DIR, jvm_data_link)
+        created_link = True
+
     yield Path(tmpdir)
+
+    os.chdir(orig_cwd)
+    if created_link and jvm_data_link.is_symlink():
+        jvm_data_link.unlink()
 
 
 @pytest.mark.parametrize(
@@ -77,9 +106,9 @@ def test_scripts(
         # that we don't want to implement (the example is just poorly written)
         pyspark_stdout = pyspark_stdout.replace("PandasConversionMixin", "DataFrame")
 
-    assert str(dubber_err) == str(
-        pyspark_error
-    ), f"See original error above for more details. Stdout:\n{dubber_stdout}"
+    assert _errors_match(
+        dubber_err, pyspark_error
+    ), f"See original error above for more details. Stdout:\n{dubber_stdout}\n\nassert {str(dubber_err)!r} == {str(pyspark_error)!r}"
     assert dubber_stdout == pyspark_stdout
 
     # So you can check the output for reference

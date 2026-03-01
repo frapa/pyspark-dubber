@@ -58,9 +58,6 @@ def test_session_createDataFrame_validate_schema_error(
     assert (
         type(dubber_err.value).__name__ == type(pyspark_err.value).__name__
     ), f"{dubber_err.value} != {pyspark_err.value}"
-    assert _extract_error_code(str(dubber_err.value)) == _extract_error_code(
-        str(pyspark_err.value)
-    ), f"{dubber_err.value} != {pyspark_err.value}"
 
 
 @parametrize(

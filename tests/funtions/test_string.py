@@ -1,6 +1,12 @@
+import pyspark
+import pytest
+
 from tests.conftest import comparison_test, parametrize
 
+PYSPARK_4 = int(pyspark.__version__.split(".")[0]) >= 4
 
+
+@pytest.mark.skipif(not PYSPARK_4, reason="2-arg trim requires PySpark 4+")
 @comparison_test
 def test_trim_and_btrim(spark, load) -> None:
     functions = load("sql.functions")
@@ -47,6 +53,7 @@ def test_unbase64(spark, load) -> None:
 
 
 # The function was added in Spark 4.0.0
+@pytest.mark.skipif(not PYSPARK_4, reason="randstr requires PySpark 4+")
 @comparison_test
 def test_randstr(spark, load) -> None:
     functions = load("sql.functions")

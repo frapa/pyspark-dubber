@@ -106,7 +106,7 @@ class DataType(abc.ABC):
             elif schema.is_null():
                 return NullType()
             elif schema.is_array():
-                return ArrayType(DataType.from_ibis(schema.value_type), True)
+                return ArrayType(DataType.from_ibis(schema.value_type), schema.value_type.nullable)
             elif schema.is_map():
                 return MapType(
                     DataType.from_ibis(schema.key_type),

@@ -80,12 +80,27 @@ class DataFrame:
     ) -> None:
         schema = DataType.from_ibis(self._ibis_df.schema())
 
+        # Determine truncation width: True→20, False/0→no truncation, int→that value
+        if isinstance(truncate, bool):
+            trunc_width = 20 if truncate else 0
+        else:
+            trunc_width = int(truncate)
+
         header = [f.name for f in schema.fields]
-        justification: list[Literal["<", ">"]] = [">" for _ in header]
+        just = "<" if trunc_width == 0 else ">"
+        justification: list[Literal["<", ">"]] = [just for _ in header]
+
+        # Fetch n+1 rows to check if there are more
+        fetched = self._ibis_df.limit(n + 1).to_pyarrow().to_pylist(maps_as_pydicts="strict")
+        has_more = len(fetched) > n
+        fetched = fetched[:n]
+
         rows = []
         lengths = [len(h) for h in header]
-        for row in self._ibis_df.limit(n).to_pyarrow().to_pylist(maps_as_pydicts="strict"):
+        for row in fetched:
             cells = [_format_value(c) for c in row.values()]
+            if trunc_width > 0:
+                cells = [_truncate(c, trunc_width) for c in cells]
             rows.append(cells)
             lengths = [max(lengths[i], len(c), 3) for i, c in enumerate(cells)]
 
@@ -105,6 +120,8 @@ class DataFrame:
             print(f"|{cell_str}|")
 
         print(divider)
+        if has_more:
+            print(f"only showing top {n} rows")
         print()
 
     def __repr__(self) -> str:
@@ -452,10 +469,16 @@ def _resolve_ibis_expr(
     return expr
 
 
+def _truncate(value: str, width: int) -> str:
+    if len(value) > width:
+        return value[: width - 3] + "..."
+    return value
+
+
 def _format_cell(value: str, length: int, justification: Literal["<", ">"]) -> str:
     if justification == "<":
         return f"{value:<{length}}"
-    return f"{_format_value(value):>{length}}"
+    return f"{value:>{length}}"
 
 
 def _format_value(value: Any) -> str:

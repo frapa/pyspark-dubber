@@ -1,4 +1,6 @@
 from pyspark_dubber.sql.functions.aggregate import (
+    avg,
+    mean,
     count,
     bit_and,
     bit_or,
@@ -24,6 +26,7 @@ from pyspark_dubber.sql.functions.aggregate import (
     std,
     sum,
     kurtosis,
+    var_samp,
     variance,
     try_avg,
     try_sum,
@@ -38,8 +41,6 @@ from pyspark_dubber.sql.functions.hash import (
 )
 from pyspark_dubber.sql.functions.json import from_json
 from pyspark_dubber.sql.functions.math import (
-    avg,
-    mean,
     abs,
     exp,
     sin,
@@ -381,6 +382,7 @@ __all__ = [
     "std",
     "sum",
     "kurtosis",
+    "var_samp",
     "variance",
     "try_avg",
     "try_sum",

@@ -1,7 +1,10 @@
+import pyspark
 import pytest
 
 from pyspark_dubber.sql import SparkSession as DubberSparkSession
 from tests.conftest import comparison_test, parametrize
+
+PYSPARK_4 = int(pyspark.__version__.split(".")[0]) >= 4
 
 
 def test_dataframe_drop(spark_dubber: DubberSparkSession) -> None:
@@ -66,6 +69,7 @@ def test_union(spark, load, data, schema):
     df1.union(df2).show()
 
 
+@pytest.mark.skipif(not PYSPARK_4, reason="Union type checking requires PySpark 4+")
 @comparison_test
 def test_union_error(spark, load):
     df1 = spark.createDataFrame([(1, "a"), (2, "b")], ["id", "value"])

@@ -61,9 +61,10 @@ def collect_set(col: ColumnOrName) -> Expr:
     return col.collect(distinct=True)
 
 
+@incompatibility("Only population correlation is supported (PySpark uses Pearson, which is equivalent for large samples).")
 @sql_func(col_name_args=("col1", "col2"))
 def corr(col1: ColumnOrName, col2: ColumnOrName) -> Expr:
-    return col1.corr(col2)
+    return col1.corr(col2, how="pop")
 
 
 def count(col: ColumnOrName) -> Expr:
@@ -129,14 +130,16 @@ def percentile(
 
 
 @incompatibility("The accuracy argument is not honored.")
-@sql_func(col_name_args="col")
 def approx_percentile(
     col: ColumnOrName,
     percentage: Expr | float | Sequence[float],
     accuracy: Expr | int = 10_000,
 ) -> Expr:
-    percentage = lit(percentage).to_ibis()
-    return col.approx_quantile(percentage)
+    col_ibis = col_fn(col).to_ibis()
+    percentage_ibis = lit(percentage).to_ibis()
+    return Expr(col_ibis.approx_quantile(percentage_ibis)).alias(
+        f"approx_percentile({col}, {percentage}, {accuracy})"
+    )
 
 
 percentile_approx = approx_percentile
@@ -166,8 +169,11 @@ def kurtosis(col: ColumnOrName) -> Expr:
 
 
 @sql_func(col_name_args="col")
-def variance(col: ColumnOrName) -> Expr:
+def var_samp(col: ColumnOrName) -> Expr:
     return col.var()
+
+
+variance = var_samp
 
 
 try_avg = avg

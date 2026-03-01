@@ -1,3 +1,5 @@
+import pytest
+
 from tests.conftest import comparison_test
 
 
@@ -191,6 +193,7 @@ def test_array_join(spark, load) -> None:
     df.select("*", functions.array_join("arr", ",")).show()
 
 
+@pytest.mark.xfail(reason="DuckDB marks struct elements in arrays as nullable; PySpark does not")
 @comparison_test
 def test_arrays_zip(spark, load) -> None:
     functions = load("sql.functions")

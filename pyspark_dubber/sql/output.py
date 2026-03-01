@@ -36,6 +36,15 @@ class SparkOutput:
         "Most parameters are unsupported, the writing of files cannot be reproduced 1:1"
         "because it depends on spark internals such as partitions."
     )
+    def json(self, path: str) -> None:
+        path = Path(path) / "part-00000.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self._ibis_df.to_pandas().to_json(path, orient="records", lines=True)
+
+    @incompatibility(
+        "Most parameters are unsupported, the writing of files cannot be reproduced 1:1"
+        "because it depends on spark internals such as partitions."
+    )
     def parquet(self, path: str) -> None:
         path = Path(path) / "part-00000.parquet"
         path.parent.mkdir(parents=True, exist_ok=True)

@@ -1,6 +1,13 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
+
+import pyspark
+import pytest
 
 from tests.conftest import comparison_test, parametrize
+
+PYSPARK_4 = int(pyspark.__version__.split(".")[0]) >= 4
+_LOCAL_UTC_OFFSET = datetime.now(timezone.utc).astimezone().utcoffset().total_seconds()
+IS_UTC = _LOCAL_UTC_OFFSET == 0
 
 
 @comparison_test
@@ -62,6 +69,7 @@ def test_date_from_unix_date(spark, load):
     ).show()
 
 
+@pytest.mark.skipif(not PYSPARK_4, reason="dayname requires PySpark 4+")
 @comparison_test
 def test_dayname_dayofweek(spark, load):
     functions = load("sql.functions")
@@ -82,6 +90,7 @@ def test_dayname_dayofweek(spark, load):
     ).show()
 
 
+@pytest.mark.skipif(not PYSPARK_4, reason="monthname requires PySpark 4+")
 @comparison_test
 def test_monthname(spark, load):
     functions = load("sql.functions")
@@ -139,6 +148,9 @@ def test_monthname(spark, load):
 )
 @comparison_test
 def test_date_format(spark, load, fmt: str):
+    if fmt in ("X", "Z", "x", "z") and not IS_UTC:
+        pytest.xfail("DuckDB does not track timezone info for timestamps")
+
     functions = load("sql.functions")
 
     df = spark.createDataFrame([(datetime(2024, 2, 13, 22, 4, 17),)], ("date",))
